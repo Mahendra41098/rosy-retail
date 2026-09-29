@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rosy Retail setup guide</title>
+<style>
+:root{--ink:#27181f;--muted:#6f5d65;--line:#ecdfe4;--accent:#a3325c;--soft:#f8e4ec;--bg:#fbf7f8}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,sans-serif;padding:24px 16px 60px}
+main{max-width:720px;margin:0 auto}
+h1{font-size:30px;margin:0 0 6px;color:var(--accent)}h2{margin:34px 0 8px;font-size:21px;display:flex;gap:10px;align-items:center}
+h2 span{background:var(--accent);color:#fff;border-radius:50%;width:30px;height:30px;display:grid;place-items:center;font-size:15px;flex:none}
+p.lead{color:var(--muted);margin:0 0 10px}
+ol{padding-left:22px}li{margin:6px 0}
+code,pre{font-family:ui-monospace,Consolas,monospace;font-size:13.5px}
+code{background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+pre{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto;white-space:pre}
+.box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
+.warn{background:#fbefd9;border-color:#f0d6a8}
+.pins td{padding:4px 14px 4px 0}b.k{color:var(--accent)}
+</style></head><body><main>
+<h1>Rosy Retail · setup guide</h1>
+<p class="lead">About 30 minutes, one time. Do it on a computer if you can. Parts 1–2 are on the Firebase website, part 3 on GitHub, part 4 on the phones.</p>
+
+<div class="box">In the zip you have: <code>index.html</code> (the app), <code>sw.js</code> (lets it open without internet), <code>manifest.json</code>, <code>icon-192.png</code>, <code>icon-512.png</code>, <code>firestore.rules</code> and this guide.</div>
+
+<h2><span>1</span>Make the free cloud database (Firebase)</h2>
+<ol>
+<li>Open <b>console.firebase.google.com</b> and log in with your Google account.</li>
+<li>Tap <b>Create a project</b> (or "Add project"). Name: <code>rosy-retail</code>. Turn <b>Google Analytics off</b>. Tap <b>Create project</b>.</li>
+<li>On the left: <b>Build → Authentication → Get started</b>. Open the <b>Sign-in method</b> tab, choose <b>Anonymous</b>, switch it <b>on</b>, tap <b>Save</b>.</li>
+<li>On the left: <b>Build → Firestore Database → Create database</b>.
+  <ul><li>If it asks for an edition, keep <b>Standard</b>.</li><li>Location: <b>asia-south1 (Mumbai)</b>. This cannot be changed later.</li><li>Choose <b>Start in production mode</b>, then <b>Create</b>.</li></ul></li>
+<li>In Firestore, open the <b>Rules</b> tab. Delete what is there, paste this, and tap <b>Publish</b>:
+<pre>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}</pre></li>
+</ol>
+
+<h2><span>2</span>Copy your Firebase settings</h2>
+<ol>
+<li>Tap the <b>gear icon → Project settings</b>. Scroll to <b>Your apps</b> and tap the <b>&lt;/&gt;</b> (Web) button.</li>
+<li>App nickname: <code>rosy web</code>. Leave "Firebase Hosting" unticked. Tap <b>Register app</b>.</li>
+<li>You will see a block like this. Copy the part between the <code>{ }</code>:
+<pre>const firebaseConfig = {
+  apiKey: "AIza....",
+  authDomain: "rosy-retail-xxxx.firebaseapp.com",
+  projectId: "rosy-retail-xxxx",
+  storageBucket: "rosy-retail-xxxx.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abcd..."
+};</pre></li>
+<li>Open <code>index.html</code> in Notepad. Find the line <code>window.FIREBASE_CONFIG = null;</code> and change it to your settings, like this:
+<pre>window.FIREBASE_CONFIG = {
+  apiKey: "AIza....",
+  authDomain: "rosy-retail-xxxx.firebaseapp.com",
+  projectId: "rosy-retail-xxxx",
+  storageBucket: "rosy-retail-xxxx.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abcd..."
+};</pre>Save the file.</li>
+</ol>
+<div class="box">Skipped this step? That's fine too. The app will ask for these settings the first time it opens. Paste the same block there once on the owner phone, then use <b>Settings → Sync & devices → Copy link</b> to connect the other phones.</div>
+
+<h2><span>3</span>Put the app online (GitHub Pages, free)</h2>
+<ol>
+<li>Open <b>github.com</b> and log in (the same account as your SALESPOS page).</li>
+<li>Tap <b>+ → New repository</b>. Name: <code>rosy-retail</code>. Keep it <b>Public</b>. Tap <b>Create repository</b>.</li>
+<li>Tap <b>uploading an existing file</b>. Drag in <b>index.html, sw.js, manifest.json, icon-192.png, icon-512.png</b>. Tap <b>Commit changes</b>.</li>
+<li>Open the repository's <b>Settings → Pages</b>. Under "Branch" choose <b>main</b> and <b>/ (root)</b>, then <b>Save</b>.</li>
+<li>Wait 1–2 minutes. Your app link will be:<br><b class="k">https://mahendra41098.github.io/rosy-retail/</b></li>
+</ol>
+<div class="box">To update the app later, upload the new <code>index.html</code> the same way. Phones pick up the new version the next time they open it with internet.</div>
+
+<h2><span>4</span>Set up the phones</h2>
+<p><b>Owner phone first</b></p>
+<ol>
+<li>Open the link in <b>Chrome</b>. Tap <b>Owner view</b> and enter the owner PIN.</li>
+<li>Chrome menu (⋮) → <b>Add to Home screen</b> / <b>Install app</b>.</li>
+<li>Go to <b>More → Settings</b> and do these once:
+  <ul><li><b>Login PINs</b>: tap <b>Show all</b>, then change every PIN (pencil).</li>
+  <li><b>Staff</b>: add each person's name, mobile, 4-digit PIN and target. Switch business at the top and repeat for each shop.</li>
+  <li><b>Shop details</b>: address, contact number, GSTIN, bill note and printer paper for each shop.</li></ul></li>
+<li>Check <b>More → Categories & items</b> for each shop and add, rename or delete as you like.</li>
+</ol>
+<table class="pins"><tr><td>Starting PINs (change them!)</td></tr><tr><td>Owner</td><td><b>909090</b></td></tr><tr><td>Rosy</td><td><b>1001</b></td></tr><tr><td>Pinky Collection</td><td><b>2002</b></td></tr><tr><td>Cmore</td><td><b>3003</b></td></tr></table>
+<p><b>Each shop phone</b></p>
+<ol>
+<li>Open the app link in Chrome (or the link from <b>Settings → Sync & devices → Copy link</b>, sent on WhatsApp).</li>
+<li>Tap the shop (Rosy, Pinky Collection or Cmore), enter that shop's PIN.</li>
+<li>Chrome menu → <b>Install app</b>. From now on staff open it from the home screen.</li>
+<li>It stays logged in. Logging out needs the shop PIN or the owner PIN.</li>
+</ol>
+
+<h2><span>5</span>Printing bills</h2>
+<ol>
+<li>For a Bluetooth bill printer, install <b>RawBT</b> (Play Store) on the shop phone and pair the printer in it.</li>
+<li>In the app tap <b>Print bill</b> → <b>Print</b>. In Android's print screen choose <b>RawBT</b> (or your printer) as the printer.</li>
+<li>Set the paper size (2 or 3 inch) for each shop in <b>Settings → Shop details</b>.</li>
+</ol>
+
+<h2><span>6</span>Good to know</h2>
+<ul>
+<li><b>Live sync:</b> a bill saved on any phone appears on every other phone, including yours, within about a second.</li>
+<li><b>No internet:</b> bills save on the phone and go up by themselves when the internet is back. The top pill shows "Offline · bills saved on phone". Each phone needs internet the very first time it opens the app.</li>
+<li><b>Free plan limits:</b> Firebase's free plan gives 20,000 saves and 50,000 reads a day and 1 GB of storage. A bill uses about 5 saves, so even 1,000 bills a day is fine. Photos use the most space: roughly 100 KB each, so around 8,000–10,000 photos fit. Keep photos optional unless you need them.</li>
+<li><b>Bill numbers</b> restart each financial year: <code>ROSY/26-27/000001</code>. If two phones bill the <i>same</i> shop at the <i>same</i> moment while offline, they could get the same number. With one phone per shop this does not happen.</li>
+<li><b>Backup:</b> Owner → Sales → pick a month → <b>Export</b> gives an Excel (CSV) file. Books → Export gives the year's month-wise totals.</li>
+</ul>
+<div class="box warn"><b>About security.</b> The PINs stop staff from opening the owner view in the app. But the data itself is protected only by "must be using the app", and the app link is public. Someone technical who has the link could read the data, including purchase costs, with browser tools. Don't share the link outside your shops. If you want stronger protection later (a separate login for each shop and owner-only access to costs), I can add it.</div>
+</main></body></html>
