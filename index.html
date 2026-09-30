@@ -603,6 +603,19 @@ button.cat-row:first-of-type{border-top:0}
 .secondary svg,.primary svg,.danger svg,.ghost-btn svg{width:17px;height:17px;vertical-align:-3px;flex:none}
 .secondary,.primary{display:inline-flex;align-items:center;justify-content:center;gap:6px}
 
+.pwrap{position:relative}
+.pwrap .pcell{width:100%}
+.pdel{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center}
+.pdel svg{width:14px;height:14px}
+.pconfirm{position:absolute;inset:0;background:color-mix(in srgb,var(--surface) 92%,transparent);border-radius:14px;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:10px;text-align:center}
+.pconfirm .btn-row button:first-child{background:var(--bad);color:#fff;border:0;border-radius:12px;padding:10px;font-weight:800}
+.confirm-del .f label{color:var(--bad)}
+.confirm-del input{border:1px solid var(--bad);background:var(--surface);border-radius:10px;padding:9px 11px;width:100%}
+.danger-ghost{color:var(--bad);border-color:var(--bad)}
+.del-card{padding:12px;display:flex;flex-direction:column;gap:10px}
+.del-in{display:flex;gap:10px;align-items:flex-start}.del-in .grow{flex:1;min-width:0}.del-in .grow span{display:block;font-size:12px;color:var(--muted)}
+.del-why{color:var(--bad)!important;font-weight:600}
+
 </style>
 </head>
 <body>
@@ -629,7 +642,7 @@ window.FIREBASE_CONFIG = {
   storageBucket: "rosy-retail.firebasestorage.app",
   messagingSenderId: "962907967956",
   appId: "1:962907967956:web:c76265dea139224cb70641"
-};;
+};
 </script>
 <script>
 /* ============================================================
@@ -762,7 +775,7 @@ function FireAdapter(cfg){
     mode:'cloud',
     auth(){return firebase.auth().signInAnonymously()},
     set(c,id,data,merge){return fs.collection(c).doc(id).set(clean(data),{merge:!!merge}).catch(e=>console.warn('write failed',c,id,e))},
-    del(c,id){return fs.collection(c).doc(id).delete()},
+    del(c,id){return fs.collection(c).doc(id).delete().catch(e=>console.warn('delete failed',c,id,e))},
     async get(c,id){try{const d=await fs.collection(c).doc(id).get();return d.exists?{id:d.id,...d.data()}:null}catch(e){const d=await fs.collection(c).doc(id).get({source:'cache'}).catch(()=>null);return d&&d.exists?{id:d.id,...d.data()}:null}},
     async query(c,conds,opts){try{return docs(await ref(c,conds,opts).get())}catch(e){try{return docs(await ref(c,conds,opts).get({source:'cache'}))}catch(e2){return []}}},
     listen(c,conds,cb,opts){return ref(c,conds,opts).onSnapshot({includeMetadataChanges:true},s=>cb(docs(s),{pending:s.metadata.hasPendingWrites,fromCache:s.metadata.fromCache}),e=>console.warn('listen',c,e))},
@@ -826,6 +839,8 @@ const DB={
   billsByNo(no){return this.A.query('bills',[['no','==',no]])},
   billsByMobile(m){return this.A.query('bills',[['customer.mobile','==',m]])},
   bill(id){return this.A.get('bills',id)},
+  deletedBills(){return this.A.query('bills',[['deleted','==',true]])},
+  all(col){return this.A.query(col,[])},
   daily(from,to){return this.A.query('daily',[['date','>=',from],['date','<=',to]])},
   monthlyFy(fy){return this.A.query('monthly',[['fy','==',fy]])},
   photos(limit){return this.A.query('photos',[],{orderBy:'at',desc:true,limit})},
@@ -864,7 +879,7 @@ const S={
   bookFy:null,bookBiz:null,phFilter:'All',
   // admin forms
   editStaff:null,addingStaff:false,delStaff:null,addingBiz:false,editBizId:null,nbColor:'#5b6b3a',nbTpl:'blank',form:null,showPw:false,editPw:null,
-  myStaff:null,myOk:false,loginSel:null,viewBill:null,printBill:null,printPaper:null
+  delBill:null,delPhoto:null,purge:null,freshAsk:false,delForever:null,myStaff:null,myOk:false,loginSel:null,viewBill:null,printBill:null,printPaper:null
 };
 const SESSION_KEY='rr.session';
 const DEVICE=LS.get('rr.device',null)||(()=>{const d={id:'dev_'+uid(),name:''};LS.set('rr.device',d);return d})();
@@ -1201,8 +1216,15 @@ photos(){
     <div>${bizPill()}</div>
     <p class="hint" style="margin:0">Photos clicked at the end of each bill, newest first.</p>
     <div class="chips scroll">${cats.map(c=>`<button class="chip ${S.phFilter===c?'on':''}" data-act="phFilter" data-v="${esc(c)}">${esc(c)}</button>`).join('')}</div>
-    <div class="pgal">${list.map(p=>`<button class="pcell" data-act="viewBill" data-v="${p.bill}"><div class="pimg"><img src="${p.data}" alt="Items sold" loading="lazy"></div><div class="pcap"><b>${esc(p.items||'')}</b><span>${inr(p.total||0)} · ${esc(p.staff||'')} · ${dayLabel(p.date)} ${timeLabel(p.at)}</span></div></button>`).join('')||'<div class="empty" style="grid-column:1/-1">No photos yet for this shop.</div>'}</div>
+    <div class="pgal">${list.map(p=>`<div class="pwrap"><button class="pcell" data-act="viewBill" data-v="${p.bill}"><div class="pimg"><img src="${p.data}" alt="Items sold" loading="lazy"></div><div class="pcap"><b>${esc(p.items||'')}</b><span>${inr(p.total||0)} · ${esc(p.staff||'')} · ${dayLabel(p.date)} ${timeLabel(p.at)}</span></div></button>${S.delPhoto===p.id?`<div class="pconfirm"><b>Delete this photo?</b><div class="btn-row"><button data-act="doDelPhoto" data-v="${p.id}">Delete</button><button class="secondary" data-act="keepPhoto">Keep</button></div></div>`:`<button class="pdel" data-act="askDelPhoto" data-v="${p.id}" aria-label="Delete photo">${ic('x')}</button>`}</div>`).join('')||'<div class="empty" style="grid-column:1/-1">No photos yet for this shop.</div>'}</div>
   </div>`;
+},
+deleted(){
+  const list=need('deleted',()=>DB.deletedBills());
+  const head=`${topbar('Deleted bills','settings',`<button class="ghost-btn" data-act="reloadDeleted">Refresh</button>`)}<div class="pad" style="padding-top:4px"><p class="hint" style="margin:0">These bills are not counted in sales, reports or books. Restore puts a bill back exactly as it was.</p>`;
+  if(!list)return head+loading()+'</div>';
+  return head+(list.sort((a,c)=>(c.deletedAt||0)-(a.deletedAt||0)).map(x=>{const bz=ST.biz.find(y=>y.id===x.biz)||{};const t=billTot(x);return `<div class="bill-card del-card"><div class="del-in"><div class="grow"><b class="mono" style="font-size:12.5px">${esc(x.no)}</b><span>${esc(bz.name||'')} · ${dayLabel(x.date)} ${timeLabel(x.at)} · ${esc(x.staff)} · ${x.lines.map(l=>l.qty+' '+esc(l.name)).join(', ')}</span><span class="del-why">Deleted ${x.deletedAt?dayLabel(ymd(new Date(x.deletedAt)))+' '+timeLabel(x.deletedAt):''}${x.deleteReason?' · “'+esc(x.deleteReason)+'”':''}</span></div><b>${inr(t.final)}</b></div>
+    ${S.delForever===x.id?`<div class="confirm-del">Delete ${esc(x.no)} for good? It cannot be restored after this.<div class="btn-row"><button data-act="doDelForever" data-v="${x.id}">Delete for good</button><button class="secondary" data-act="keepForever">Cancel</button></div></div>`:`<div class="btn-row"><button class="secondary" data-act="restoreBill" data-v="${x.id}">Restore</button><button class="secondary" data-act="askDelForever" data-v="${x.id}">Delete for good</button></div>`}</div>`}).join('')||'<div class="empty">No deleted bills.</div>')+'</div>';
 },
 catalog(){
   const b=B();
@@ -1330,6 +1352,15 @@ settings(){
       <div class="setting"><div><b>Staff can give discounts</b><small>If off, only the owner can discount</small></div><input type="checkbox" class="switch" data-cfg="staffDisc" ${C.staffDisc?'checked':''} aria-label="Staff can give discounts"></div>
       <div class="setting"><div><b>Maximum staff discount</b><small>On the whole bill, as % of the amount</small></div><div style="display:flex;align-items:center;gap:4px"><input type="number" data-cfgnum="maxDisc" min="0" max="100" value="${C.maxDisc}" aria-label="Maximum staff discount percent"><b>%</b></div></div>
     </div>
+    <div class="card"><div class="card-h"><h3>Delete data</h3>${priv('Owner only')}</div>
+      <div class="setting"><div><b>Deleted bills</b><small>Bills you deleted. Restore them or remove them for good.</small></div><button class="ghost-btn" data-go="deleted">Open</button></div>
+      <form class="form" id="purgeForm" style="margin-top:8px"><b style="font-size:13.5px">Delete all bills of ${esc(b.name)} between two dates</b>
+        <div class="two"><div class="f"><label for="pgFrom">From</label><input id="pgFrom" type="date" value="${S.purge?S.purge.from:todayStr()}"></div><div class="f"><label for="pgTo">To</label><input id="pgTo" type="date" value="${S.purge?S.purge.to:todayStr()}"></div></div>
+        <button class="secondary" type="submit">Find bills</button></form>
+      ${S.purge?`<div class="confirm-del" style="margin-top:10px">${S.purge.list.length?`<p style="margin:0">Found <b>${S.purge.list.length} bills</b> of ${esc(b.name)} (${inr(S.purge.list.filter(x=>!x.deleted).reduce((a,x)=>a+billTot(x).final,0))}) from ${dayLabel(S.purge.from)} to ${dayLabel(S.purge.to)}. They and their photos will be deleted for good and the books will be corrected.</p><div class="f"><label for="purgePin">Owner PIN</label><input id="purgePin" type="password" inputmode="numeric" maxlength="6" class="code"></div><div class="btn-row"><button type="button" data-act="doPurge">Delete ${S.purge.list.length} bills</button><button type="button" class="secondary" data-act="cancelPurge">Cancel</button></div>`:`No bills of ${esc(b.name)} in these dates.<div class="btn-row"><span></span><button type="button" class="secondary" data-act="cancelPurge">OK</button></div>`}</div>`:''}
+      <div class="setting" style="margin-top:8px"><div><b>Start fresh</b><small>Deletes ALL bills, photos, books and customer records of every shop. Keeps shops, staff, categories, shop details and PINs. Use it to clear test data before real use.</small></div><button class="ghost-btn danger-ghost" style="white-space:nowrap" data-act="askFresh">Start fresh</button></div>
+      ${S.freshAsk?`<div class="confirm-del">This removes all sales data of all shops for good. It cannot be undone.<div class="two"><div class="f"><label for="freshPin">Owner PIN</label><input id="freshPin" type="password" inputmode="numeric" maxlength="6" class="code"></div><div class="f"><label for="freshWord">Type DELETE</label><input id="freshWord" autocapitalize="characters" autocomplete="off"></div></div><div class="btn-row"><button type="button" data-act="doFresh">Delete everything</button><button type="button" class="secondary" data-act="cancelFresh">Cancel</button></div></div>`:''}
+    </div>
     <div class="card"><div class="card-h"><h3>Sync & devices</h3><span class="pill-state ${DB.A.mode==='local'?'wait':''}">${DB.A.mode==='local'?'This phone only':'Cloud sync on'}</span></div>
       ${DB.A.mode==='local'?`<p class="hint" style="margin:0 0 8px">Data is only on this phone. Connect the cloud to sync all shops.</p><button class="secondary" data-act="goSetup">Connect cloud sync</button>`:`
       ${devs?devs.sort((a,c)=>c.seen-a.seen).map(d=>`<div class="dev"><span class="d ${Date.now()-d.seen<15*60000?'':'off'}"></span><div class="grow"><b>${esc(d.name||'Phone')}${d.id===DEVICE.id?' (this phone)':''}</b><small>Last seen ${ago(d.seen)}</small></div></div>`).join(''):'<p class="hint">Loading devices…</p>'}
@@ -1404,7 +1435,10 @@ function payHTML(){const p=S.pay;const on=x=>(x==='Split'&&p.mode==='split')||(x
     ${payStatus()}</div>`}
 function billCard(x,withShop){const t=billTot(x);const open=S.openBill===x.id;const bz=ST.biz.find(y=>y.id===x.biz)||{};
   return `<div class="bill-card ${x.edited?'edited':''}"><button data-act="openBill" data-v="${x.id}">${withShop?`<div class="bdot" style="background:${bz.color};width:30px;height:30px;font-size:12px">${esc(bz.short||'')}</div>`:''}<div class="grow"><b class="mono" style="font-size:12.5px">${esc(x.no)}${x.edited?'<span class="ed-pill">EDITED</span>':''}${x.remark?`<span class="cam">${ic('note')}</span>`:''}${isAdmin()&&x.photoIds&&x.photoIds.length?`<span class="cam">${ic('camera')}</span>`:''}${x.lines.some(l=>l.returned)?'<span class="new-pill">RETURN</span>':''}</b><span>${withShop?esc(bz.name)+' · ':''}${x.date===todayStr()?ago(x.at):timeLabel(x.at)} · ${esc(x.staff)} · ${x.lines.map(l=>l.qty+' '+esc(l.name)).join(', ')}</span></div><div class="end"><b>${inr(t.final)}</b>${isAdmin()?`<div>${priv(inr(t.profit))}</div>`:''}</div></button>
-  ${open?`<div class="detail">${isAdmin()&&x.photoIds&&x.photoIds.length?`<div class="ph-strip" data-photos="${x.id}">${photoStrip(x)}</div>`:''}${billDetail(x,true)}<div class="btn-row" style="margin-top:8px"><button class="secondary" data-act="printBill" data-v="${x.id}">${ic('print')} Print</button>${canEdit(x)?`<button class="secondary" data-act="editBill" data-v="${x.id}">${ic('pen')} Edit bill</button>`:`<button class="secondary" data-act="waBill" data-v="${x.id}">WhatsApp</button>`}</div></div>`:''}</div>`}
+  ${open?`<div class="detail">${isAdmin()&&x.photoIds&&x.photoIds.length?`<div class="ph-strip" data-photos="${x.id}">${photoStrip(x)}</div>`:''}${billDetail(x,true)}<div class="btn-row" style="margin-top:8px"><button class="secondary" data-act="printBill" data-v="${x.id}">${ic('print')} Print</button>${canEdit(x)?`<button class="secondary" data-act="editBill" data-v="${x.id}">${ic('pen')} Edit bill</button>`:`<button class="secondary" data-act="waBill" data-v="${x.id}">WhatsApp</button>`}</div>${delBlock(x)}</div>`:''}</div>`}
+function delBlock(x){if(!isAdmin())return '';
+  if(S.delBill===x.id)return `<div class="confirm-del" style="margin-top:8px">Delete ${esc(x.no)} (${inr(billTot(x).final)})? It will be removed from sales, reports, staff totals and books. You can restore it from Settings → Deleted bills.<div class="f"><label for="delReason">Reason (optional)</label><input id="delReason" placeholder="e.g. Test bill, entered twice"></div><div class="btn-row"><button data-act="doDelBill" data-v="${x.id}">Delete bill</button><button class="secondary" data-act="keepBill">Keep</button></div></div>`;
+  return `<button class="danger" style="margin-top:8px" data-act="askDelBill" data-v="${x.id}">${ic('x')} Delete bill</button>`}
 function photoStrip(x){const all=need('photos',()=>DB.photos(80))||[];const ps=all.filter(p=>p.bill===x.id);if(!ps.length){need('ph|'+x.id,()=>Promise.all((x.photoIds||[]).map(id=>DB.A.get('photos',id))).then(r=>{const c=CACHE.photos&&CACHE.photos.data;if(c)r.filter(Boolean).forEach(p=>{if(!c.find(q=>q.id===p.id))c.push(p)});return r}));return '<span class="hint">Loading photos…</span>'}return ps.map(p=>`<img src="${p.data}" alt="Items sold">`).join('')}
 function billDetail(x,compact){const t=billTot(x);
   return `<div class="${compact?'':'card'}"><div class="rows">${x.lines.map(l=>`<div class="bill-line ${l.returned?'returned':''}"><div><b>${esc(l.name)}${l.returned?' (returned)':''}</b><span>${esc(l.cat)}${l.note?' · '+esc(l.note):''} · ${l.qty} × ${inr(l.price)}${isAdmin()?` · ${l.mode==='mrp'?`MRP ${inr(l.mrp)}`:`code <span class="mono" style="display:inline">${esc(l.code)}</span>`}`:''}</span></div><b>${inr(lineAmt(l))}</b></div>`).join('')}</div>
@@ -1563,15 +1597,16 @@ function billSheet(){const x=S.viewBill;const bz=ST.biz.find(y=>y.id===x.biz)||{
     ${isAdmin()&&x.photoIds&&x.photoIds.length?`<div class="ph-strip">${photoStrip(x)}</div>`:''}
     ${billDetail(x,true)}
     <div class="btn-row"><button class="secondary" data-act="printBill" data-v="${x.id}">${ic('print')} Print</button>${canEdit(x)?`<button class="secondary" data-act="editBill" data-v="${x.id}">${ic('pen')} Edit</button>`:`<button class="secondary" data-act="closeSheet">Close</button>`}</div>
+    ${delBlock(x)}
   </div></div>`}
 
 /* ============================================================
    Rendering, events, actions, boot
    ============================================================ */
-const ADMIN_ONLY=['reports','staffDetail','catDetail','books','photos','catalog','more','businesses','staff','settings'];
+const ADMIN_ONLY=['deleted','reports','staffDetail','catDetail','books','photos','catalog','more','businesses','staff','settings'];
 const NAV={owner:[['home','Home','home'],['sale','New sale','bill'],['sales','Sales','list'],['reports','Reports','chart'],['more','More','more']],
   counter:[['home','Home','home'],['sale','New sale','bill'],['exchange','Exchange','swap'],['sales','Bills','list'],['mytarget','My target','target']]};
-const NAV_OF={sale:'sale',saved:'sale',sales:'sales',reports:'reports',staffDetail:'reports',catDetail:'reports',more:'more',books:'more',photos:'more',catalog:'more',businesses:'more',staff:'more',settings:'more',home:'home',exchange:'exchange',mytarget:'mytarget'};
+const NAV_OF={deleted:'more',sale:'sale',saved:'sale',sales:'sales',reports:'reports',staffDetail:'reports',catDetail:'reports',more:'more',books:'more',photos:'more',catalog:'more',businesses:'more',staff:'more',settings:'more',home:'home',exchange:'exchange',mytarget:'mytarget'};
 const $=id=>document.getElementById(id);
 let toastTimer;
 function toast(msg){const t=$('toast');if(!t)return;t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.hidden=true,3200)}
@@ -1666,6 +1701,23 @@ function applyReturn(kind){const x=S.ex.bill;const prev=clone(x);const nb=clone(
   if(kind==='refund'){toast(`Return saved · give back ${inr(val)}`);render();return}
   resetSale();S.credit={no:x.no,billId:x.id,amount:val};if(x.customer)S.customer={name:x.customer.name||'',mobile:x.customer.mobile||''};S.screen='sale';render();toast(`${inr(val)} credit added. Pick the new items.`)}
 
+/* ---------- deleting (owner only) ---------- */
+function afterBillChange(bill){const i=ST.today.findIndex(x=>x.id===bill.id);if(i>=0)ST.today[i]=bill;patchCache(bill);dropCache('m|');dropCache('d|');delete CACHE.deleted;if(S.viewBill&&S.viewBill.id===bill.id)S.viewBill=bill;if(S.lastBill&&S.lastBill.id===bill.id)S.lastBill=bill}
+function custReverse(bill,sign){const m=bill.customer&&bill.customer.mobile;if(m)DB.incCustomer(m,null,sign,sign*(bill.due||0))}
+// soft delete: the bill leaves every total but can be restored
+function deleteBill(bill,reason){if(!isAdmin()||bill.deleted)return;const nb={...clone(bill),deleted:true,deletedAt:Date.now(),deletedBy:'Owner',deleteReason:reason||''};
+  DB.saveBill(nb,bill);custReverse(bill,-1);afterBillChange(nb);toast(`${bill.no} deleted. Restore it from Settings → Deleted bills.`)}
+function restoreBill(bill){if(!isAdmin()||!bill.deleted)return;const nb=clone(bill);nb.deleted=false;nb.restoredAt=Date.now();delete nb.deletedAt;delete nb.deleteReason;delete nb.deletedBy;
+  DB.saveBill(nb,{...bill,deleted:true});custReverse(nb,1);afterBillChange(nb);toast(`${bill.no} restored`)}
+// hard delete: remove the record and its photos for good (books corrected first if it still counted)
+function removeForever(bill){if(!bill.deleted){DB.saveBill({...clone(bill),deleted:true},bill);custReverse(bill,-1)}
+  (bill.photoIds||[]).forEach(id=>DB.A.del('photos',id));DB.A.del('bills',bill.id);
+  ST.today=ST.today.filter(x=>x.id!==bill.id);for(const k in CACHE){const c=CACHE[k];if(c.data&&Array.isArray(c.data))c.data=c.data.filter(x=>x.id!==bill.id)}}
+async function startFresh(){const cols=['bills','photos','daily','monthly','counters','customers','returns'];let n=0,tot=0;
+  const lists=await Promise.all(cols.map(c=>DB.all(c)));lists.forEach(l=>tot+=l.length);toast(`Deleting ${tot} records…`);
+  for(let i=0;i<cols.length;i++){for(const d of lists[i]){DB.A.del(cols[i],d.id);n++;if(n%100===0){toast(`Deleted ${n} of ${tot}…`);await new Promise(r=>setTimeout(r,30))}}}
+  ST.today=[];ST.month={};ST.counters={};for(const k in CACHE)delete CACHE[k];S.freshAsk=false;S.openBill=null;S.lastBill=null;render();toast(`Done. ${tot} records deleted. Every shop starts fresh.`)}
+
 /* ---------- print, WhatsApp, export ---------- */
 function doPrint(bill,paper){const bz=ST.biz.find(y=>y.id===bill.biz)||B();const pa=$('printArea');pa.innerHTML=receiptHTML(bill,bz,paper);
   let st=$('pageSize');if(!st){st=document.createElement('style');st.id='pageSize';document.head.appendChild(st)}st.textContent=`@page{size:${paper==='58'?'58mm':'80mm'} auto;margin:2mm}`;
@@ -1710,6 +1762,23 @@ document.addEventListener('click',async e=>{
     case 'qty':S.cart[i].qty=Math.max(1,S.cart[i].qty+ +a.dataset.d);break;
     case 'rm':S.cart.splice(i,1);break;
     case 'pickSp':S.sp=v;break;
+    case 'askDelBill':S.delBill=v;render();setTimeout(()=>{const r=$('delReason');if(r)r.focus()},40);return;
+    case 'keepBill':S.delBill=null;break;
+    case 'doDelBill':{const x=await getBill(v);if(!x)return;deleteBill(x,$('delReason')?$('delReason').value.trim():'');S.delBill=null;S.openBill=null;if(S.overlay==='bill')S.overlay=null;break}
+    case 'restoreBill':{const l=CACHE.deleted&&CACHE.deleted.data;const x=l&&l.find(y=>y.id===v);if(!x)return;restoreBill(x);if(CACHE.deleted)delete CACHE.deleted;break}
+    case 'askDelForever':S.delForever=v;break;
+    case 'keepForever':S.delForever=null;break;
+    case 'doDelForever':{const l=CACHE.deleted&&CACHE.deleted.data;const x=l&&l.find(y=>y.id===v);if(!x)return;removeForever(x);CACHE.deleted.data=l.filter(y=>y.id!==v);S.delForever=null;toast(`${x.no} deleted for good`);break}
+    case 'reloadDeleted':delete CACHE.deleted;break;
+    case 'askDelPhoto':S.delPhoto=v;break;
+    case 'keepPhoto':S.delPhoto=null;break;
+    case 'doDelPhoto':{const all=CACHE.photos&&CACHE.photos.data;const p=all&&all.find(y=>y.id===v);if(!p)return;DB.A.del('photos',v);CACHE.photos.data=all.filter(y=>y.id!==v);
+      const bl=await getBill(p.bill);if(bl&&bl.photoIds){const nb={...clone(bl),photoIds:bl.photoIds.filter(i=>i!==v)};DB.A.set('bills',nb.id,{photoIds:nb.photoIds},true);afterBillChange(nb)}S.delPhoto=null;toast('Photo deleted');break}
+    case 'cancelPurge':S.purge=null;break;
+    case 'doPurge':{if(!S.purge)return;if(($('purgePin')||{}).value!==cfg().pins.owner){toast('Wrong owner PIN');return}const l=S.purge.list;l.forEach(removeForever);dropCache('');S.purge=null;toast(`${l.length} bills deleted for good. Books corrected.`);break}
+    case 'askFresh':S.freshAsk=true;break;
+    case 'cancelFresh':S.freshAsk=false;break;
+    case 'doFresh':{if(($('freshPin')||{}).value!==cfg().pins.owner){toast('Wrong owner PIN');return}if((($('freshWord')||{}).value||'').trim().toUpperCase()!=='DELETE'){toast('Type the word DELETE to confirm');return}startFresh();return}
     case 'bdType':S.bd.type=v;break;
     case 'payPick':if(v==='Split')S.pay.mode='split';else if(v==='Part paid')S.pay.mode='partial';else{S.pay.mode='single';S.pay.method=v}break;
     case 'rmPhoto':S.photos.splice(i,1);break;
@@ -1832,6 +1901,7 @@ document.addEventListener('submit',async e=>{
     LS.set(SESSION_KEY,{login:k,pin});if(k!=='owner'&&!DEVICE.name){DEVICE.name=(ST.biz.find(x=>x.id===k)||{}).name+' counter';LS.set('rr.device',DEVICE)}applyLogin(k);render();return}
   if(f.id==='pinForm'){const st=b.staff.find(x=>x.id===S.myStaff);if(st&&val('pinIn')===String(st.pin)){S.myOk=true;render()}else{toast('Wrong PIN. Try again.');$('pinIn').value=''}return}
   if(f.id==='exForm'){const q=val('exSearch');if(!q)return;const m=digits(q);toast('Searching…');const r=m.length===10?await DB.billsByMobile(m):await DB.billsByNo(q.toUpperCase());S.exResults=r;if(!r.length)toast('No bill found. Check the number.');render();return}
+  if(f.id==='purgeForm'){const a=val('pgFrom'),z=val('pgTo');if(!a||!z){toast('Choose both dates');return}const from=a<z?a:z,to=a<z?z:a;toast('Finding bills…');const all=await DB.billsRange(from,to);S.purge={from,to,list:all.filter(x=>x.biz===b.id)};render();return}
   if(f.id==='customForm'){S.cFrom=val('cFrom');S.cTo=val('cTo');if(S.cFrom>S.cTo){const x=S.cFrom;S.cFrom=S.cTo;S.cTo=x}render();return}
   if(f.id==='shopForm'){const nm=val('shName');if(!nm){toast('Shop name can\'t be empty');return}Object.assign(b,{name:nm,short:nm[0].toUpperCase(),addr:val('shAddr'),phone:val('shPhone'),gst:val('shGst').toUpperCase(),footer:val('shFoot')});DB.saveBiz(b);render();toast('Shop details saved');return}
   if(f.id==='keyForm'){const k=val('keyIn').toUpperCase();if(!/^[A-Z]{10}$/.test(k)||new Set(k).size!==10){toast('Use exactly 10 different letters');return}DB.saveConfig({key:k});ST.cfg.key=k;render();toast('Code word changed');return}
