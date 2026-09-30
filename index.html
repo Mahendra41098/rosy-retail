@@ -615,6 +615,79 @@ button.cat-row:first-of-type{border-top:0}
 .del-card{padding:12px;display:flex;flex-direction:column;gap:10px}
 .del-in{display:flex;gap:10px;align-items:flex-start}.del-in .grow{flex:1;min-width:0}.del-in .grow span{display:block;font-size:12px;color:var(--muted)}
 .del-why{color:var(--bad)!important;font-weight:600}
+/* quick picks + all items */
+.qpicks{display:flex;flex-direction:column;gap:6px}
+.qpicks .lab{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.qpicks .lab svg{width:13px;height:13px;color:var(--accent)}
+.qp-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.qp{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);font-size:11.5px;font-weight:700;line-height:1.15;text-align:center;min-height:56px;justify-content:center}
+.qp svg{width:17px;height:17px;color:var(--accent)}
+.qp.sel{border-color:var(--accent);background:var(--accent-soft,var(--surface))}
+.grp-h{display:flex;align-items:center;gap:6px;margin:6px 0 -4px;font-size:12.5px;font-weight:800;color:var(--muted)}
+.grp-h svg{width:15px;height:15px;color:var(--accent)}
+.igrid.g4{grid-template-columns:repeat(4,1fr);gap:6px}
+.igrid.g4 .itile{min-height:58px;padding:7px 3px}
+.igrid.g4 .itile .ii{width:24px;height:24px}.igrid.g4 .itile .ii svg{width:15px;height:15px}
+.igrid.g4 .itile b{font-size:11.5px}
+/* money screens */
+.datenav{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px 6px}
+.datenav b{font-size:14px}
+.datenav button:disabled{opacity:.3}
+.drawer{background:var(--good);color:#fff;border-radius:20px;padding:16px 18px}
+.drawer .k-label{margin:0;font-size:12px;font-weight:700;opacity:.85;text-transform:uppercase;letter-spacing:.08em}
+.drawer .k-big{font-family:var(--display);font-size:36px;font-weight:800;margin:2px 0 0;font-variant-numeric:tabular-nums}
+.drawer .dr-sub{margin:4px 0 0;font-size:13px;opacity:.9}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .drawer{color:#0d1f16}}
+.cb{display:flex;flex-direction:column}
+.cb-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.cb-row:first-child{border-top:0}
+.cb-row span{font-size:13.5px}
+.cb-row small{display:block;font-size:11.5px;color:var(--muted)}
+.cb-row b{white-space:nowrap}
+.cb-row.total{border-top:1.5px solid var(--ink);font-weight:800}
+.cb-row.total.big b{font-size:18px}
+.cb.small .cb-row{padding:5px 0}.cb.small .cb-row span{font-size:12.5px}
+b.in,.in{color:var(--good)} b.out,.out{color:var(--bad)}
+.row.entry .ek{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+.row.entry .ek svg{width:17px;height:17px}
+.ek.in{background:var(--good-soft);color:var(--good)} .ek.out{background:var(--bad-soft);color:var(--bad)}
+.row.entry .grow span{white-space:normal}
+.mini-confirm{display:flex;gap:4px;margin-top:4px}
+.mini-confirm button{font-size:11.5px;font-weight:700;border-radius:8px;padding:3px 8px;border:1px solid var(--line);background:var(--surface)}
+.mini-confirm button:first-child{background:var(--bad);color:#fff;border-color:var(--bad)}
+.pl-hero.neg{background:var(--bad)}
+.att-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.att-row .chip{justify-content:center;padding:8px 4px;font-size:12px}
+.chip.on.a-P,.att-pill.a-P{background:var(--good);color:#fff;border-color:var(--good)}
+.chip.on.a-H,.att-pill.a-H{background:var(--warn);color:#fff;border-color:var(--warn)}
+.chip.on.a-A,.att-pill.a-A{background:var(--bad);color:#fff;border-color:var(--bad)}
+.chip.on.a-W,.att-pill.a-W{background:var(--muted);color:var(--surface);border-color:var(--muted)}
+.att-pill{font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 9px}
+.money-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;cursor:pointer}
+.money-card div span{display:block;font-size:11px;color:var(--muted);font-weight:700}
+.money-card div b{font-size:15px;font-variant-numeric:tabular-nums}
+.money-card .mc-h{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;font-weight:800}
+.money-card .mc-h svg{width:16px;height:16px}
+.row svg.chev,.row>svg:last-child{width:18px;height:18px;flex:none;color:var(--muted)}
+/* item photo icons */
+.itile .ii.has-img{width:52px;height:52px;border-radius:12px;overflow:hidden;background:none}
+.igrid.g4 .itile .ii.has-img{width:40px;height:40px}
+.it-img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
+.qp .it-img{width:30px;height:30px;border-radius:8px}
+.entry-top .ci.has-img{overflow:hidden;padding:0}
+.entry-top .ci.has-img img{width:100%;height:100%;object-fit:cover}
+.mi-l{display:flex;align-items:center;gap:10px}
+.mi-ic{width:32px;height:32px;border-radius:9px;background:var(--surface-2);color:var(--accent);display:grid;place-items:center;overflow:hidden;flex:none}
+.mi-ic svg{width:17px;height:17px}
+.iphoto{display:flex;align-items:center;gap:14px}
+.iphoto img,.iphoto .ph-empty{width:84px;height:84px;border-radius:16px;object-fit:cover;flex:none;border:1px solid var(--line)}
+.iphoto .ph-empty{display:grid;place-items:center;background:var(--surface-2);color:var(--muted)}
+.iphoto .ph-empty svg{width:30px;height:30px}
+.iphoto-b{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.file-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:10px 14px}
+.file-btn svg{width:16px;height:16px}
+.file-btn{width:auto}
+.mitem .mi-l{flex:1}.mitem .mi-ic{flex:none;width:32px;height:32px}
 
 </style>
 </head>
@@ -649,7 +722,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.0.0';
+const APP_VERSION='1.2.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -703,7 +776,7 @@ const ICON_CHOICES=['garment','night','sport','swim','watch','clock','tool','jew
 const ic=(n,cls='')=>`<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||IC.box}</svg>`;
 
 /* ---------- formatting ---------- */
-const inr=n=>'₹'+Math.round(n||0).toLocaleString('en-IN');
+const inr=n=>{const v=Math.round(n||0);return (v<0?'−':'')+'₹'+Math.abs(v).toLocaleString('en-IN')};
 const kfmt=n=>n>=100000?'₹'+(n/100000).toFixed(1).replace('.0','')+'L':n>=1000?'₹'+Math.round(n/1000)+'k':'₹'+Math.round(n);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pct=(a,b)=>b?Math.round(a/b*1000)/10:0;
@@ -1024,10 +1097,13 @@ login(){
 home(){return isAdmin()?adminHome():counterHome()},
 sale(){
   const b=B();const q=S.saleQuery.trim().toLowerCase();
-  if(!S.saleCat||!findCat(S.saleCat))S.saleCat=b.cats[0]?b.cats[0].id:null;
-  const c=findCat(S.saleCat);let tiles='';
+  if(!S.saleCat||(S.saleCat!=='all'&&!findCat(S.saleCat)))S.saleCat=LS.get('rr.cat.'+b.id,null)||(b.cats[0]?b.cats[0].id:null);
+  if(S.saleCat!=='all'&&!findCat(S.saleCat))S.saleCat=b.cats[0]?b.cats[0].id:null;
+  const c=S.saleCat==='all'?null:findCat(S.saleCat);let tiles='';
+  const qp=(!q&&typeof quickPicks==='function')?quickPicks(b):[];
   if(q){const hits=b.cats.flatMap(x=>x.items.filter(it=>it.name.toLowerCase().includes(q)||x.name.toLowerCase().includes(q)).map(it=>({x,it})));
     tiles=hits.length?`<div class="igrid">${hits.map(({x,it})=>itile(x,it,true)).join('')}</div>`:`<div class="empty">No item called "${esc(S.saleQuery)}".</div>`}
+  else if(S.saleCat==='all')tiles=b.cats.filter(x=>x.items.length).map(x=>`<p class="grp-h">${ic(x.icon)}${esc(x.name)}</p><div class="igrid g4">${x.items.map(it=>itile(x,it)).join('')}</div>`).join('')||'<div class="empty">No items yet.</div>';
   else if(c)tiles=`<div class="igrid">${c.items.map(it=>itile(c,it)).join('')}${isAdmin()||cfg().staffAdd?`<button class="itile add" data-act="itemForm" data-cat="${c.id}">${ic('plus')}New item</button>`:''}</div>`;
   else tiles=`<div class="empty">No categories yet.${isAdmin()?' Tap "+ Category".':' Ask the owner to add categories.'}</div>`;
   const eb=S.editing;
@@ -1036,7 +1112,8 @@ sale(){
     ${eb?`<div class="edit-banner"><div><b>Editing ${esc(eb.no)}</b><span>Saved ${dayLabel(eb.date)} ${timeLabel(eb.at)} by ${esc(eb.staff)} · total was ${inr(billTot(eb).final)}</span></div><button data-act="cancelEdit">Cancel</button></div>`:`<div class="quick-head"><b class="mono">${nextBillNo()}</b><span>${dayLabel(todayStr())}, ${timeLabel(Date.now())}</span></div>`}
     ${soldBy()}
     <div class="search"><div class="inp">${ic('search')}<input id="saleSearch" placeholder="Find item: watch, chain, ring…" value="${esc(S.saleQuery)}" autocomplete="off" aria-label="Find item"></div></div>
-    ${q?'':`<div class="chips scroll">${b.cats.map(x=>`<button class="chip ${x.id===S.saleCat?'on':''}" data-act="saleCat" data-v="${x.id}">${esc(x.name)}</button>`).join('')}${isAdmin()?'<button class="chip" data-act="catForm">+ Category</button>':''}</div>`}
+    ${qp.length?`<div class="qpicks"><span class="lab">${ic('star')}Most sold · one tap</span><div class="qp-row">${qp.map(({c:x,it})=>`<button class="qp ${S.entry&&S.entry.itemId===it.id?'sel':''}" data-act="openEntry" data-cat="${x.id}" data-id="${it.id}">${itemIcon(x,it)}<span>${esc(it.name)}</span></button>`).join('')}</div></div>`:''}
+    ${q?'':`<div class="chips scroll"><button class="chip ${S.saleCat==='all'?'on':''}" data-act="saleCat" data-v="all">All items</button>${b.cats.map(x=>`<button class="chip ${x.id===S.saleCat?'on':''}" data-act="saleCat" data-v="${x.id}">${esc(x.name)}</button>`).join('')}${isAdmin()?'<button class="chip" data-act="catForm">+ Category</button>':''}</div>`}
     ${tiles}
     ${S.entry?entryPanel():''}
     ${S.credit?`<div class="credit"><span>Exchange credit from ${esc(S.credit.no)}: − ${inr(S.credit.amount)}</span><button data-act="dropCredit">Remove</button></div>`:''}
@@ -1233,7 +1310,7 @@ catalog(){
     <p class="hint" style="margin:0">These are the choices staff tap when making a sale. Changes don't affect old bills.</p>
     ${b.cats.map(c=>`<div class="mcat">
       <div class="mcat-h"><span class="ci">${ic(c.icon)}</span><div class="grow"><b>${esc(c.name)}</b><small>${c.items.length} items</small></div><button class="pen" data-act="catForm" data-id="${c.id}" aria-label="Edit ${esc(c.name)}">${ic('pen')}</button></div>
-      ${c.items.map(it=>`<div class="mitem"><span>${esc(it.name)}</span><button class="pen" data-act="itemForm" data-cat="${c.id}" data-id="${it.id}" aria-label="Edit ${esc(it.name)}">${ic('pen')}</button></div>`).join('')}
+      ${c.items.map(it=>`<div class="mitem"><span class="mi-l"><span class="mi-ic">${itemIcon(c,it)}</span>${esc(it.name)}</span><button class="pen" data-act="itemForm" data-cat="${c.id}" data-id="${it.id}" aria-label="Edit ${esc(it.name)}">${ic('pen')}</button></div>`).join('')}
       <button class="add-row" data-act="itemForm" data-cat="${c.id}">${ic('plus')}Add item to ${esc(c.name)}</button>
     </div>`).join('')}
     <button class="primary" data-act="catForm">+ NEW CATEGORY</button>
@@ -1243,6 +1320,11 @@ more(){
   const item=(go,icon,t,s)=>`<button class="list-btn" data-go="${go}">${ic(icon)}<span>${t}<small>${s}</small></span>${ic('chev','chev')}</button>`;const b=B();
   return `${topbar('More','home')}
   <div class="pad" style="padding-top:4px;gap:10px">
+    ${item('money','cash','Cash book & expenses',`Drawer cash, expenses, day close · ${esc(b.name)}`)}
+    ${item('pl','pnl','Profit & loss · cash flow','Net profit after expenses and salaries')}
+    ${item('salary','wallet','Staff salaries','Salary, advances, incentive, slips')}
+    ${item('attendance','cal','Attendance','Present, half day, absent, week off')}
+    ${item('dues','rupee','Customer dues','Who owes money · remind on WhatsApp')}
     ${item('catalog','tags','Categories & items',`${b.cats.length} categories in ${esc(b.name)}`)}
     ${item('books','book','Books by financial year',`FY ${fyNow().k} open · past years read-only`)}
     ${item('photos','camera','Sold item photos','See the pieces that were sold')}
@@ -1285,7 +1367,7 @@ staff(){
   const cards=list.map(s=>{const mo=(ST.month[b.id]&&ST.month[b.id].staff&&ST.month[b.id].staff[s.id])||{sales:0};const a=pct(mo.sales,s.target||0);const editing=S.editStaff===s.id;
     return `<div class="staff-card">
       <div class="top"><div class="avatar">${esc(s.name[0])}</div><div class="grow"><b>${esc(s.name)}</b><span>${esc(s.phone||'—')} · ${esc(b.name)}</span></div><button class="ghost-btn" data-act="editStaff" data-id="${s.id}">${editing?'Close':'Edit'}</button></div>
-      <div class="sm-grid"><div><span>Monthly target</span><b>${inr(s.target||0)}</b></div><div><span>Daily target</span><b>${inr(s.daily||0)}</b></div><div><span>Incentive</span><b>${s.inc||0}%</b></div></div>
+      <div class="sm-grid"><div><span>Monthly target</span><b>${inr(s.target||0)}</b></div><div><span>Salary</span><b>${s.salary?inr(s.salary):'—'}</b></div><div><span>Incentive</span><b>${s.inc||0}%</b></div></div>
       <div><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700"><span>${inr(mo.sales)} / ${inr(s.target||0)}</span><span>${s.target?a+'%':''}</span></div><div class="bar ${a>=100?'good':''}"><i style="width:${Math.min(a,100)}%"></i></div></div>
       ${editing?`<form class="edit" data-staff-form="${s.id}">
         <div class="fgrid"><div class="f"><label for="tn${s.id}">Name</label><input id="tn${s.id}" value="${esc(s.name)}"></div>
@@ -1293,7 +1375,9 @@ staff(){
         <div class="f"><label for="tk${s.id}">4-digit PIN</label><input id="tk${s.id}" inputmode="numeric" maxlength="4" class="code" value="${esc(s.pin||'')}"></div>
         <div class="f"><label for="ti${s.id}">Incentive %</label><input id="ti${s.id}" inputmode="decimal" value="${s.inc||0}"></div>
         <div class="f"><label for="tm${s.id}">Monthly target ₹</label><input id="tm${s.id}" inputmode="numeric" value="${s.target||0}"></div>
-        <div class="f"><label for="td${s.id}">Daily target ₹</label><input id="td${s.id}" inputmode="numeric" value="${s.daily||0}"></div></div>
+        <div class="f"><label for="td${s.id}">Daily target ₹</label><input id="td${s.id}" inputmode="numeric" value="${s.daily||0}"></div>
+        <div class="f"><label for="ts${s.id}">Salary ₹ / month</label><input id="ts${s.id}" inputmode="numeric" value="${s.salary||''}" placeholder="e.g. 12000"></div>
+        <div class="f"><label for="tj${s.id}">Joined on</label><input id="tj${s.id}" type="date" value="${esc(s.joined||'')}"></div></div>
         <button class="primary" type="submit">SAVE DETAILS</button>
         ${S.delStaff===s.id?`<div class="confirm-del">Remove ${esc(s.name)} from the Sold by list? Their past sales stay in reports.<div class="btn-row"><button type="button" data-act="rmStaff" data-id="${s.id}">Remove</button><button type="button" class="secondary" data-act="keepStaff">Keep</button></div></div>`:`<button type="button" class="danger" data-act="askRmStaff" data-id="${s.id}">Remove staff</button>`}
       </form>`:''}
@@ -1305,7 +1389,8 @@ staff(){
       <div class="fgrid"><div class="f full"><label for="nsName">Name</label><input id="nsName" placeholder="e.g. Priya"></div>
       <div class="f"><label for="nsPhone">Mobile number</label><input id="nsPhone" inputmode="tel" placeholder="98xxx xxxxx"></div>
       <div class="f"><label for="nsPass">4-digit PIN</label><input id="nsPass" inputmode="numeric" maxlength="4" class="code" placeholder="1234"></div>
-      <div class="f full"><label for="nsTarget">Monthly target ₹</label><input id="nsTarget" inputmode="numeric" placeholder="200000"></div></div>
+      <div class="f"><label for="nsTarget">Monthly target ₹</label><input id="nsTarget" inputmode="numeric" placeholder="200000"></div>
+      <div class="f"><label for="nsSalary">Salary ₹ / month</label><input id="nsSalary" inputmode="numeric" placeholder="12000"></div></div>
       <button class="primary" type="submit">ADD STAFF</button></form>`:''}
     ${cards||'<div class="empty">No staff in this business yet. Tap Add.</div>'}
   </div>`;
@@ -1352,6 +1437,13 @@ settings(){
       <div class="setting"><div><b>Staff can give discounts</b><small>If off, only the owner can discount</small></div><input type="checkbox" class="switch" data-cfg="staffDisc" ${C.staffDisc?'checked':''} aria-label="Staff can give discounts"></div>
       <div class="setting"><div><b>Maximum staff discount</b><small>On the whole bill, as % of the amount</small></div><div style="display:flex;align-items:center;gap:4px"><input type="number" data-cfgnum="maxDisc" min="0" max="100" value="${C.maxDisc}" aria-label="Maximum staff discount percent"><b>%</b></div></div>
     </div>
+    <div class="card"><div class="card-h"><h3>Cash book & expenses</h3><span class="hint">All shops</span></div>
+      <div class="setting"><div><b>Shop phones can add expenses</b><small>Expense, stock purchase and due received from the counter</small></div><input type="checkbox" class="switch" data-cfg="shopExpense" ${C.shopExpense!==false?'checked':''} aria-label="Shop phones can add expenses"></div>
+      <div class="setting"><div><b>Shop phones can mark attendance</b><small>Today only. The owner can change any day.</small></div><input type="checkbox" class="switch" data-cfg="shopAttendance" ${C.shopAttendance!==false?'checked':''} aria-label="Shop phones can mark attendance"></div>
+      <p class="lab" style="margin:10px 0 6px;font-weight:800;font-size:12.5px">Expense types</p>
+      <div class="chips">${(C.expCats||[]).map(x=>`<span class="chip on" style="gap:6px">${esc(x)}<button type="button" class="linkbtn" data-act="m_rmExp" data-v="${esc(x)}" aria-label="Remove ${esc(x)}" style="text-decoration:none">✕</button></span>`).join('')}</div>
+      <form class="two" id="expCatForm" style="margin-top:8px"><div class="f"><input id="expCatIn" placeholder="New expense type, e.g. Security" aria-label="New expense type"></div><button class="secondary" type="submit">Add</button></form>
+    </div>
     <div class="card"><div class="card-h"><h3>Delete data</h3>${priv('Owner only')}</div>
       <div class="setting"><div><b>Deleted bills</b><small>Bills you deleted. Restore them or remove them for good.</small></div><button class="ghost-btn" data-go="deleted">Open</button></div>
       <form class="form" id="purgeForm" style="margin-top:8px"><b style="font-size:13.5px">Delete all bills of ${esc(b.name)} between two dates</b>
@@ -1375,12 +1467,12 @@ settings(){
 
 /* ---------- pieces ---------- */
 function itile(c,it,showCat){const n=S.cart.filter(l=>l.itemId===it.id).reduce((s,l)=>s+l.qty,0);
-  return `<button class="itile ${S.entry&&S.entry.itemId===it.id?'sel':''}" data-act="openEntry" data-cat="${c.id}" data-id="${it.id}">${n?`<span class="inbill">${n}</span>`:''}<span class="ii">${ic(c.icon)}</span><b>${esc(it.name)}</b>${showCat?`<small>${esc(c.name)}</small>`:''}</button>`}
+  return `<button class="itile ${S.entry&&S.entry.itemId===it.id?'sel':''}" data-act="openEntry" data-cat="${c.id}" data-id="${it.id}">${n?`<span class="inbill">${n}</span>`:''}<span class="ii ${thumbOf(it.id)?"has-img":""}">${itemIcon(c,it)}</span><b>${esc(it.name)}</b>${showCat?`<small>${esc(c.name)}</small>`:''}</button>`}
 function soldBy(){const b=B();const list=(b.staff||[]).filter(x=>x.active!==false);const need=S.cart.length&&!S.sp;
   return `<div class="soldby ${need?'need':''}"><span class="lab">Sold by${need?' · choose a name':''}</span><div class="chips">${list.map(x=>`<button class="chip sp ${S.sp===x.id?'on':''}" data-act="pickSp" data-v="${x.id}"><i>${esc(x.name[0])}</i>${esc(x.name)}</button>`).join('')}${isAdmin()?`<button class="chip sp ${S.sp==='owner'?'on':''}" data-act="pickSp" data-v="owner"><i>O</i>Owner</button>`:''}${!list.length&&!isAdmin()?'<span class="hint">No staff yet. Ask the owner to add staff in Settings.</span>':''}</div></div>`}
 function entryPanel(){const e=S.entry;const c=calc(e);
   return `<div class="card entry" id="entryPanel">
-    <div class="entry-top"><span class="ci">${ic(e.icon)}</span><div class="grow"><b>${esc(e.name)}</b><small>${esc(e.cat)}</small></div><button class="x" data-act="enCancel" aria-label="Cancel">×</button></div>
+    <div class="entry-top"><span class="ci ${thumbOf(e.itemId)?"has-img":""}">${thumbOf(e.itemId)?`<img src="${thumbOf(e.itemId)}" alt="">`:ic(e.icon)}</span><div class="grow"><b>${esc(e.name)}</b><small>${esc(e.cat)}</small></div><button class="x" data-act="enCancel" aria-label="Cancel">×</button></div>
     <div class="qrow">
       <div class="fl"><label for="enPrice">Price ₹</label><input class="money" id="enPrice" inputmode="numeric" enterkeyhint="next" value="${e.price||''}" placeholder="Price"></div>
       ${e.mode==='mrp'?`<div class="fl"><label for="enMrp">MRP ₹</label><input class="money" id="enMrp" inputmode="numeric" enterkeyhint="done" value="${e.mrp||''}" placeholder="MRP"></div>`:`<div class="fl"><label for="enCode">Sales code</label><input class="money code" id="enCode" enterkeyhint="done" value="${esc(e.code)}" placeholder="Code" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>`}
@@ -1489,12 +1581,13 @@ function adminHome(){
     <div>${bizPill()}</div>
     <section class="hero" style="background:${b.color};color:#fff"><p class="k-label">Today's sales · ${esc(b.name)}</p><p class="k-big">${inr(t.sales)}</p>
       <div class="k-row" style="border-color:rgba(255,255,255,.3)"><div><span>Bills</span><b>${td.length}</b></div><div><span>Items sold</span><b>${t.items}</b></div><div><span>Discount</span><b>${inr(t.disc)}</b></div></div></section>
+    ${moneyCard(b)}
     <div class="kgrid">
       <div class="kpi p"><span>${ic('lock')}Today's profit</span><b>${inr(t.profit)}</b></div><div class="kpi p"><span>${ic('lock')}Month profit</span><b>${inr(mo.profit)}</b></div>
       <div class="kpi"><span>Month sales</span><b>${inr(mo.sales)}</b></div><div class="kpi"><span>Month bills</span><b>${mo.bills||0}</b></div>
     </div>
     <h3 class="sec">Quick actions</h3>
-    <div class="qa"><button data-act="newSale">${ic('bill')}New sale</button><button data-go="exchange">${ic('swap')}Exchange</button><button data-go="catalog">${ic('tags')}Categories</button><button data-act="goStaffAdd">${ic('users')}Add staff</button><button data-go="reports">${ic('chart')}Reports</button><button data-go="photos">${ic('camera')}Sold photos</button></div>
+    <div class="qa"><button data-act="newSale">${ic('bill')}New sale</button><button data-go="exchange">${ic('swap')}Exchange</button><button data-go="catalog">${ic('tags')}Categories</button><button data-act="goStaffAdd">${ic('users')}Add staff</button><button data-go="reports">${ic('chart')}Reports</button><button data-go="photos">${ic('camera')}Sold photos</button><button data-go="money">${ic('cash')}Cash book</button><button data-act="m_new" data-v="expense" data-goto="money">${ic('wallet')}Add expense</button><button data-go="pl">${ic('pnl')}Profit & loss</button><button data-go="salary">${ic('users')}Salaries</button><button data-go="dues">${ic('rupee')}Dues</button><button data-go="attendance">${ic('cal')}Attendance</button></div>
     <section class="card"><div class="card-h"><h3>Sales</h3><div class="chips">${[['today','Today'],['7d','7 days'],['30d','30 days']].map(([k,l])=>`<button class="chip ${S.period===k?'on':''}" data-act="period" data-v="${k}">${l}</button>`).join('')}</div></div>${chart(S.period)}</section>
     <section class="card"><div class="card-h"><h3>Top items this month</h3><button class="ghost-btn" data-act="rTabGo" data-v="item">All items</button></div>
       <div class="rows">${top===null?'<p class="hint">Loading…</p>':top.map(r=>{const c=b.cats.find(x=>x.name===r.cat);return `<div class="row"><span class="ci-sm">${ic(c?c.icon:'box')}</span><div class="grow"><b>${esc(r.item)}</b><span>${esc(r.cat)}</span></div><div class="end"><b>${inr(r.o.sales)}</b><span>${r.o.items} sold</span></div></div>`}).join('')||'<p class="hint">No sales yet this month.</p>'}</div></section>
@@ -1506,6 +1599,8 @@ function counterHome(){const b=B();const td=todayOf(b.id);
     <div class="greet"><div><p class="eyebrow">${new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})} · shop counter</p><h2>${esc(b.name)} counter</h2></div><div class="bdot" style="background:${b.color}">${esc(b.short)}</div></div>
     <button class="primary big-sale" data-act="newSale">+ NEW SALE</button>
     <div class="kgrid"><button class="kpi" data-go="sales" style="text-align:left"><span>Bills today</span><b>${td.length}</b></button><button class="kpi" data-go="exchange" style="text-align:left"><span>Exchange / return</span><b style="font-size:14px">Open ›</b></button></div>
+    ${moneyCard(b)}
+    <div class="qa">${cfg().shopExpense!==false?`<button data-act="m_new" data-v="expense">${ic('wallet')}Add expense</button>`:''}<button data-go="money">${ic('cash')}Cash book</button>${cfg().shopAttendance!==false?`<button data-go="attendance">${ic('cal')}Attendance</button>`:''}</div>
     <h3 class="sec">Staff on this counter</h3>
     <div class="card"><div class="rows">${(b.staff||[]).filter(x=>x.active!==false).map(x=>`<div class="row" data-act="myPick" data-v="${x.id}" style="cursor:pointer"><div class="avatar" style="width:34px;height:34px;font-size:13px">${esc(x.name[0])}</div><div class="grow"><b>${esc(x.name)}</b><span>See my sales and target with my PIN</span></div>${ic('chev','chev')}</div>`).join('')||'<p class="hint">No staff yet. The owner adds staff in Settings.</p>'}</div></div>
     <div class="note">${ic('users')}<span>Every bill asks "Sold by", so each sale goes into the right staff account automatically.</span></div>
@@ -1578,7 +1673,12 @@ function itemFormSheet(){const f=S.form;const c=findCat(f.cat);const it=f.id?c.i
     <form class="sh-body" id="itemSheetForm"><h3>${it?'Edit item':'New item'}</h3>
       <div class="f"><label for="ifName">Item name</label><input id="ifName" value="${esc(it?it.name:'')}" placeholder="e.g. Ring"></div>
       <div class="f"><label for="ifCat">Category</label><select id="ifCat">${B().cats.map(x=>`<option value="${x.id}" ${x.id===c.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
-      <p class="hint">Only the name is saved. Price and cost are typed at each sale.</p>
+      <div class="f"><span class="lab">Photo icon (optional)</span>
+        <div class="iphoto">${(()=>{const src=f.img!==undefined?f.img:(it?thumbOf(it.id):null);return src?`<img src="${src}" alt="Item photo">`:`<span class="ph-empty">${ic(c.icon)}</span>`})()}
+          <div class="iphoto-b"><label class="secondary file-btn">${ic('camera')} ${(f.img||(f.img===undefined&&it&&thumbOf(it.id)))?'Change photo':'Add photo'}<input id="ifImg" type="file" accept="image/*" hidden></label>
+          ${(f.img||(f.img===undefined&&it&&thumbOf(it.id)))?'<button type="button" class="linkbtn" data-act="ifImgDel">Remove photo</button>':''}</div></div>
+        <small class="hint">Shown on the item button when making a sale, so staff find it faster.</small></div>
+      <p class="hint">Only the name and photo are saved. Price and cost are typed at each sale.</p>
       <button class="primary" type="submit">${it?'SAVE CHANGES':'ADD ITEM'}</button>
       ${it&&isAdmin()?(f.confirm?`<div class="confirm-del">Delete "${esc(it.name)}"? Past bills stay in the reports.<div class="btn-row"><button type="button" data-act="delItem">Delete</button><button type="button" class="secondary" data-act="noDel">Keep it</button></div></div>`:`<button type="button" class="danger" data-act="askDel">Delete item</button>`):''}
     </form></div>`}
@@ -1631,7 +1731,7 @@ function render(){
   try{scr.innerHTML=(screens[S.screen]||screens.home)()}catch(e){console.error(e);scr.innerHTML=`<div class="pad"><div class="empty">Something went wrong on this screen.<br><small>${esc(e.message)}</small></div><button class="secondary" data-go="home">Go home</button></div>`}
   scr.dataset.s=S.screen;scr.scrollTop=prev===S.screen?top:0;
   const sameOv=ov.dataset.o===(S.overlay||'');ov.dataset.o=S.overlay||'';ov.className=S.overlay?'overlay':'';
-  ov.innerHTML=({print:printSheet,biz:bizSheet,catForm:catFormSheet,itemForm:itemFormSheet,bill:billSheet}[S.overlay]||(()=>''))();
+  ov.innerHTML=(Object.assign({print:printSheet,biz:bizSheet,catForm:catFormSheet,itemForm:itemFormSheet,bill:billSheet},window.EXTRA_OV||{})[S.overlay]||(()=>''))();
   if(sameOv){const sh=ov.querySelector('.sheet');if(sh)sh.style.animation='none'}
   const tab=NAV_OF[S.screen];const set=isAdmin()?NAV.owner:NAV.counter;
   nav.hidden=!S.login||['boot','setup','login'].includes(S.screen);
@@ -1657,13 +1757,13 @@ function saveSale(){
   const staffId=S.sp;const staff=staffId==='owner'?'Owner':staffName(b,staffId);
   let bill;
   if(prev){
-    bill={...clone(prev),lines,disc:t.disc,discType:S.bd.type,discVal:S.bd.val,customer:cust,pay:clone(S.pay),payText:pe.text,due:pe.due,remark:S.remark.trim(),remarkPrint:S.remarkPrint,photoIds,staffId,staff,edited:true,editedAt:now,
+    bill={...clone(prev),lines,disc:t.disc,discType:S.bd.type,discVal:S.bd.val,customer:cust,pay:clone(S.pay),paid:paidOf(t),payText:pe.text,due:pe.due,remark:S.remark.trim(),remarkPrint:S.remarkPrint,photoIds,staffId,staff,edited:true,editedAt:now,
       history:(prev.history||[]).concat([{at:now,by:isAdmin()?'Owner':(DEVICE.name||b.name+' counter'),reason:S.editReason.trim(),from:billTot(prev).final,to:0}])};
     bill.history[bill.history.length-1].to=billTot(bill).final;
   }else{
     const {key,seq}=nextSeq(b,fy);
     bill={id:'b_'+uid(),biz:b.id,fy:fy.k,seq,no:billNoFor(b,fy,seq),at:now,date,month:date.slice(0,7),bd:`${b.id}|${date}`,device:DEVICE.id,staffId,staff,customer:cust,lines,disc:t.disc,discType:S.bd.type,discVal:S.bd.val,
-      pay:clone(S.pay),payText:pe.text,due:pe.due,credit:S.credit?{no:S.credit.no,billId:S.credit.billId,amount:S.credit.amount}:null,remark:S.remark.trim(),remarkPrint:S.remarkPrint,photoIds,edited:false,history:[]};
+      pay:clone(S.pay),paid:paidOf(t),payText:pe.text,due:pe.due,credit:S.credit?{no:S.credit.no,billId:S.credit.billId,amount:S.credit.amount}:null,remark:S.remark.trim(),remarkPrint:S.remarkPrint,photoIds,edited:false,history:[]};
     ST.counters[key]=seq;DB.A.set('counters',key,{biz:b.id,fy:fy.k,last:seq},true);
   }
   // photos go in their own records (so bills stay small)
@@ -1713,7 +1813,7 @@ function restoreBill(bill){if(!isAdmin()||!bill.deleted)return;const nb=clone(bi
 function removeForever(bill){if(!bill.deleted){DB.saveBill({...clone(bill),deleted:true},bill);custReverse(bill,-1)}
   (bill.photoIds||[]).forEach(id=>DB.A.del('photos',id));DB.A.del('bills',bill.id);
   ST.today=ST.today.filter(x=>x.id!==bill.id);for(const k in CACHE){const c=CACHE[k];if(c.data&&Array.isArray(c.data))c.data=c.data.filter(x=>x.id!==bill.id)}}
-async function startFresh(){const cols=['bills','photos','daily','monthly','counters','customers','returns'];let n=0,tot=0;
+async function startFresh(){const cols=['bills','photos','daily','monthly','counters','customers','returns','cash','dayclose','attendance'];let n=0,tot=0;
   const lists=await Promise.all(cols.map(c=>DB.all(c)));lists.forEach(l=>tot+=l.length);toast(`Deleting ${tot} records…`);
   for(let i=0;i<cols.length;i++){for(const d of lists[i]){DB.A.del(cols[i],d.id);n++;if(n%100===0){toast(`Deleted ${n} of ${tot}…`);await new Promise(r=>setTimeout(r,30))}}}
   ST.today=[];ST.month={};ST.counters={};for(const k in CACHE)delete CACHE[k];S.freshAsk=false;S.openBill=null;S.lastBill=null;render();toast(`Done. ${tot} records deleted. Every shop starts fresh.`)}
@@ -1751,12 +1851,12 @@ document.addEventListener('click',async e=>{
     case 'goBiz':S.overlay=null;S.screen='businesses';break;
     case 'closeSheet':S.overlay=null;break;
     case 'period':S.period=v;break;
-    case 'saleCat':S.saleCat=v;break;
+    case 'saleCat':S.saleCat=v;LS.set('rr.cat.'+b.id,v);break;
     case 'openEntry':openEntry(catId,id);return;
     case 'enQty':S.entry.qty=Math.max(1,S.entry.qty+ +a.dataset.d);break;
     case 'enMode':S.entry.mode=v;render();setTimeout(()=>{const el=$(v==='mrp'?'enMrp':'enCode');if(el)el.focus({preventScroll:true})},30);return;
     case 'enCancel':S.entry=null;break;
-    case 'enAdd':{const c=calc(S.entry);if(c.err)return;const en={...S.entry,code:String(S.entry.code).toUpperCase(),price:+S.entry.price};delete en.catId;
+    case 'enAdd':{const c=calc(S.entry);if(c.err)return;const en={...S.entry,code:String(S.entry.code).toUpperCase(),price:+S.entry.price};delete en.catId;if(en.itemId)bumpUse(B().id,en.itemId);
       const same=S.cart.find(x=>x.itemId===en.itemId&&x.mode===en.mode&&x.code===en.code&&+x.mrp===+en.mrp&&x.price===en.price&&x.note===en.note);if(same)same.qty+=en.qty;else S.cart.push(en);
       S.entry=null;render();toast(`Added ${en.qty} ${en.name} · total ${inr(cartTotals().final)}`);return}
     case 'qty':S.cart[i].qty=Math.max(1,S.cart[i].qty+ +a.dataset.d);break;
@@ -1831,7 +1931,7 @@ document.addEventListener('click',async e=>{
     case 'askDel':S.form.confirm=true;break;
     case 'noDel':S.form.confirm=false;break;
     case 'delCat':{const c=findCat(S.form.id);b.cats=b.cats.filter(x=>x.id!==c.id);DB.saveBiz(b);if(S.saleCat===c.id)S.saleCat=null;S.overlay=null;render();toast(`"${c.name}" deleted`);return}
-    case 'delItem':{const c=findCat(S.form.cat);const it=c.items.find(x=>x.id===S.form.id);c.items=c.items.filter(x=>x.id!==it.id);DB.saveBiz(b);S.overlay=null;render();toast(`"${it.name}" deleted`);return}
+    case 'delItem':{const c=findCat(S.form.cat);const it=c.items.find(x=>x.id===S.form.id);if(thumbOf(it.id))delThumb(it.id);c.items=c.items.filter(x=>x.id!==it.id);DB.saveBiz(b);S.overlay=null;render();toast(`"${it.name}" deleted`);return}
     // businesses
     case 'addBiz':S.addingBiz=!S.addingBiz;S.editBizId=null;S.nbColor='#5b6b3a';S.nbTpl='blank';break;
     case 'editBiz':{S.editBizId=v;S.addingBiz=false;const eb=ST.biz.find(x=>x.id===v);S.nbColor=eb.color;break}
@@ -1890,6 +1990,7 @@ document.addEventListener('change',e=>{
   else if(t.dataset.exline!==undefined){S.ex.sel[+t.dataset.exline]=t.checked;render()}
   else if(t.dataset.cfg){DB.saveConfig({[t.dataset.cfg]:t.checked});ST.cfg[t.dataset.cfg]=t.checked;toast('Saved')}
   else if(t.dataset.cfgnum){const n=Math.max(0,Math.min(+t.max||100,+t.value||0));DB.saveConfig({[t.dataset.cfgnum]:n});ST.cfg[t.dataset.cfgnum]=n;toast('Saved');render()}
+  else if(t.id==='ifImg'){const f=t.files&&t.files[0];if(!f||!S.form)return;S.form.name=$('ifName').value;S.form.catSel=$('ifCat').value;shrinkThumb(f,u=>{S.form.img=u;render();const n=$('ifName');if(n&&S.form.name!=null)n.value=S.form.name;const cs=$('ifCat');if(cs&&S.form.catSel)cs.value=S.form.catSel});t.value=''}
   else if(t.id==='phIn'){const f=t.files&&t.files[0];if(!f)return;shrink(f,u=>{S.photos.push({data:u});render()});t.value=''}
 });
 function shrink(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,640/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);let q=.7,u=c.toDataURL('image/jpeg',q);while(u.length>140000&&q>.3){q-=.1;u=c.toDataURL('image/jpeg',q)}cb(u)};im.onerror=()=>toast('Could not read that photo');im.src=r.result};r.readAsDataURL(file)}
@@ -1911,12 +2012,13 @@ document.addEventListener('submit',async e=>{
     if(S.form.id){const c=findCat(S.form.id);c.name=name;c.icon=icon;toast('Category saved')}else{const c={id:uid(),name,icon,items:[]};b.cats.push(c);S.saleCat=c.id;toast(`"${name}" added. Now add its items.`)}
     DB.saveBiz(b);S.overlay=null;render();return}
   if(f.id==='itemSheetForm'){const name=val('ifName');if(!name){toast('Enter an item name');return}const to=findCat(val('ifCat'));const from=findCat(S.form.cat);
-    if(S.form.id){const it=from.items.find(x=>x.id===S.form.id);it.name=name;if(to!==from){from.items=from.items.filter(x=>x!==it);to.items.push(it)}toast('Item saved')}else{to.items.push({id:uid(),name});toast(`"${name}" added to ${to.name}`)}
+    let iid=S.form.id;if(S.form.id){const it=from.items.find(x=>x.id===S.form.id);it.name=name;if(to!==from){from.items=from.items.filter(x=>x!==it);to.items.push(it)}toast('Item saved')}else{iid=uid();to.items.push({id:iid,name});toast(`"${name}" added to ${to.name}`)}
+    if(S.form.img)saveThumb(b.id,iid,S.form.img);else if(S.form.img===null&&thumbOf(iid))delThumb(iid);
     DB.saveBiz(b);S.overlay=null;render();return}
   if(f.dataset.staffForm){const s=b.staff.find(x=>x.id===f.dataset.staffForm);const nm=val('tn'+s.id),pn=val('tk'+s.id);if(!nm){toast('Name can\'t be empty');return}if(!/^[0-9]{4}$/.test(pn)){toast('PIN must be 4 digits');return}
-    Object.assign(s,{name:nm,phone:val('tp'+s.id),pin:pn,target:+val('tm'+s.id)||0,daily:+val('td'+s.id)||0,inc:+val('ti'+s.id)||0});DB.saveBiz(b);S.editStaff=null;render();toast(`Saved ${s.name}'s details`);return}
+    Object.assign(s,{name:nm,phone:val('tp'+s.id),pin:pn,target:+val('tm'+s.id)||0,daily:+val('td'+s.id)||0,inc:+val('ti'+s.id)||0,salary:+val('ts'+s.id)||0,joined:val('tj'+s.id)});DB.saveBiz(b);S.editStaff=null;render();toast(`Saved ${s.name}'s details`);return}
   if(f.id==='newStaff'){const n=val('nsName');if(!n){toast('Enter the staff name');return}const pn=val('nsPass');if(!/^[0-9]{4}$/.test(pn)){toast('Set a 4-digit PIN for My target');return}const tg=+val('nsTarget')||0;
-    b.staff=(b.staff||[]).concat([{id:'s_'+uid(),name:n,phone:val('nsPhone'),pin:pn,active:true,target:tg,daily:Math.round(tg/30),inc:0}]);DB.saveBiz(b);S.addingStaff=false;render();toast(`${n} added to the Sold by list`);return}
+    b.staff=(b.staff||[]).concat([{id:'s_'+uid(),name:n,phone:val('nsPhone'),pin:pn,active:true,target:tg,daily:Math.round(tg/30),inc:0,salary:+val('nsSalary')||0,joined:todayStr()}]);DB.saveBiz(b);S.addingStaff=false;render();toast(`${n} added to the Sold by list`);return}
   if(f.id==='bizForm'){const n=val('nbName');if(!n){toast('Enter the business name');return}const code=(val('nbPrefix')||n.replace(/[^A-Za-z]/g,'').slice(0,3)).toUpperCase().replace(/[^A-Z0-9]/g,'');
     if(S.editBizId){const x=ST.biz.find(y=>y.id===S.editBizId);Object.assign(x,{name:n,short:n[0].toUpperCase(),kind:val('nbKind')||x.kind,prefix:code||x.prefix,addr:val('nbAddr'),phone:val('nbPhone'),color:S.nbColor});DB.saveBiz(x);S.editBizId=null;render();toast(`${n} saved`);return}
     const pin=val('nbPin');if(!/^[0-9]{4}$/.test(pin)){toast('Set a 4-digit shop PIN');return}if(Object.values(cfg().pins).includes(pin)){toast('That PIN is used by another login');return}
@@ -1940,6 +2042,280 @@ async function boot(){
 }
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 window.addEventListener('DOMContentLoaded',boot);
+
+/* ============================================================
+   Money: cash book, expenses, day close, salaries, attendance,
+   profit & loss, customer dues, quick item picks
+   ============================================================ */
+Object.assign(DEFAULT_CONFIG,{expCats:['Rent','Electricity','Tea & snacks','Transport','Packaging','Repairs','Cleaning','Marketing','Phone & internet','Other'],shopExpense:true,shopAttendance:true});
+ADMIN_ONLY.push('pl','salary','dues');
+Object.assign(NAV_OF,{money:'money',pl:'more',salary:'more',attendance:'more',dues:'more'});
+NAV.counter=[['home','Home','home'],['sale','New sale','bill'],['sales','Bills','list'],['money','Cash','cash'],['mytarget','My target','target']];
+IC.cash='<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>';
+IC.wallet='<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1.2"/>';
+IC.cal='<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>';
+IC.star='<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/>';
+IC.pnl='<path d="M4 19V5M4 19h16"/><path d="M7 15l4-4 3 3 5-6"/>';
+IC.rupee='<path d="M7 4h11M7 8.5h11M7 4c6 0 7 2.2 7 4.5S12.5 13 8 13h-1l8 7"/>';
+
+const KINDS={expense:{l:'Expense',sign:-1,pl:true},purchase:{l:'Stock purchase',sign:-1},salary:{l:'Salary',sign:-1,pl:true},cash_in:{l:'Cash added',sign:1},cash_out:{l:'Cash taken out',sign:-1},due_in:{l:'Due received',sign:1}};
+ST.cash=[];ST.retToday=[];
+
+/* ---------- live: today's money entries and refunds ---------- */
+const _subscribeDay=subscribeDay;
+subscribeDay=function(){_subscribeDay();const A=DB.A;if(!A||!todayUnsub)return;const d=todayStr();const scope=S.login&&S.login!=='owner'?S.login:null;
+  todayUnsub.push(A.listen('cash',scope?[['bd','==',`${scope}|${d}`]]:[['date','==',d]],docs=>{ST.cash=docs;renderSoft()}));
+  todayUnsub.push(A.listen('returns',[['date','==',d]],docs=>{ST.retToday=docs;renderSoft()}))};
+
+/* ---------- maths ---------- */
+// what the customer paid on a bill, by method (snapshot saved with the bill; older bills are worked out)
+function paidOf(t){const p=S.pay;const o={Cash:0,UPI:0,Card:0,refund:t.refund||0};if(!t.pay)return o;
+  if(p.mode==='split'){['Cash','UPI','Card'].forEach(k=>o[k]=+p.split[k]||0)}else if(p.mode==='partial'){o[p.method]=+p.recv||0}else o[p.method]=t.pay;return o}
+function billMoney(b){if(b.paid)return b.paid;const t=billTot(b);const cr=b.credit?b.credit.amount:0;const pay=Math.max(0,t.final-cr);const p=b.pay||{mode:'single',method:'Cash'};const o={Cash:0,UPI:0,Card:0,refund:Math.max(0,cr-t.final)};
+  if(p.mode==='split')['Cash','UPI','Card'].forEach(k=>o[k]=+(p.split&&p.split[k])||0);else if(p.mode==='partial')o[p.method||'Cash']=+p.recv||0;else o[p.method||'Cash']=pay;return o}
+const entries=(list,bizId)=>list.filter(e=>e.biz===bizId&&!e.deleted);
+function cashFor(date){return date===todayStr()?ST.cash:need(`c|${date}`,()=>DB.A.query('cash',[['date','==',date]]))}
+function returnsFor(date){return date===todayStr()?ST.retToday:need(`r|${date}`,()=>DB.A.query('returns',[['date','==',date]]))}
+function closesFor(bizId){return need(`dc|${bizId}`,()=>DB.A.query('dayclose',[['biz','==',bizId]]))}
+function moneyDay(bizId,date){
+  const bills=date===todayStr()?todayOf(bizId):bizBills(billsBetween(date,date),bizId);const cash=cashFor(date);const rets=returnsFor(date);const closes=closesFor(bizId);
+  if(!bills||!cash||!rets||!closes)return null;
+  const o={sales:0,Cash:0,UPI:0,Card:0,refunds:0,dueGiven:0,bills:bills.length};
+  bills.forEach(b=>{const m=billMoney(b);o.sales+=billTot(b).final;o.Cash+=m.Cash;o.UPI+=m.UPI;o.Card+=m.Card;o.refunds+=m.refund||0;o.dueGiven+=b.due||0});
+  entries(rets,bizId).filter(r=>r.kind==='refund').forEach(r=>o.refunds+=r.amount||0);
+  const es=entries(cash,bizId).sort((a,c)=>a.at-c.at);const sum=(k,mode)=>es.filter(e=>e.kind===k&&(!mode||e.mode===mode)).reduce((a,e)=>a+(+e.amount||0),0);
+  o.list=es;o.dueIn=sum('due_in','Cash');o.cashIn=sum('cash_in','Cash');o.exp=sum('expense','Cash');o.sal=sum('salary','Cash');o.pur=sum('purchase','Cash');o.cashOut=sum('cash_out','Cash');
+  o.expAll=sum('expense');o.salAll=sum('salary');o.purAll=sum('purchase');o.dueInAll=sum('due_in');
+  const prev=closes.filter(c=>c.date<date).sort((a,c)=>c.date>a.date?1:-1)[0];o.opening=prev?+prev.counted||0:0;o.openFrom=prev?prev.date:null;
+  o.expected=o.opening+o.Cash+o.dueIn+o.cashIn-o.exp-o.sal-o.pur-o.cashOut-o.refunds;
+  o.close=closes.find(c=>c.date===date)||null;return o}
+function newEntry(kind,extra){const b=B();const date=extra.date||todayStr();return {id:'e_'+uid(),biz:b.id,kind,date,month:date.slice(0,7),fy:fyOf(date).k,bd:`${b.id}|${date}`,at:date===todayStr()?Date.now():parseYmd(date).getTime()+12*3600e3,by:isAdmin()?'Owner':(DEVICE.name||b.name+' counter'),device:DEVICE.id,...extra}}
+function saveEntry(e){DB.A.set('cash',e.id,e,false);if(e.date===todayStr()){const i=ST.cash.findIndex(x=>x.id===e.id);if(i>=0)ST.cash[i]=e;else ST.cash.push(e)}dropCache('c|');dropCache('cm|')}
+
+/* ---------- quick picks (items this shop sells most, remembered on this phone) ---------- */
+function usage(){return LS.get('rr.use',{})}
+function bumpUse(bizId,itemId){const u=usage();u[bizId]=u[bizId]||{};u[bizId][itemId]=(u[bizId][itemId]||0)+1;LS.set('rr.use',u)}
+function quickPicks(b){const u=(usage()[b.id])||{};const today={};todayOf(b.id).forEach(x=>x.lines.forEach(l=>{if(l.itemId)today[l.itemId]=(today[l.itemId]||0)+l.qty}));
+  const all=b.cats.flatMap(c=>c.items.map(it=>({c,it,n:(u[it.id]||0)+(today[it.id]||0)*2})));return all.filter(x=>x.n>0).sort((a,c)=>c.n-a.n).slice(0,8)}
+
+/* ---------- screens ---------- */
+function dateNav(){const d=S.mDate||todayStr();return `<div class="datenav"><button class="icon-btn" data-act="m_day" data-v="-1" aria-label="Previous day">${ic('back')}</button><b>${d===todayStr()?'Today · ':''}${dayLabel(d)} ${d.slice(0,4)}</b><button class="icon-btn" data-act="m_day" data-v="1" ${d>=todayStr()?'disabled':''} aria-label="Next day">${ic('chev')}</button></div>`}
+const sg=(v,s)=>`<b class="${s>0?'in':'out'}">${s>0?'+':'−'} ${inr(v)}</b>`;
+Object.assign(screens,{
+money(){
+  const b=B();const d=S.mDate||todayStr();const m=moneyDay(b.id,d);const canAdd=isAdmin()||cfg().shopExpense;
+  const head=`${topbar('Cash book','home',bizPill())}<div class="pad" style="padding-top:4px">${dateNav()}`;
+  if(!m)return head+loading()+'</div>';
+  const row=(l,v,s,hint)=>v?`<div class="cb-row"><span>${l}${hint?`<small>${hint}</small>`:''}</span>${sg(v,s)}</div>`:'';
+  return `${head}
+    <section class="drawer"><p class="k-label">Cash in drawer${m.close?' · counted':' · expected'}</p><p class="k-big">${inr(m.close?m.close.counted:m.expected)}</p>
+      ${m.close?`<p class="dr-sub">Expected ${inr(m.expected)} · ${m.close.counted-m.expected===0?'matches':`<b>${m.close.counted>m.expected?'extra':'short'} ${inr(Math.abs(m.close.counted-m.expected))}</b>`}</p>`:''}</section>
+    <div class="card cb">
+      <div class="cb-row open"><span>Opening cash<small>${m.openFrom?'counted at close on '+dayLabel(m.openFrom):'no earlier day close'}</small></span><b>${inr(m.opening)}</b></div>
+      ${row('Cash sales',m.Cash,1)}${row('Due received',m.dueIn,1)}${row('Cash added',m.cashIn,1)}
+      ${row('Expenses',m.exp,-1)}${row('Salary & advances',m.sal,-1)}${row('Stock purchase',m.pur,-1)}${row('Refunds',m.refunds,-1,'returns and exchange refunds')}${row('Cash taken out',m.cashOut,-1)}
+      <div class="cb-row total"><span>Expected in drawer</span><b>${inr(m.expected)}</b></div>
+    </div>
+    <div class="kgrid" style="grid-template-columns:repeat(3,1fr)"><div class="kpi"><span>UPI</span><b style="font-size:15px">${inr(m.UPI)}</b></div><div class="kpi"><span>Card</span><b style="font-size:15px">${inr(m.Card)}</b></div><div class="kpi"><span>Total sales</span><b style="font-size:15px">${inr(m.sales)}</b></div></div>
+    ${m.dueGiven?`<p class="hint" style="margin:-4px 0 0">Balance due given on bills today: ${inr(m.dueGiven)}</p>`:''}
+    ${canAdd?`<div class="qa">
+      <button data-act="m_new" data-v="expense">${ic('wallet')}Expense</button>
+      <button data-act="m_new" data-v="purchase">${ic('box')}Stock purchase</button>
+      <button data-act="m_new" data-v="due_in">${ic('user')}Due received</button>
+      ${isAdmin()?`<button data-act="m_new" data-v="cash_in">${ic('plus')}Cash added</button><button data-act="m_new" data-v="cash_out">${ic('out')}Cash taken out</button><button data-go="salary">${ic('users')}Salaries</button>`:''}
+    </div>`:''}
+    ${m.close?`<div class="note">${ic('check')}<span>Day closed by ${esc(m.close.by)} at ${timeLabel(m.close.at)}. Counted ${inr(m.close.counted)}${m.close.note?' · '+esc(m.close.note):''}. ${isAdmin()||d===todayStr()?'<button class="linkbtn" data-act="m_close">Count again</button>':''}</span></div>`:(d<=todayStr()?`<button class="primary" data-act="m_close">${ic('cash')} CLOSE DAY · COUNT CASH</button>`:'')}
+    <h3 class="sec">Entries</h3>
+    <div class="card"><div class="rows">${m.list.map(e=>`<div class="row entry"><span class="ek ${KINDS[e.kind].sign>0?'in':'out'}">${ic(e.kind==='expense'?'wallet':e.kind==='purchase'?'box':e.kind==='salary'?'users':e.kind==='due_in'?'user':e.kind==='cash_in'?'plus':'out')}</span><div class="grow"><b>${esc(e.kind==='salary'?(e.sub==='advance'?'Advance · ':'Salary · ')+(e.staffName||''):e.cat||KINDS[e.kind].l)}</b><span>${KINDS[e.kind].l} · ${e.mode} · ${timeLabel(e.at)} · ${esc(e.by||'')}${e.note?' · '+esc(e.note):''}</span></div><div class="end">${sg(+e.amount,KINDS[e.kind].sign)}${isAdmin()?(S.mDel===e.id?`<span class="mini-confirm"><button data-act="m_del" data-v="${e.id}">Delete</button><button data-act="m_keep">Keep</button></span>`:`<button class="linkbtn" data-act="m_askDel" data-v="${e.id}">delete</button>`):''}</div></div>`).join('')||'<p class="hint">No expenses or cash entries on this day.</p>'}</div></div>
+    <p class="hint">Only cash entries change the drawer. UPI and bank payments are listed but go to the bank.</p>
+  </div>`;
+},
+pl(){
+  const fy=fyNow();const months=fyMonths(fy).filter(x=>x<=ym(new Date())).reverse();const m=S.plMonth||months[0];S.plMonth=m;
+  const shops=activeBiz();const sel=S.plBiz||'all';const aggs=need(`m|${fy.k}`,()=>DB.monthlyFy(fy.k));const cash=need(`cm|${m}`,()=>DB.A.query('cash',[['month','==',m]]));const [a,z]=monthRange(m);const bills=billsBetween(a,z>todayStr()?todayStr():z);
+  const head=`${topbar('Profit & loss','more',`<button class="ghost-btn" data-act="m_exportPL">${ic('download')}Export</button>`)}<div class="pad" style="padding-top:4px">
+    <div class="chips scroll">${months.map(x=>`<button class="chip ${x===m?'on':''}" data-act="m_plMonth" data-v="${x}">${monthLabel(x)}</button>`).join('')}</div>
+    <div class="chips scroll"><button class="chip ${sel==='all'?'on':''}" data-act="m_plBiz" data-v="all">All shops</button>${shops.map(x=>`<button class="chip ${sel===x.id?'on':''}" data-act="m_plBiz" data-v="${x.id}">${esc(x.name)}</button>`).join('')}</div>`;
+  if(!aggs||!cash||!bills)return head+loading()+'</div>';
+  const ids=sel==='all'?shops.map(x=>x.id):[sel];const cur=m===ym(new Date());
+  const ag=ids.reduce((o,id)=>{const d=(cur?ST.month[id]:null)||aggs.find(x=>x.biz===id&&x.month===m)||{};['sales','cost','profit','disc','bills'].forEach(k=>o[k]+=d[k]||0);return o},{sales:0,cost:0,profit:0,disc:0,bills:0});
+  const es=cash.filter(e=>ids.includes(e.biz)&&!e.deleted);const expByCat={};es.filter(e=>e.kind==='expense').forEach(e=>expByCat[e.cat||'Other']=(expByCat[e.cat||'Other']||0)+(+e.amount||0));
+  const exp=Object.values(expByCat).reduce((x,y)=>x+y,0);const sal=es.filter(e=>e.kind==='salary').reduce((x,e)=>x+(+e.amount||0),0);const pur=es.filter(e=>e.kind==='purchase').reduce((x,e)=>x+(+e.amount||0),0);
+  const net=ag.profit-exp-sal;
+  const mb=bills.filter(x=>ids.includes(x.biz));const pm={Cash:0,UPI:0,Card:0,refund:0};mb.forEach(x=>{const q=billMoney(x);pm.Cash+=q.Cash;pm.UPI+=q.UPI;pm.Card+=q.Card;pm.refund+=q.refund||0});
+  const dueIn=es.filter(e=>e.kind==='due_in').reduce((x,e)=>x+(+e.amount||0),0);const moneyIn=pm.Cash+pm.UPI+pm.Card+dueIn;const moneyOut=exp+sal+pur+pm.refund;
+  return `${head}
+    <section class="hero pl-hero ${net<0?'neg':''}"><p class="k-label">Net profit · ${monthLabel(m)}${cur?' so far':''}</p><p class="k-big">${net<0?'− ':''}${inr(Math.abs(net))}</p><div class="k-row"><div><span>Sales</span><b>${inr(ag.sales)}</b></div><div><span>Gross profit</span><b>${inr(ag.profit)}</b></div><div><span>Bills</span><b>${ag.bills}</b></div></div></section>
+    <div class="card cb">
+      <div class="cb-row"><span>Sales (after discount)</span><b>${inr(ag.sales)}</b></div>
+      <div class="cb-row"><span>Cost of items sold<small>from purchase codes / MRP</small></span><b class="out">− ${inr(ag.cost)}</b></div>
+      <div class="cb-row total"><span>Gross profit</span><b>${inr(ag.profit)}</b></div>
+      ${Object.entries(expByCat).sort((x,y)=>y[1]-x[1]).map(([c,v])=>`<div class="cb-row"><span>${esc(c)}</span><b class="out">− ${inr(v)}</b></div>`).join('')}
+      <div class="cb-row"><span>Salaries & advances</span><b class="out">− ${inr(sal)}</b></div>
+      <div class="cb-row total big"><span>Net profit</span><b>${net<0?'− ':''}${inr(Math.abs(net))}</b></div>
+    </div>
+    <h3 class="sec">Cash flow · money in and out</h3>
+    <div class="card cb">
+      <div class="cb-row"><span>Cash sales</span><b class="in">+ ${inr(pm.Cash)}</b></div><div class="cb-row"><span>UPI</span><b class="in">+ ${inr(pm.UPI)}</b></div><div class="cb-row"><span>Card</span><b class="in">+ ${inr(pm.Card)}</b></div><div class="cb-row"><span>Dues received</span><b class="in">+ ${inr(dueIn)}</b></div>
+      <div class="cb-row"><span>Expenses</span><b class="out">− ${inr(exp)}</b></div><div class="cb-row"><span>Salaries</span><b class="out">− ${inr(sal)}</b></div><div class="cb-row"><span>Stock purchases<small>not in profit, already counted as cost when sold</small></span><b class="out">− ${inr(pur)}</b></div><div class="cb-row"><span>Refunds</span><b class="out">− ${inr(pm.refund)}</b></div>
+      <div class="cb-row total"><span>Net cash flow</span><b>${moneyIn-moneyOut<0?'− ':'+ '}${inr(Math.abs(moneyIn-moneyOut))}</b></div>
+    </div>
+    ${sel==='all'?`<h3 class="sec">By shop</h3><div class="card"><div class="rows">${shops.map(x=>{const d=(cur?ST.month[x.id]:null)||aggs.find(y=>y.biz===x.id&&y.month===m)||{};const e2=cash.filter(e=>e.biz===x.id&&!e.deleted&&(e.kind==='expense'||e.kind==='salary')).reduce((s2,e)=>s2+(+e.amount||0),0);const n=(d.profit||0)-e2;return `<div class="row" data-act="m_plBiz" data-v="${x.id}" style="cursor:pointer"><div class="bdot" style="background:${x.color}">${esc(x.short)}</div><div class="grow"><b>${esc(x.name)}</b><span>Sales ${inr(d.sales||0)} · expenses ${inr(e2)}</span></div><div class="end"><b class="${n<0?'out':''}">${n<0?'− ':''}${inr(Math.abs(n))}</b><span>net</span></div></div>`}).join('')}</div></div>`:''}
+    <p class="hint">Net profit = gross profit − expenses − salaries. Stock purchases are shown only in cash flow, because the cost of each item is already taken when it is sold.</p>
+  </div>`;
+},
+salary(){
+  const b=B();const fy=fyNow();const months=fyMonths(fy).filter(x=>x<=ym(new Date())).reverse();const m=S.salMonth||months[0];S.salMonth=m;
+  const aggs=need(`m|${fy.k}`,()=>DB.monthlyFy(fy.k));const cash=need(`cm|${m}`,()=>DB.A.query('cash',[['month','==',m]]));const att=need(`at|${b.id}_${m}`,()=>DB.A.get('attendance',`${b.id}_${m}`).then(d=>d||{d:{}}));
+  const head=`${topbar('Salaries','more',bizPill())}<div class="pad" style="padding-top:4px"><div class="chips scroll">${months.map(x=>`<button class="chip ${x===m?'on':''}" data-act="m_salMonth" data-v="${x}">${monthLabel(x)}</button>`).join('')}</div>`;
+  if(!aggs||!cash||!att)return head+loading()+'</div>';
+  const staff=(b.staff||[]).filter(x=>x.active!==false);const mo=(m===ym(new Date())?ST.month[b.id]:null)||aggs.find(x=>x.biz===b.id&&x.month===m)||{};
+  const cards=staff.map(s=>{const p=payFor(b,s,m,mo,cash,att);return `<div class="staff-card">
+    <div class="top"><div class="avatar">${esc(s.name[0])}</div><div class="grow"><b>${esc(s.name)}</b><span>${s.salary?inr(s.salary)+' / month':'Salary not set'}${s.inc?' · incentive '+s.inc+'% of sales':''}</span></div>${p.bal>0?`<span class="pill-state wait">${inr(p.bal)} to pay</span>`:p.earned?'<span class="pill-state">Paid</span>':''}</div>
+    <div class="cb small">
+      <div class="cb-row"><span>Days<small>${p.days} in month · absent ${p.absent}${p.half?' · half days '+p.half:''}</small></span><b>${p.paidDays} paid</b></div>
+      <div class="cb-row"><span>Salary earned</span><b>${inr(p.base)}</b></div>
+      ${p.incentive?`<div class="cb-row"><span>Incentive<small>${s.inc}% of ${inr(p.sales)} sales</small></span><b class="in">+ ${inr(p.incentive)}</b></div>`:''}
+      ${p.adv?`<div class="cb-row"><span>Advances taken</span><b class="out">− ${inr(p.adv)}</b></div>`:''}${p.paid?`<div class="cb-row"><span>Salary paid</span><b class="out">− ${inr(p.paid)}</b></div>`:''}
+      <div class="cb-row total"><span>Balance to pay</span><b>${inr(p.bal)}</b></div>
+    </div>
+    <div class="btn-row"><button class="secondary" data-act="m_adv" data-v="${s.id}">Give advance</button><button class="primary" data-act="m_pay" data-v="${s.id}" ${p.bal>0?'':'disabled'}>Pay ${p.bal>0?inr(p.bal):'salary'}</button></div>
+    <button class="ghost-btn" data-act="m_slip" data-v="${s.id}">${ic('share')}Salary slip on WhatsApp</button>
+  </div>`}).join('');
+  return `${head}
+    <div class="btn-row"><button class="secondary" data-go="attendance">${ic('cal')} Attendance</button><button class="secondary" data-act="goStaffAdd">${ic('plus')} Add staff</button></div>
+    ${cards||'<div class="empty">No staff yet. Add staff and set their salary in Settings → Staff.</div>'}
+    <p class="hint">Salary earned = monthly salary × paid days ÷ days in month. Days not marked in Attendance count as present. Salary and advances paid here go into the cash book and Profit & loss.</p>
+  </div>`;
+},
+attendance(){
+  const b=B();const d=S.mDate||todayStr();const m=d.slice(0,7);const id=`${b.id}_${m}`;const att=need(`at|${id}`,()=>DB.A.get('attendance',id).then(x=>x||{d:{}}));
+  const head=`${topbar('Attendance',isAdmin()?'salary':'home',bizPill())}<div class="pad" style="padding-top:4px">${dateNav()}`;
+  if(!att)return head+loading()+'</div>';
+  const day=(att.d||{})[d]||{};const staff=(b.staff||[]).filter(x=>x.active!==false);const can=isAdmin()||(cfg().shopAttendance&&d===todayStr());
+  const opts=[['P','Present'],['H','Half day'],['A','Absent'],['W','Week off']];
+  const sum=s=>{let a=0,h=0;Object.values(att.d||{}).forEach(x=>{if(x[s.id]==='A')a++;if(x[s.id]==='H')h++});return {a,h}};
+  return `${head}
+    ${staff.map(s=>{const v=day[s.id]||'';const su=sum(s);return `<div class="staff-card"><div class="top"><div class="avatar">${esc(s.name[0])}</div><div class="grow"><b>${esc(s.name)}</b><span>${monthLabel(m)}: absent ${su.a} · half ${su.h}</span></div>${v?`<span class="att-pill a-${v}">${opts.find(o=>o[0]===v)[1]}</span>`:'<span class="hint">not marked</span>'}</div>
+      ${can?`<div class="att-row">${opts.map(([k,l])=>`<button class="chip ${v===k?'on a-'+k:''}" data-act="m_att" data-v="${s.id}|${k}">${l}</button>`).join('')}</div>`:''}</div>`}).join('')||'<div class="empty">No staff yet.</div>'}
+    <p class="hint">${can?'Tap to mark. ':'Only today can be marked on the shop phone. '}Unmarked days count as present for salary.</p>
+  </div>`;
+},
+dues(){
+  const list=need('dues',()=>DB.A.query('customers',[['due','>=',1]]));const head=`${topbar('Customer dues','more',`<button class="ghost-btn" data-act="m_reloadDues">Refresh</button>`)}<div class="pad" style="padding-top:4px">`;
+  if(!list)return head+loading()+'</div>';const tot=list.reduce((a,c)=>a+(+c.due||0),0);
+  return `${head}<div class="card-h" style="margin:0"><h3 style="margin:0;font-size:15px">${list.length} customers owe</h3><b class="tnum">${inr(tot)}</b></div>
+    ${list.sort((a,c)=>c.due-a.due).map(c=>`<div class="staff-card"><div class="top"><div class="avatar">${esc((c.name||'?')[0])}</div><div class="grow"><b>${esc(c.name||'Customer')}</b><span>${esc(c.mobile)} · ${c.visits||0} visits${c.last?' · last '+dayLabel(ymd(new Date(c.last))):''}</span></div><b class="out">${inr(c.due)}</b></div>
+      <div class="btn-row"><button class="secondary" data-act="m_remind" data-v="${c.mobile}">${ic('share')} Remind</button><button class="primary" data-act="m_recvDue" data-v="${c.mobile}">Received</button></div></div>`).join('')||'<div class="empty">No customer owes anything.</div>'}
+    <p class="hint">A payment received here is added to the cash book of the shop selected at the top (${esc(B().name)}).</p></div>`;
+}
+});
+function payFor(b,s,m,mo,cash,att){const [y,mm]=m.split('-').map(Number);const days=new Date(y,mm,0).getDate();let absent=0,half=0;Object.values((att&&att.d)||{}).forEach(x=>{if(x[s.id]==='A')absent++;if(x[s.id]==='H')half++});
+  const paidDays=days-absent-half*0.5;const base=Math.round((s.salary||0)*paidDays/days);const sales=((mo.staff||{})[s.id]||{}).sales||0;const incentive=Math.round(sales*(s.inc||0)/100);
+  const es=cash.filter(e=>e.kind==='salary'&&e.staffId===s.id&&e.biz===b.id&&!e.deleted&&(e.forMonth||e.month)===m);const adv=es.filter(e=>e.sub==='advance').reduce((a,e)=>a+(+e.amount||0),0);const paid=es.filter(e=>e.sub!=='advance').reduce((a,e)=>a+(+e.amount||0),0);
+  const earned=base+incentive;return {days,absent,half,paidDays,base,sales,incentive,adv,paid,earned,bal:Math.max(0,earned-adv-paid)}}
+
+/* ---------- entry form sheet ---------- */
+function entrySheet(){const f=S.mForm;const k=f.kind;const C=cfg();const b=B();
+  const title=k==='salary'?(f.sub==='advance'?'Give advance':'Pay salary')+' · '+esc(f.staffName):KINDS[k].l;
+  return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="${title}"><div class="grab"></div>
+  <form class="sh-body" id="mEntryForm"><h3>${title} · ${esc(b.name)}</h3>
+    ${k==='expense'?`<div class="f"><span class="lab">What for</span><div class="chips">${C.expCats.map(c=>`<button type="button" class="chip ${f.cat===c?'on':''}" data-act="m_cat" data-v="${esc(c)}">${esc(c)}</button>`).join('')}</div></div>`:''}
+    ${k==='purchase'?`<div class="f"><label for="meCat">Supplier / what was bought</label><input id="meCat" value="${esc(f.cat||'')}" placeholder="e.g. Surat wholesale, 20 bras"></div>`:''}
+    ${k==='due_in'?`<div class="f"><label for="meMob">Customer mobile</label><input id="meMob" inputmode="tel" value="${esc(f.mobile||'')}" placeholder="10 digits"></div>${f.custDue!=null?`<p class="hint" style="margin:-4px 0 0">${esc(f.custName||'Customer')} owes ${inr(f.custDue)}</p>`:''}`:''}
+    <div class="f"><label for="meAmt">Amount ₹</label><input id="meAmt" inputmode="numeric" class="money" style="font-size:22px" value="${f.amount||''}" placeholder="0"></div>
+    <div class="f"><span class="lab">Paid by</span><div class="chips">${['Cash','UPI','Bank'].map(x=>`<button type="button" class="chip ${f.mode===x?'on':''}" data-act="m_mode" data-v="${x}">${x}</button>`).join('')}</div></div>
+    <div class="f"><label for="meNote">Note (optional)</label><input id="meNote" value="${esc(f.note||'')}" placeholder="${k==='cash_out'?'e.g. Deposited in bank':'Details'}"></div>
+    ${isAdmin()?`<div class="f"><label for="meDate">Date</label><input id="meDate" type="date" max="${todayStr()}" value="${f.date||todayStr()}"></div>`:''}
+    <button class="primary" type="submit">SAVE</button>
+  </form></div>`}
+function closeSheet(){const b=B();const d=S.mDate||todayStr();const m=moneyDay(b.id,d);
+  return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="Close day"><div class="grab"></div>
+  <form class="sh-body" id="mCloseForm"><h3>Close day · ${dayLabel(d)} · ${esc(b.name)}</h3>
+    <div class="cb-row total"><span>Expected cash in drawer</span><b>${inr(m?m.expected:0)}</b></div>
+    <div class="f"><label for="mcCount">Cash counted in drawer ₹</label><input id="mcCount" inputmode="numeric" class="money" style="font-size:22px" value="${m&&m.close?m.close.counted:''}" placeholder="Count the notes and coins"></div>
+    <div id="mcDiff" class="pay-status"></div>
+    <div class="f"><label for="mcNote">Note (optional)</label><input id="mcNote" value="${esc(m&&m.close&&m.close.note||'')}" placeholder="e.g. ₹50 given for change"></div>
+    <p class="hint" style="margin:0">Tomorrow's opening cash will be this counted amount.</p>
+    <button class="primary" type="submit">CLOSE DAY</button>
+  </form></div>`}
+window.EXTRA_OV={mEntry:entrySheet,mClose:closeSheet};
+
+/* ---------- actions ---------- */
+function openEntry2(kind,extra){S.mForm={kind,mode:'Cash',amount:'',note:'',cat:kind==='expense'?cfg().expCats[0]:'',date:(S.screen==='money'&&S.mDate)||todayStr(),...(extra||{})};S.overlay='mEntry';render();setTimeout(()=>{const a=$('meAmt');if(a&&kind!=='due_in')a.focus()},60)}
+document.addEventListener('click',async e=>{const a=e.target.closest('[data-act]');if(!a||!a.dataset.act.startsWith('m_'))return;const v=a.dataset.v;const b=B();
+  switch(a.dataset.act){
+    case 'm_day':{const d=addDays(S.mDate||todayStr(),+v);if(d>todayStr())return;S.mDate=d;break}
+    case 'm_new':openEntry2(v);return;
+    case 'm_cat':S.mForm.cat=v;document.querySelectorAll('[data-act=m_cat]').forEach(x=>x.classList.toggle('on',x.dataset.v===v));return;
+    case 'm_mode':S.mForm.mode=v;document.querySelectorAll('[data-act=m_mode]').forEach(x=>x.classList.toggle('on',x.dataset.v===v));return;
+    case 'm_close':S.overlay='mClose';render();setTimeout(()=>{const c=$('mcCount');if(c)c.focus()},60);return;
+    case 'm_askDel':S.mDel=v;break;
+    case 'm_keep':S.mDel=null;break;
+    case 'm_del':{const list=(S.mDate||todayStr())===todayStr()?ST.cash:(CACHE[`c|${S.mDate}`]||{}).data||[];const en=list.find(x=>x.id===v);if(en){const ne={...en,deleted:true,deletedAt:Date.now()};saveEntry(ne);if(en.kind==='due_in'&&en.mobile)DB.incCustomer(en.mobile,null,0,+en.amount);delete CACHE.dues}S.mDel=null;toast('Entry deleted');break}
+    case 'm_plMonth':S.plMonth=v;break;
+    case 'm_plBiz':S.plBiz=v;break;
+    case 'm_salMonth':S.salMonth=v;break;
+    case 'm_adv':case 'm_pay':{const s=b.staff.find(x=>x.id===v);const m=S.salMonth||ym(new Date());let amt='';if(a.dataset.act==='m_pay'){const fy=fyNow();const aggs=(CACHE[`m|${fy.k}`]||{}).data||[];const mo=(m===ym(new Date())?ST.month[b.id]:null)||aggs.find(x=>x.biz===b.id&&x.month===m)||{};amt=payFor(b,s,m,mo,(CACHE[`cm|${m}`]||{}).data||[],(CACHE[`at|${b.id}_${m}`]||{}).data||{d:{}}).bal}
+      openEntry2('salary',{sub:a.dataset.act==='m_adv'?'advance':'salary',staffId:s.id,staffName:s.name,forMonth:m,amount:amt||'',date:todayStr()});return}
+    case 'm_slip':{const s=b.staff.find(x=>x.id===v);const m=S.salMonth||ym(new Date());const fy=fyNow();const aggs=(CACHE[`m|${fy.k}`]||{}).data||[];const mo=(m===ym(new Date())?ST.month[b.id]:null)||aggs.find(x=>x.biz===b.id&&x.month===m)||{};const p=payFor(b,s,m,mo,(CACHE[`cm|${m}`]||{}).data||[],(CACHE[`at|${b.id}_${m}`]||{}).data||{d:{}});
+      openWA(s.phone||'',[`*Salary slip · ${monthLabel(m)}*`,`${b.name}`,`Name: ${s.name}`,`Monthly salary: ${inr(s.salary||0)}`,`Paid days: ${p.paidDays} of ${p.days}`,`Salary earned: ${inr(p.base)}`,p.incentive?`Incentive: ${inr(p.incentive)} (${s.inc}% of ${inr(p.sales)})`:'',p.adv?`Advances: -${inr(p.adv)}`:'',p.paid?`Paid: -${inr(p.paid)}`:'',`*Balance: ${inr(p.bal)}*`].filter(Boolean).join('\n'));return}
+    case 'm_att':{const [sid,k]=v.split('|');const d=S.mDate||todayStr();const m=d.slice(0,7);const id=`${b.id}_${m}`;const c=CACHE[`at|${id}`];if(c&&c.data){c.data.d=c.data.d||{};c.data.d[d]=c.data.d[d]||{};c.data.d[d][sid]=k}
+      DB.A.set('attendance',id,{biz:b.id,month:m,d:{[d]:{[sid]:k}}},true);break}
+    case 'm_reloadDues':delete CACHE.dues;break;
+    case 'm_remind':{const c=((CACHE.dues||{}).data||[]).find(x=>x.mobile===v);if(!c)return;openWA(v,`Namaste ${c.name||''}, a gentle reminder from ${b.name}: ${inr(c.due)} is pending on your account. Thank you!`);return}
+    case 'm_recvDue':{const c=((CACHE.dues||{}).data||[]).find(x=>x.mobile===v);if(!c)return;openEntry2('due_in',{mobile:v,custName:c.name,custDue:c.due,amount:c.due});return}
+    case 'm_exportPL':{const m=S.plMonth;const cash=(CACHE[`cm|${m}`]||{}).data;if(!cash)return;const rows=[['Date','Shop','Type','For','Staff','Amount','Paid by','Note','By']];cash.filter(e=>!e.deleted).sort((x,y)=>x.at-y.at).forEach(e=>rows.push([e.date,(ST.biz.find(x=>x.id===e.biz)||{}).name,KINDS[e.kind].l+(e.sub==='advance'?' (advance)':''),e.cat||'',e.staffName||'',e.amount,e.mode,e.note||'',e.by||'']));csvDownload(`Expenses and cash ${monthLabel(m)}.csv`,rows);return}
+    default:return;
+  }
+  render();
+});
+document.addEventListener('input',e=>{const t=e.target;
+  if(t.id==='mcCount'){const b=B();const m=moneyDay(b.id,S.mDate||todayStr());const el=$('mcDiff');if(!m||!el)return;const c=+t.value.replace(/[^0-9]/g,'')||0;const d=c-m.expected;el.className='pay-status '+(t.value===''?'':d===0?'ok':'bad');el.textContent=t.value===''?'':d===0?'Matches the expected cash':`${d>0?'Extra':'Short'} ${inr(Math.abs(d))}`}
+  if(t.id==='meMob'){const m=digits(t.value);if(m.length===10){DB.customer(m).then(c=>{if(!S.mForm)return;S.mForm.mobile=m;S.mForm.custName=c&&c.name;S.mForm.custDue=c?c.due||0:0;S.mForm.amount=$('meAmt').value||(c&&c.due)||'';S.mForm.note=$('meNote').value;render()})}}
+});
+document.addEventListener('submit',e=>{const f=e.target;if(!['mEntryForm','mCloseForm','expCatForm'].includes(f.id))return;e.preventDefault();e.stopImmediatePropagation();const val=id=>($(id)?$(id).value:'').trim();const b=B();
+  if(f.id==='mEntryForm'){const F=S.mForm;const amt=+val('meAmt').replace(/[^0-9.]/g,'');if(!amt){toast('Enter the amount');return}
+    const extra={cat:F.kind==='purchase'?val('meCat'):F.cat||'',amount:amt,mode:F.mode,note:val('meNote'),date:isAdmin()&&val('meDate')?val('meDate'):todayStr()};
+    if(F.kind==='salary')Object.assign(extra,{sub:F.sub,staffId:F.staffId,staffName:F.staffName,forMonth:F.forMonth});
+    if(F.kind==='due_in'){const m=digits(val('meMob'));if(m.length!==10){toast('Enter the customer mobile');return}extra.mobile=m;extra.cat=F.custName||m;DB.incCustomer(m,null,0,-amt);delete CACHE.dues}
+    const en=newEntry(F.kind,extra);saveEntry(en);S.overlay=null;S.mForm=null;render();toast(`${KINDS[en.kind].l} of ${inr(amt)} saved${en.mode==='Cash'?' · cash book updated':''}`);return}
+  if(f.id==='mCloseForm'){const c=val('mcCount');if(c===''){toast('Type the cash you counted');return}const d=S.mDate||todayStr();const m=moneyDay(b.id,d);
+    const doc={id:`${b.id}_${d}`,biz:b.id,date:d,counted:+c.replace(/[^0-9]/g,'')||0,expected:m?m.expected:0,note:val('mcNote'),by:isAdmin()?'Owner':(DEVICE.name||b.name+' counter'),at:Date.now()};
+    DB.A.set('dayclose',doc.id,doc,false);const cl=CACHE[`dc|${b.id}`];if(cl&&cl.data){cl.data=cl.data.filter(x=>x.id!==doc.id).concat([doc])}S.overlay=null;render();const diff=doc.counted-doc.expected;toast(diff===0?'Day closed. Cash matches.':`Day closed. Cash is ${diff>0?'extra':'short'} by ${inr(Math.abs(diff))}.`);return}
+  if(f.id==='expCatForm'){const v=val('expCatIn');if(!v)return;const list=cfg().expCats.includes(v)?cfg().expCats:cfg().expCats.concat([v]);DB.saveConfig({expCats:list});ST.cfg.expCats=list;render();toast(`"${v}" added`);return}
+},true);
+
+/* ---------- home card, extra actions ---------- */
+function moneyCard(b){const m=moneyDay(b.id,todayStr());if(!m)return '';
+  return `<button class="money-card" data-act="m_goMoney"><span class="mc-h"><span>${ic('cash')} Money today · ${esc(b.name)}</span><span class="hint">${m.close?'Day closed':'Open ›'}</span></span>
+    <div><span>Cash in drawer</span><b>${inr(m.close?m.close.counted:m.expected)}</b></div><div><span>UPI + Card</span><b>${inr(m.UPI+m.Card)}</b></div><div><span>Expenses</span><b class="${m.expAll+m.salAll?'out':''}">${inr(m.expAll+m.salAll)}</b></div></button>`}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;
+  if(a.dataset.act==='m_goMoney'){S.mDate=todayStr();go('money')}
+  if(a.dataset.act==='m_rmExp'){const v=a.dataset.v;const list=cfg().expCats.filter(x=>x!==v);if(!list.length){toast('Keep at least one expense type');return}DB.saveConfig({expCats:list});ST.cfg.expCats=list;render();toast(`"${v}" removed`)}
+});
+// going to cash book / attendance always starts on today
+const _go=go;go=function(s){if((s==='money'||s==='attendance')&&S.screen!==s&&S.screen!=='salary')S.mDate=todayStr();_go(s)};
+
+/* ============================================================
+   Item photo icons: small pictures kept in their own records
+   (collection "thumbs", one per item) so shop data stays light
+   ============================================================ */
+ST.thumbs={};
+function thumbOf(id){const t=id&&ST.thumbs[id];return t?t.data:null}
+function itemIcon(c,it){const src=thumbOf(it.id);return src?`<img class="it-img" src="${src}" alt="" loading="lazy">`:ic(c.icon)}
+function saveThumb(bizId,itemId,data){const d={id:itemId,biz:bizId,data,at:Date.now()};ST.thumbs[itemId]=d;DB.A.set('thumbs',itemId,d,false)}
+function delThumb(itemId){delete ST.thumbs[itemId];DB.A.del('thumbs',itemId)}
+// square crop, 160 px, small JPEG (about 6–10 KB)
+function shrinkThumb(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const S0=160;const c=document.createElement('canvas');c.width=S0;c.height=S0;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,S0,S0);
+  const m=Math.min(im.width,im.height);x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S0,S0);let q=.8,u=c.toDataURL('image/jpeg',q);while(u.length>16000&&q>.4){q-=.1;u=c.toDataURL('image/jpeg',q)}cb(u)};im.onerror=()=>toast('Could not read that photo');im.src=r.result};r.readAsDataURL(file)}
+// live: this shop's item photos (owner: all shops)
+const _subDayT=subscribeDay;
+subscribeDay=function(){_subDayT();const A=DB.A;if(!A||!todayUnsub)return;const scope=S.login&&S.login!=='owner'?S.login:null;
+  todayUnsub.push(A.listen('thumbs',scope?[['biz','==',scope]]:[],docs=>{const m={};docs.forEach(d=>m[d.id]=d);ST.thumbs=m;renderSoft()}))};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="ifImgDel"]');if(!a||!S.form)return;S.form.name=$('ifName').value;S.form.img=null;render();const n=$('ifName');if(n)n.value=S.form.name});
 
 </script>
 </body>
