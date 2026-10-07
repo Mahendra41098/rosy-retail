@@ -689,6 +689,85 @@ b.in,.in{color:var(--good)} b.out,.out{color:var(--bad)}
 .file-btn{width:auto}
 .mitem .mi-l{flex:1}.mitem .mi-ic{flex:none;width:32px;height:32px}
 
+/* ---------- stock & barcode (v1.3) ---------- */
+.skbar{display:flex;flex-direction:column;gap:6px}
+.skbar .inp{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.skbar input{font-family:var(--mono);letter-spacing:.04em}
+.sksug,.sklist{display:flex;flex-direction:column;gap:6px}
+.sksug button,.skrow{display:grid;grid-template-columns:1fr auto auto;gap:4px 10px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 12px;width:100%}
+.sksug button span,.skrow span{display:block;color:var(--muted);font-size:11.5px;font-weight:600}
+.sksug button b,.skrow b{display:block;font-size:13.5px;overflow-wrap:anywhere}
+.sksug em,.skrow em{font-style:normal;font-weight:800;font-variant-numeric:tabular-nums}
+.sksug i,.skrow i{font-style:normal;font-weight:800;min-width:34px;text-align:center;padding:3px 8px;border-radius:999px;background:var(--good-soft);color:var(--good);font-variant-numeric:tabular-nums}
+.sksug i.low,.skrow i.low{background:var(--warn-soft);color:var(--warn)}
+.sksug i.out,.skrow i.out{background:var(--bad-soft);color:var(--bad)}
+.skrow input.lq{width:64px;border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;background:var(--surface);grid-column:3}
+.skrow:has(input.lq){grid-template-columns:1fr auto}
+.kpi.skk{text-align:left;font:inherit;color:inherit;cursor:pointer}
+.kpi.skk.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.skacts{display:flex;flex-direction:column;gap:8px}
+.skcam{position:relative;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:4/3}
+.skcam video{width:100%;height:100%;object-fit:cover;display:block}
+.skcam i{position:absolute;left:10%;right:10%;top:45%;height:2px;background:#ff3b5c;box-shadow:0 0 12px #ff3b5c;animation:skline 1.6s ease-in-out infinite alternate}
+@keyframes skline{from{top:30%}to{top:70%}}
+@media (prefers-reduced-motion:reduce){.skcam i{animation:none}}
+.tabs.t4{grid-template-columns:repeat(4,1fr)}
+.paybar{display:flex;height:14px;border-radius:999px;overflow:hidden;gap:2px;margin:4px 0 10px}
+.paybar i,.paylegend i{display:block}
+.paylegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.paylegend span{display:inline-flex;align-items:center;gap:5px}
+.paylegend b{color:var(--ink)}
+.paylegend i{width:10px;height:10px;border-radius:3px}
+.p-Cash{background:#2e9b63}.p-UPI{background:#3b6fe0}.p-Card{background:#8a4fd6}.p-Due{background:#e08a1a}
+.f label svg{width:13px;height:13px;flex:none}
+.skin{display:grid;grid-template-columns:1fr auto;gap:8px}
+.skin input{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 11px;width:100%;min-width:0}
+.skin .scan-btn{padding:0 16px}
+.afgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.afgrid label{display:flex;flex-direction:column;gap:3px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:11px;font-weight:700;color:var(--muted)}
+.afgrid input{border:1px solid var(--line);border-radius:8px;padding:6px;text-align:center;background:var(--surface);width:100%}
+.skret .bline{padding:8px 0}
+/* ---------- store dashboards (v1.5) ---------- */
+.stores{display:flex;flex-direction:column;gap:10px}
+.store-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.store-card{position:relative;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--sc);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.store-card:only-child,.store-card:last-child:nth-child(odd){grid-column:1/-1}
+.sc-top{display:flex;align-items:center;gap:8px}.sc-top b{flex:1;font-size:13.5px}.sc-top .chev{width:14px;height:14px;color:var(--muted)}
+.sc-dot{width:24px;height:24px;border-radius:8px;background:var(--sc);color:#fff;display:grid;place-items:center;font-weight:800;font-size:11px}
+.sc-today span{display:block;font-size:11px;color:var(--muted);font-weight:700}
+.sc-today b{font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.sc-today small{display:block;color:var(--muted);font-size:11px}
+.spark{width:100%;height:30px;color:var(--sc)}
+.sc-month{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700}
+.sc-month em,.dh-month em{font-style:normal;font-size:11px;font-weight:800}
+.sc-month em.up{color:var(--good)}.sc-month em.down{color:var(--bad)}
+.sc-t{color:var(--muted);font-size:11px}
+.dash-hero{background:linear-gradient(140deg,var(--sc),color-mix(in srgb,var(--sc) 60%,#000));color:#fff;border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:6px;box-shadow:0 14px 30px -18px var(--sc)}
+.dh-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;opacity:.9}
+.dh-top button,.dh-set{border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:4px 10px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:5px}
+.dh-top button svg{width:14px;height:14px}
+.dh-l{margin:4px 0 0;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;opacity:.85}
+.dh-big{margin:0;font-family:var(--display);font-size:38px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dh-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:8px;border-top:1px solid rgba(255,255,255,.25);padding-top:10px}
+.dh-row span,.dh-month span{display:flex;gap:4px;align-items:center;font-size:11px;opacity:.85;font-weight:600}.dh-row span svg{width:12px;height:12px}
+.dh-row b{font-size:16px;font-variant-numeric:tabular-nums}
+.dh-month{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:rgba(0,0,0,.14);border-radius:14px;padding:10px 12px;margin-top:4px}
+.dh-month b{display:block;font-size:18px;font-variant-numeric:tabular-nums}.dh-month em{opacity:.95}
+.dh-target .bar{background:rgba(255,255,255,.25);height:8px}.dh-target .bar i{background:#fff}
+.dh-target span{display:block;font-size:12px;font-weight:700;margin-top:5px;opacity:.95}
+.dh-set{align-self:flex-start;margin-top:4px}
+.dcard .rank{width:24px;height:24px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:800;flex:none}
+.dlist{display:flex;flex-direction:column;gap:6px}
+.drow{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--surface)}
+.drow span{display:block;font-size:11px;color:var(--muted)}
+.drow button{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;width:30px;height:30px;font-size:12px}
+.drow button:disabled{opacity:.3}
+/* ---------- sales style per store (v1.6) ---------- */
+.sm-stock .sale-find,.sm-stock .qpicks,.sm-stock>.chips.scroll,.sm-stock>.igrid,.sm-stock>.grp-h,.sm-stock>.igrid.g4,.sm-stock>.empty:not(.billbar){display:none!important}
+.sm-stock .skbar .inp{padding:4px 12px}.sm-stock .skbar input{font-size:17px}
+.sm-manual{align-self:flex-start;font-size:12.5px}
+.sm-style{display:flex;flex-direction:column;gap:6px;margin:10px 0 4px;padding:10px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.sm-style .lab{font-size:11.5px;font-weight:800;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -722,7 +801,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.2.0';
+const APP_VERSION='1.6.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -2316,6 +2395,779 @@ const _subDayT=subscribeDay;
 subscribeDay=function(){_subDayT();const A=DB.A;if(!A||!todayUnsub)return;const scope=S.login&&S.login!=='owner'?S.login:null;
   todayUnsub.push(A.listen('thumbs',scope?[['biz','==',scope]]:[],docs=>{const m={};docs.forEach(d=>m[d.id]=d);ST.thumbs=m;renderSoft()}))};
 document.addEventListener('click',e=>{const a=e.target.closest('[data-act="ifImgDel"]');if(!a||!S.form)return;S.form.name=$('ifName').value;S.form.img=null;render();const n=$('ifName');if(n)n.value=S.form.name});
+
+</script>
+<script>
+/* ============================================================
+   Stock & barcode billing (v1.3)
+   - Stock list per shop, imported from the myBillBook item export (Excel)
+   - Scan a barcode (USB / Bluetooth scanner or phone camera) on New sale
+   - Stock goes down on sale, back up on return, edit or delete
+   - Stock in, count adjust, low / out of stock, TSC barcode labels
+   Data: collection "stock", 24 records per shop ("rosy_0" … "rosy_23"),
+   each holding a map of items, so opening the app costs 24 reads, not thousands.
+   ============================================================ */
+const SK_PACKS=24;
+const SKV='1.4.0';
+ST.stock={};      // biz -> {key: item}
+ST.skIdx={};      // biz -> {bc:Map, dno:Map, name:Map}
+ST.skLoaded={};   // biz -> true once the first snapshot arrived
+const SK={pendingExtras:null,scanBuf:'',scanT:0,labelQ:{},filter:{q:'',cat:'',brand:'',status:'all',limit:60},view:null,cam:null};
+IC.scan='<path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M8 8v8M11 8v8M14 8v8M17 8v8"/>';
+IC.stack='<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>';
+IC.label='<path d="M3 12V4h8l9 9-8 8z"/><path d="M7 8h.01M9 15l3-3M12 18l3-3"/>';
+IC.upload='<path d="M12 20V9M7 13l5-5 5 5M5 4h14"/>';
+IC.trend='<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>';
+
+/* ---------- keys and packs ---------- */
+const skKey=s=>String(s||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'_').slice(0,80);
+function skPack(key){let h=0;for(let i=0;i<key.length;i++)h=(h*31+key.charCodeAt(i))>>>0;return h%SK_PACKS}
+const skDoc=(biz,key)=>`${biz}_${skPack(key)}`;
+const skItems=biz=>ST.stock[biz]||{};
+const skCount=biz=>Object.keys(skItems(biz)).length;
+const skHas=biz=>skCount(biz)>0;
+function skReindex(biz){const bc=new Map(),dno=new Map(),name=new Map();
+  Object.entries(skItems(biz)).forEach(([k,it])=>{if(it.bc)bc.set(String(it.bc).toUpperCase(),k);if(it.dn)dno.set(String(it.dn).toUpperCase(),k);if(it.n)name.set(String(it.n).toUpperCase(),k)});
+  ST.skIdx[biz]={bc,dno,name}}
+function skFind(biz,code){const c=String(code||'').trim().toUpperCase();if(!c)return null;const ix=ST.skIdx[biz];if(!ix)return null;
+  const k=ix.bc.get(c)||ix.name.get(c)||ix.dno.get(c)||(c.replace(/^0+/,'')&&ix.bc.get(c.replace(/^0+/,'')))||null;return k?{key:k,it:skItems(biz)[k]}:null}
+function skSearch(biz,q,limit=12){q=String(q||'').trim().toLowerCase();if(!q)return [];const out=[];
+  for(const [k,it] of Object.entries(skItems(biz))){const hay=`${it.n} ${it.bc||''} ${it.dn||''} ${it.c||''} ${it.br||''}`.toLowerCase();if(hay.includes(q)){out.push({key:k,it});if(out.length>=limit)break}}return out}
+const skQty=it=>Math.round(+it.q||0);
+const skLow=it=>{const q=skQty(it);return q>0&&q<=Math.max(1,+it.lo||1)};
+const skPrice=it=>+it.sp||+it.m||0;
+function skParse(name){const p=String(name||'').trim().split('-');if(p.length>=3)return {article:p.slice(0,-2).join('-'),color:p[p.length-2],size:p[p.length-1]};if(p.length===2)return {article:p[0],color:p[1],size:''};return {article:String(name||''),color:'',size:''}}
+function skParseCode(raw){const code=String(raw||'').trim();if(!code||code==='Not Found')return {party:'',brand:'',rate:0};const p=code.split('-');if(p.length<2)return {party:code,brand:'',rate:0};
+  const rate=parseFloat(p[p.length-1])||0;const mid=p.slice(1,-1);const bp=[];for(let i=mid.length-1;i>=0;i--){if(!/\d/.test(mid[i].replace(/[\/\.']/g,'')))bp.unshift(mid[i]);else break}
+  return {party:p[0],brand:(bp.length?bp.join('-'):mid[mid.length-1]||'').toUpperCase(),rate}}
+
+/* ---------- writes ---------- */
+function skWrite(biz,map){// map: key -> partial item (may contain A.inc for q)
+  const packs={};for(const k in map){const d=skDoc(biz,k);(packs[d]=packs[d]||{})[k]=map[k]}
+  return Promise.all(Object.entries(packs).map(([d,items])=>DB.A.set('stock',d,{biz,p:+d.split('_').pop(),items},true)))}
+function skMove(biz,deltas,why){// deltas: key -> +/- qty
+  const m={};let any=false;for(const k in deltas){if(!deltas[k])continue;any=true;m[k]={q:DB.A.inc(deltas[k])};const it=skItems(biz)[k];if(it)it.q=skQty(it)+deltas[k]}
+  if(!any)return;skWrite(biz,m);if(why)DB.A.set('stocklog','sl_'+uid(),{biz,at:Date.now(),date:todayStr(),by:isAdmin()?'Owner':(DEVICE.name||biz+' counter'),why,d:deltas},false)}
+
+/* ---------- stock follows the bills ---------- */
+function skBillQty(b){const m={};if(!b||b.deleted)return m;(b.lines||[]).forEach(l=>{if(l.sk&&!l.returned)m[l.sk]=(m[l.sk]||0)+(+l.qty||0)});return m}
+const _dbSaveBill=DB.saveBill.bind(DB);
+DB.saveBill=function(b,prev){
+  if(SK.pendingExtras&&b&&b.lines)b.lines.forEach((l,i)=>{const x=SK.pendingExtras[i];if(x)Object.assign(l,x)});
+  _dbSaveBill(b,prev);
+  try{const now=skBillQty(b),was=skBillQty(prev);const d={};new Set([...Object.keys(now),...Object.keys(was)]).forEach(k=>{const v=(was[k]||0)-(now[k]||0);if(v)d[k]=v});
+    if(Object.keys(d).length)skMove(b.biz,d,null)}catch(e){console.warn('stock update',e)}
+};
+const _saveSale=saveSale;
+saveSale=function(){SK.pendingExtras=S.cart.map(l=>l.sk?{sk:l.sk,bc:l.bc||'',dno:l.dno||'',brand:l.brand||'',size:l.size||'',color:l.color||''}:null);try{_saveSale()}finally{SK.pendingExtras=null}};
+const _startEdit=startEdit;
+startEdit=function(bill){_startEdit(bill);const act=(bill.lines||[]).filter(l=>!l.returned);
+  S.cart.forEach((c,i)=>{const l=act[i];if(l&&l.sk)Object.assign(c,{sk:l.sk,bc:l.bc,dno:l.dno,brand:l.brand,size:l.size,color:l.color,skCost:l.cost})});render()};
+// cost of a scanned item comes from the stock record (staff never type a code)
+const _unitCost=unitCost;
+unitCost=function(it){if(it&&it.sk&&+it.skCost>0)return {ok:true,val:Math.round(+it.skCost)};return _unitCost(it)};
+// reports can group by brand
+const _billRecs=billRecs;
+billRecs=function(b){const rs=_billRecs(b);const act=(b.lines||[]).filter(l=>!l.returned);rs.forEach((r,i)=>{const l=act[i];if(l){r.brand=l.brand||'';r.sk=l.sk||'';r.size=l.size||''}});return rs};
+
+/* ---------- live stock ---------- */
+const _subDayS=subscribeDay;
+subscribeDay=function(){_subDayS();const A=DB.A;if(!A||!todayUnsub||!S.login)return;const scope=S.login!=='owner'?S.login:null;
+  todayUnsub.push(A.listen('stock',scope?[['biz','==',scope]]:[],docs=>{const by={};docs.forEach(d=>{(by[d.biz]=by[d.biz]||{});const its=d.items||{};for(const k in its){if(!its[k]||its[k].del)continue;by[d.biz][k]=its[k]}});
+    const seen=new Set(docs.map(d=>d.biz));Object.keys(ST.stock).forEach(z=>{if(!seen.has(z)&&(!scope||z===scope))delete ST.stock[z]});
+    Object.entries(by).forEach(([z,m])=>{ST.stock[z]=m;skReindex(z);ST.skLoaded[z]=true});(scope?[scope]:ST.biz.map(x=>x.id)).forEach(z=>ST.skLoaded[z]=true);
+    if(S.screen==='stock'||S.overlay&&String(S.overlay).startsWith('sk'))renderSoft();else if(S.screen==='sale'){const el=$('skBar');if(el)el.outerHTML=skBarHTML()}}))};
+
+/* ---------- adding a scanned item to the bill ---------- */
+function skAddToCart(key,qty=1){const b=B();const it=skItems(b.id)[key];if(!it)return false;
+  const same=S.cart.find(l=>l.sk===key&&+l.price===skPrice(it));
+  if(same)same.qty+=qty;else{const pn=skParse(it.n);S.cart.push({itemId:null,cat:it.c||'Stock',icon:'garment',name:it.n,qty,price:skPrice(it),mode:'mrp',mrp:+it.m||skPrice(it),code:'',note:[it.dn?'D.no '+it.dn:'',it.br||''].filter(Boolean).join(' · '),sk:key,bc:it.bc||'',dno:it.dn||'',brand:it.br||'',size:pn.size,color:pn.color,skCost:+it.co||0})}
+  const left=skQty(it)-S.cart.filter(l=>l.sk===key).reduce((a,l)=>a+l.qty,0);
+  S.entry=null;render();
+  toast(`${left<0?'⚠ Not in stock records · ':''}Added ${it.n} · ${inr(skPrice(it))}${left>=0?` · ${left} left`:''}`);
+  if(navigator.vibrate)navigator.vibrate(left<0?[60,40,60]:30);
+  return true}
+function skScan(code){const b=B();if(!b)return;code=String(code||'').trim();if(!code)return;
+  const f=skFind(b.id,code);if(f){skAddToCart(f.key);return true}
+  const hits=skSearch(b.id,code,2);if(hits.length===1){skAddToCart(hits[0].key);return true}
+  toast(`"${code}" is not in ${b.name}'s stock list`);if(navigator.vibrate)navigator.vibrate([90,50,90]);return false}
+
+/* ---------- scan bar on New sale ---------- */
+function skBarHTML(){const b=B();if(!b)return '';const n=skCount(b.id);
+  if(!n)return isAdmin()&&ST.skLoaded[b.id]?`<button class="list-btn" id="skBar" data-act="skGoStock">${ic('scan')}<span>Barcode billing<small>Import ${esc(b.name)}'s stock from myBillBook Excel to scan barcodes</small></span>${ic('chev','chev')}</button>`:`<div id="skBar" hidden></div>`;
+  return `<div class="skbar" id="skBar"><div class="search"><div class="inp">${ic('scan')}<input id="skScan" placeholder="Scan barcode · or type D.no / item code" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Scan or type barcode"></div><button class="scan-btn" data-act="skCam" aria-label="Scan with camera">${ic('camera')}</button></div><div id="skSug"></div><p class="hint">${n.toLocaleString('en-IN')} item${n===1?'':'s'} in stock list · a scanner gun works anywhere on this screen</p></div>`}
+const _saleScreen=screens.sale;
+screens.sale=function(){const h=_saleScreen();const i=h.indexOf('<div class="search">');return i<0?h:h.slice(0,i)+skBarHTML()+h.slice(i)};
+function skSugHTML(q){const b=B();const hits=skSearch(b.id,q,8);if(!q||q.length<2)return '';if(!hits.length)return `<p class="hint" style="padding:6px 2px">No stock item matches "${esc(q)}". Press Enter after a full barcode.</p>`;
+  return `<div class="sksug">${hits.map(({key,it})=>`<button data-act="skAdd" data-k="${esc(key)}"><b>${esc(it.n)}</b><span>${esc([it.c,it.br,it.dn?'D.no '+it.dn:''].filter(Boolean).join(' · '))}</span><em>${inr(skPrice(it))}</em><i class="${skQty(it)<=0?'out':skLow(it)?'low':''}">${skQty(it)}</i></button>`).join('')}</div>`}
+
+/* ---------- scanner gun: fast keystrokes ending in Enter, anywhere on the sale screen ---------- */
+document.addEventListener('keydown',e=>{
+  if(S.screen!=='sale'||S.overlay)return;const t=e.target;const inField=t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT');
+  if(t&&t.id==='skScan'){if(e.key==='Enter'){e.preventDefault();const v=t.value;if(skScan(v)){t.value='';const s=$('skSug');if(s)s.innerHTML='';setTimeout(()=>{const n=$('skScan');if(n)n.focus()},30)}}return}
+  if(inField)return;
+  const now=Date.now();if(now-SK.scanT>80)SK.scanBuf='';SK.scanT=now;
+  if(e.key==='Enter'){if(SK.scanBuf.length>=3){e.preventDefault();skScan(SK.scanBuf)}SK.scanBuf='';return}
+  if(e.key.length===1)SK.scanBuf+=e.key;
+},true);
+document.addEventListener('input',e=>{const t=e.target;
+  if(t.id==='skScan'){const s=$('skSug');if(s)s.innerHTML=skSugHTML(t.value.trim());return}
+  if(t.id==='skQ'){SK.filter.q=t.value;SK.filter.limit=60;clearTimeout(SK.qt);SK.qt=setTimeout(()=>{const pos=t.selectionStart;render();const n=$('skQ');if(n){n.focus();n.setSelectionRange(pos,pos)}},250);return}
+  if(t.dataset.lq!==undefined){const k=t.dataset.lq;const v=Math.max(0,parseInt(t.value)||0);if(v)SK.labelQ[k]=v;else delete SK.labelQ[k];const c=$('lbCount');if(c)c.textContent=skLabelTotal();return}
+});
+
+/* ---------- camera scan ---------- */
+function skLoad(src,test){return new Promise((res,rej)=>{if(test())return res();const s=document.createElement('script');s.src=src;s.onload=()=>res();s.onerror=()=>rej(new Error('load'));document.head.appendChild(s)})}
+async function skCamOpen(onCode){
+  S.overlay='skCam';render();const v=$('skVideo');const st=$('skCamMsg');
+  let stream;try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280}},audio:false})}catch(e){st.textContent='Camera not allowed. Allow camera access for this site, or use a scanner gun.';return}
+  SK.cam={stream,stop:false};v.srcObject=stream;await v.play().catch(()=>{});
+  const done=code=>{if(SK.cam&&!SK.cam.stop){skCamClose();onCode(code)}};
+  if('BarcodeDetector' in window){let det;try{det=new BarcodeDetector({formats:['code_128','ean_13','ean_8','code_39','upc_a','upc_e','itf','qr_code']})}catch(e){det=new BarcodeDetector()}
+    const tick=async()=>{if(!SK.cam||SK.cam.stop)return;try{const r=await det.detect(v);if(r&&r[0]&&r[0].rawValue){done(r[0].rawValue);return}}catch(e){}setTimeout(tick,160)};tick();return}
+  try{st.textContent='Loading scanner…';await skLoad('https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js',()=>window.ZXing);st.textContent='Point the camera at the barcode';
+    const r=new ZXing.BrowserMultiFormatReader();SK.cam.zx=r;r.decodeFromVideoElementContinuously(v,(res)=>{if(res)done(res.getText())})}
+  catch(e){st.textContent='Camera scanning is not available on this phone. Type the barcode instead.'}}
+function skCamClose(){if(SK.cam){SK.cam.stop=true;try{SK.cam.zx&&SK.cam.zx.reset()}catch(e){}(SK.cam.stream?SK.cam.stream.getTracks():[]).forEach(t=>t.stop())}SK.cam=null;if(S.overlay==='skCam'){S.overlay=null;render()}}
+function skCamSheet(){return `<button class="overlay-bg" data-act="skCamX" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Scan barcode"><div class="grab"></div><div class="sh-body"><h3>Scan barcode</h3>
+  <div class="skcam"><video id="skVideo" playsinline muted></video><i></i></div><p class="hint" id="skCamMsg">Point the camera at the barcode on the tag</p><button class="secondary" data-act="skCamX">Close</button></div></div>`}
+
+/* ---------- Stock screen ---------- */
+function skFiltered(){const b=B();const f=SK.filter;const q=f.q.trim().toLowerCase();
+  let list=Object.entries(skItems(b.id)).map(([key,it])=>({key,it}));
+  if(f.cat)list=list.filter(x=>(x.it.c||'')===f.cat);if(f.brand)list=list.filter(x=>(x.it.br||'')===f.brand);
+  if(f.status==='in')list=list.filter(x=>skQty(x.it)>0);else if(f.status==='low')list=list.filter(x=>skLow(x.it));else if(f.status==='out')list=list.filter(x=>skQty(x.it)<=0);
+  if(q)list=list.filter(({it})=>`${it.n} ${it.bc||''} ${it.dn||''} ${it.c||''} ${it.br||''} ${it.pt||''}`.toLowerCase().includes(q));
+  return list.sort((a,c)=>String(a.it.n).localeCompare(String(c.it.n),undefined,{numeric:true}))}
+function skStats(list){let pcs=0,mrp=0,cost=0,low=0,out=0;list.forEach(({it})=>{const q=skQty(it);if(q>0){pcs+=q;mrp+=q*(+it.m||skPrice(it));cost+=q*(+it.co||0)}if(q<=0)out++;else if(skLow(it))low++});return {n:list.length,pcs,mrp,cost,low,out}}
+screens.stock=function(){const b=B();const own=isAdmin();
+  if(!ST.skLoaded[b.id])return `${topbar('Stock',own?'more':'home',bizPill())}<div class="pad">${loading('Loading stock…')}</div>`;
+  const all=Object.values(skItems(b.id));const f=SK.filter;
+  if(!all.length)return `${topbar('Stock',own?'more':'home',bizPill())}<div class="pad" style="padding-top:4px">
+    <div class="empty">No stock list for ${esc(b.name)} yet.${own?'<br>Import your myBillBook item list (Excel) to start barcode billing.':'<br>Ask the owner to import the stock list.'}</div>
+    ${own?`<label class="primary" for="skFile">${ic('upload')} Import myBillBook Excel</label><input type="file" id="skFile" accept=".xlsx,.xls,.csv" class="visually-hidden"><button class="secondary" data-act="skNew">${ic('plus')} Add an item by hand</button>`:''}</div>`;
+  const cats=[...new Set(all.map(i=>i.c).filter(Boolean))].sort();const brands=[...new Set(all.map(i=>i.br).filter(Boolean))].sort();
+  const list=skFiltered();const s=skStats(list);const tot=skStats(Object.entries(skItems(b.id)).map(([key,it])=>({key,it})));
+  const lq=skLabelTotal();
+  return `${topbar('Stock',own?'more':'home',bizPill())}
+  <div class="pad" style="padding-top:4px;gap:12px">
+    <div class="kgrid">
+      <div class="kpi"><span>${ic('stack')}Pieces in stock</span><b>${tot.pcs.toLocaleString('en-IN')}</b><small class="hint">${tot.n.toLocaleString('en-IN')} items</small></div>
+      <div class="kpi"><span>Stock at MRP</span><b>${inr(tot.mrp)}</b>${own?`<small class="hint">${priv('Cost '+inr(tot.cost))}</small>`:''}</div>
+      <button class="kpi skk ${f.status==='low'?'on':''}" data-act="skStatus" data-v="low"><span>Low stock</span><b style="color:var(--warn)">${tot.low}</b></button>
+      <button class="kpi skk ${f.status==='out'?'on':''}" data-act="skStatus" data-v="out"><span>Out of stock</span><b style="color:var(--bad)">${tot.out}</b></button>
+    </div>
+    <div class="search"><div class="inp">${ic('search')}<input id="skQ" placeholder="Name, barcode, D.no, brand…" value="${esc(f.q)}" autocomplete="off" aria-label="Search stock"></div><button class="scan-btn" data-act="skCamFind" aria-label="Scan to find">${ic('camera')}</button></div>
+    <div class="two"><div class="f"><select id="skCat" aria-label="Category"><option value="">All categories</option>${cats.map(c=>`<option ${f.cat===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div>
+      <div class="f"><select id="skBrand" aria-label="Brand"><option value="">All brands</option>${brands.map(c=>`<option ${f.brand===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div></div>
+    <div class="chips scroll">${[['all','All'],['in','In stock'],['low','Low'],['out','Out of stock']].map(([k,l])=>`<button class="chip ${f.status===k?'on':''}" data-act="skStatus" data-v="${k}">${l}</button>`).join('')}</div>
+    <p class="hint">${s.n.toLocaleString('en-IN')} items · ${s.pcs.toLocaleString('en-IN')} pcs · MRP ${inr(s.mrp)}${f.q||f.cat||f.brand||f.status!=='all'?` · <button class="linkbtn" data-act="skClear">Clear filters</button>`:''}</p>
+    ${own?`<div class="skacts"><button class="secondary" data-act="skLabelsAll">${ic('label')} Labels for these (${s.pcs>2000?'2000+':s.pcs} pcs)</button>${lq?`<button class="primary" data-act="skLabels">${ic('print')} Print ${lq} labels</button>`:''}</div>`:''}
+    <div class="sklist">${list.slice(0,f.limit).map(({key,it})=>{const q=skQty(it);return `<button class="skrow" data-act="skOpen" data-k="${esc(key)}"><div><b>${esc(it.n)}</b><span>${esc([it.c,it.br,it.dn?'D.no '+it.dn:''].filter(Boolean).join(' · '))}</span></div><em>${inr(+it.m||skPrice(it))}</em><i class="${q<=0?'out':skLow(it)?'low':''}">${q}</i></button>`}).join('')||'<div class="empty">Nothing matches.</div>'}</div>
+    ${list.length>f.limit?`<button class="secondary" data-act="skMore">Show more (${(list.length-f.limit).toLocaleString('en-IN')} more)</button>`:''}
+    ${own?`<div class="card"><div class="card-h"><h3>Stock list</h3><span class="hint">v${SKV}</span></div>
+      <div class="f" style="gap:8px"><label class="secondary" for="skFile">${ic('upload')} Import / update from myBillBook Excel</label><input type="file" id="skFile" accept=".xlsx,.xls,.csv" class="visually-hidden">
+      <button class="secondary" data-act="skNew">${ic('plus')} Add new item (stock in)</button>
+      <button class="secondary" data-act="skExport">${ic('download')} Download stock (Excel)</button></div></div>`:''}
+  </div>`};
+function skLabelTotal(){return Object.values(SK.labelQ).reduce((a,v)=>a+v,0)}
+
+/* ---------- item sheet ---------- */
+function skItemSheet(){const b=B();const k=SK.view;const it=skItems(b.id)[k];const own=isAdmin();
+  if(!it)return `<button class="overlay-bg" data-act="skClose" aria-label="Close"></button><div class="sheet"><div class="grab"></div><div class="sh-body"><p>Item not found.</p></div></div>`;
+  const q=skQty(it);const pn=skParse(it.n);
+  return `<button class="overlay-bg" data-act="skClose" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="${esc(it.n)}"><div class="grab"></div><div class="sh-body">
+    <div><h3>${esc(it.n)}</h3><p class="hint">${esc([it.c,it.br,it.pt?'Party '+it.pt:''].filter(Boolean).join(' · '))}</p></div>
+    <div class="kgrid"><div class="kpi"><span>In stock</span><b style="color:${q<=0?'var(--bad)':skLow(it)?'var(--warn)':'var(--good)'}">${q} pcs</b></div><div class="kpi"><span>MRP · selling</span><b>${inr(+it.m||0)}${+it.sp&&+it.sp!==+it.m?` · ${inr(+it.sp)}`:''}</b></div>
+      ${own?`<div class="kpi p"><span>${ic('lock')}Cost</span><b>${it.co?inr(+it.co):'—'}</b></div><div class="kpi p"><span>${ic('lock')}Code</span><b class="mono">${esc(it.cd||'—')}</b></div>`:''}</div>
+    <div class="tags">${pn.article?`<span class="tag">Article ${esc(pn.article)}</span>`:''}${pn.color?`<span class="tag">${esc(pn.color)}</span>`:''}${pn.size?`<span class="tag">Size ${esc(pn.size)}</span>`:''}${it.dn?`<span class="tag">D.no ${esc(it.dn)}</span>`:''}${it.bc?`<span class="tag mono">${esc(it.bc)}</span>`:''}</div>
+    ${S.screen==='sale'?`<button class="primary" data-act="skAdd" data-k="${esc(k)}">ADD TO BILL · ${inr(skPrice(it))}</button>`:''}
+    ${own?`<div class="card" style="padding:12px"><div class="f"><label for="skInQty">Stock in (new pieces arrived)</label><div class="skin"><input id="skInQty" inputmode="numeric" placeholder="Qty"><button class="scan-btn" data-act="skIn">+ ADD</button></div></div>
+      <div class="f" style="margin-top:10px"><label for="skSetQty">Counted on shelf (sets stock)</label><div class="skin"><input id="skSetQty" inputmode="numeric" placeholder="${q}"><button class="scan-btn" data-act="skSet">SET</button></div></div></div>
+    <div class="card" style="padding:12px"><div class="two"><div class="f"><label for="skM">MRP ₹</label><input id="skM" inputmode="numeric" value="${+it.m||''}"></div><div class="f"><label for="skSp">Selling price ₹</label><input id="skSp" inputmode="numeric" value="${+it.sp||''}"></div></div>
+      <div class="two" style="margin-top:8px"><div class="f"><label for="skCo">${ic('lock')}Cost ₹</label><input id="skCo" inputmode="numeric" value="${+it.co||''}"></div><div class="f"><label for="skLo">Low stock at</label><input id="skLo" inputmode="numeric" value="${+it.lo||1}"></div></div>
+      <button class="secondary" style="margin-top:10px" data-act="skSave">Save prices</button></div>
+    <div class="two"><button class="secondary" data-act="skLabel1">${ic('label')} Labels (${Math.max(1,q)})</button><button class="danger" data-act="skDel">Remove item</button></div>`:''}
+    <button class="secondary" data-act="skClose">Close</button>
+  </div></div>`}
+
+/* ---------- new item ---------- */
+function skNewSheet(){const b=B();const f=S.skForm||{};const cats=[...new Set(Object.values(skItems(b.id)).map(i=>i.c).filter(Boolean))].sort();
+  return `<button class="overlay-bg" data-act="skClose" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="New stock item"><div class="grab"></div><form class="sh-body" id="skNewForm"><h3>New item · ${esc(b.name)}</h3>
+    <div class="f"><label for="nfName">Item name (article-colour-size)</label><input id="nfName" required value="${esc(f.n||'')}" placeholder="e.g. 303081-WINE-L" autocapitalize="characters"></div>
+    <div class="two"><div class="f"><label for="nfCat">Category</label><input id="nfCat" list="nfCats" value="${esc(f.c||'')}" placeholder="Nighty"><datalist id="nfCats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div><div class="f"><label for="nfDn">D.no</label><input id="nfDn" inputmode="numeric" value="${esc(f.dn||skNextDno(b.id))}"></div></div>
+    <div class="f"><label for="nfCd">Code (party-brand-rate)</label><input id="nfCd" value="${esc(f.cd||'')}" placeholder="47-SUKANYA-31.40" autocapitalize="characters"></div>
+    <div class="two"><div class="f"><label for="nfM">MRP ₹</label><input id="nfM" inputmode="numeric" required value="${esc(f.m||'')}"></div><div class="f"><label for="nfCo">${ic('lock')}Cost ₹ (blank = from code)</label><input id="nfCo" inputmode="numeric" value="${esc(f.co||'')}"></div></div>
+    <div class="two"><div class="f"><label for="nfQ">Qty arrived</label><input id="nfQ" inputmode="numeric" value="${esc(f.q||'1')}"></div><div class="f"><label for="nfBc">Barcode (blank = make one)</label><input id="nfBc" value="${esc(f.bc||'')}" placeholder="auto"></div></div>
+    <button class="primary" type="submit">SAVE ITEM</button><p class="hint">Then tap Labels on the item to print its barcode tags.</p>
+  </form></div>`}
+function skNextDno(biz){let m=0;Object.values(skItems(biz)).forEach(i=>{const n=parseInt(i.dn);if(n>m)m=n});return String(m+1)}
+function skNewBarcode(biz){const d=new Date();let s;do{s=`9${String(d.getFullYear()).slice(2)}${pad2(d.getMonth()+1)}${pad2(d.getDate())}${String(Math.floor(Math.random()*1e5)).padStart(5,'0')}`}while(ST.skIdx[biz]&&ST.skIdx[biz].bc.has(s));return s}
+
+/* ---------- Excel import (myBillBook "Items" export) ---------- */
+async function skImport(file){const b=B();if(!isAdmin())return;
+  toast('Reading Excel…');
+  try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load the Excel reader. Check the internet.');return}
+  const buf=await file.arrayBuffer();let wb;try{wb=XLSX.read(new Uint8Array(buf),{type:'array'})}catch(e){toast('That file could not be read as Excel');return}
+  const sh=wb.Sheets['master data']||wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(sh,{header:1,defval:''});
+  if(rows.length<2){toast('No rows found in the first sheet');return}
+  const H=rows[0].map(h=>String(h).trim().toLowerCase());
+  const col=(re,fb)=>{const i=H.findIndex(h=>re.test(h));return i>=0?i:fb};
+  const C={n:col(/^item ?name|^name$|^product ?name/,0),c:col(/categor/,2),bc:col(/item ?code|barcode/,3),sp:col(/sales? ?price|selling/,6),co:col(/purchase ?price|cost/,8),m:col(/^mrp/,10),q:col(/current ?stock|^stock|quantity|^qty/,11),lo:col(/low ?stock/,12),dn:col(/^d\.? ?no|design/,15),cd:col(/^code$/,16)};
+  const items={};let n=0;let dnoNext=+skNextDno(b.id);const usedBc=new Set();
+  for(let i=1;i<rows.length;i++){const r=rows[i];const name=String(r[C.n]||'').trim().toUpperCase();if(!name||/^example|^how to/i.test(name))continue;
+    let bc=String(r[C.bc]||'').trim();const ex=!bc&&ST.skIdx[b.id]?ST.skIdx[b.id].name.get(name):null;
+    if(!bc&&ex)bc=skItems(b.id)[ex].bc||'';if(!bc){do{bc=skNewBarcode(b.id)}while(usedBc.has(bc))}usedBc.add(bc);
+    const key=ex||skKey(bc);const pc=skParseCode(r[C.cd]);
+    if(!String(r[C.dn]||'').trim())r[C.dn]=ex&&skItems(b.id)[ex].dn?skItems(b.id)[ex].dn:String(dnoNext++);
+    const cost=+r[C.co]||0;items[key]={n:name,c:String(r[C.c]||'').trim()||'Other',bc:bc||'',dn:String(r[C.dn]||'').trim(),cd:String(r[C.cd]||'').trim(),pt:pc.party,br:pc.brand,
+      m:+r[C.m]||+r[C.sp]||0,sp:+r[C.sp]||+r[C.m]||0,co:cost||(pc.rate?Math.round(pc.rate*25*100)/100:0),lo:+r[C.lo]||1,q:Math.round(+r[C.q]||0),del:false,at:Date.now()};n++}
+  if(!n){toast('No items found. Is this the myBillBook item list?');return}
+  S.skImp={file:file.name,items,n,exist:Object.keys(items).filter(k=>skItems(b.id)[k]).length,pcs:Object.values(items).reduce((a,x)=>a+Math.max(0,x.q),0),cats:new Set(Object.values(items).map(x=>x.c)).size,mode:skHas(b.id)?'keep':'set'};
+  S.overlay='skImp';render()}
+function skImpSheet(){const b=B();const m=S.skImp;const fresh=m.n-m.exist;
+  return `<button class="overlay-bg" data-act="skClose" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="Import stock"><div class="grab"></div><div class="sh-body"><h3>Import into ${esc(b.name)}</h3>
+    <p class="hint">${esc(m.file)}</p>
+    <div class="kgrid"><div class="kpi"><span>Items in file</span><b>${m.n.toLocaleString('en-IN')}</b></div><div class="kpi"><span>Pieces</span><b>${m.pcs.toLocaleString('en-IN')}</b></div>
+      <div class="kpi"><span>New items</span><b>${fresh.toLocaleString('en-IN')}</b></div><div class="kpi"><span>Already in list</span><b>${m.exist.toLocaleString('en-IN')}</b></div></div>
+    <div class="f"><span class="lab">Quantities in the file</span><div class="chips">${[['set','Set stock = file'],['add','Add to stock (new purchase)'],['keep','Keep current stock']].map(([k,l])=>`<button class="chip ${m.mode===k?'on':''}" data-act="skImpMode" data-v="${k}">${l}</button>`).join('')}</div></div>
+    <p class="hint">${m.mode==='set'?'Every item\'s stock becomes the quantity in the file. Use this for the first import or after a full stock count.':m.mode==='add'?'The quantity in the file is added to what is already in stock. Use this for a new purchase / new arrivals list.':'Only names, prices and codes are updated; new items come in with the file quantity. Stock already counted by this app is kept.'}</p>
+    <button class="primary" data-act="skImpGo">IMPORT ${m.n.toLocaleString('en-IN')} ITEMS</button><button class="secondary" data-act="skClose">Cancel</button>
+  </div></div>`}
+async function skImpGo(){const b=B();const m=S.skImp;if(!m)return;const useQty=m.mode==='set';
+  const map={};const local={};for(const k in m.items){const it={...m.items[k]};const was=skItems(b.id)[k];local[k]={...it};
+    if(was&&m.mode==='keep'){delete it.q;delete local[k].q}else if(was&&m.mode==='add'){local[k].q=skQty(was)+it.q;it.q=DB.A.inc(it.q)}map[k]=it}
+  S.overlay=null;S.skImp=null;render();toast('Saving stock list…');
+  await skWrite(b.id,map);ST.stock[b.id]={...skItems(b.id)};for(const k in local)ST.stock[b.id][k]={...(ST.stock[b.id][k]||{}),...local[k]};skReindex(b.id);
+  DB.A.set('stocklog','sl_'+uid(),{biz:b.id,at:Date.now(),date:todayStr(),by:'Owner',why:'import '+m.mode,n:Object.keys(map).length},false);
+  if(m.mode!=='keep'){SK.lastImport=Object.keys(m.items).map(k=>[k,m.items[k].q]).filter(x=>x[1]>0)}
+  render();toast(`Imported ${Object.keys(map).length.toLocaleString('en-IN')} items into ${b.name}`);
+  if(SK.lastImport&&SK.lastImport.length&&m.mode==='add'){SK.lastImport.forEach(([k,q])=>SK.labelQ[k]=(SK.labelQ[k]||0)+q);toast(`Imported · ${skLabelTotal()} labels ready to print`)}}
+
+/* ---------- labels for TSC printer ---------- */
+function skLabelsSheet(){const b=B();const keys=Object.keys(SK.labelQ);const L=LS.get('rr.label',{size:'50x25',shop:true,mrp:true,dno:true,code:false});
+  return `<button class="overlay-bg" data-act="skClose" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="Print labels"><div class="grab"></div><div class="sh-body"><h3>Barcode labels · <span id="lbCount">${skLabelTotal()}</span></h3>
+    <div class="f"><span class="lab">Label size (as loaded in the TSC printer)</span><div class="chips">${[['50x25','50 × 25 mm'],['38x25','38 × 25 mm'],['50x38','50 × 38 mm'],['100x50','100 × 50 mm']].map(([k,l])=>`<button class="chip ${L.size===k?'on':''}" data-act="lbSize" data-v="${k}">${l}</button>`).join('')}</div></div>
+    <div class="chips">${[['shop',esc(b.name)],['mrp','MRP'],['dno','D.no'],['code','Code']].map(([k,l])=>`<button class="chip ${L[k]?'on':''}" data-act="lbOpt" data-v="${k}">${L[k]?'✓ ':''}${l}</button>`).join('')}</div>
+    <div class="sklist" style="max-height:260px;overflow:auto">${keys.map(k=>{const it=skItems(b.id)[k];if(!it)return '';return `<div class="skrow"><div><b>${esc(it.n)}</b><span>${esc(it.bc||'')} · ${inr(+it.m||skPrice(it))}</span></div><input class="lq" data-lq="${esc(k)}" inputmode="numeric" value="${SK.labelQ[k]}" aria-label="Labels for ${esc(it.n)}"></div>`}).join('')||'<div class="empty">No labels in the list.</div>'}</div>
+    <button class="primary" data-act="lbPrint">${ic('print')} PRINT ON TSC</button>
+    <button class="secondary" data-act="lbExcel">${ic('download')} Excel for BarTender / TSC software</button>
+    <button class="linkbtn" data-act="lbClear">Clear the list</button>
+    <p class="hint">Print opens the label page: choose the TSC printer, set paper to the label size, margins none, scale 100%. Barcodes are Code 128.</p>
+  </div></div>`}
+async function skPrintLabels(){const b=B();const L=LS.get('rr.label',{size:'50x25',shop:true,mrp:true,dno:true,code:false});const [w,h]=L.size.split('x').map(Number);
+  try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js',()=>window.JsBarcode)}catch(e){toast('Could not load the barcode maker. Check the internet.');return}
+  const labs=[];for(const k in SK.labelQ){const it=skItems(b.id)[k];if(!it)continue;const code=it.bc||it.dn||k;for(let i=0;i<SK.labelQ[k];i++)labs.push({it,code})}
+  if(!labs.length){toast('No labels to print');return}
+  const svgs={};labs.forEach(({code})=>{if(svgs[code])return;const s=document.createElementNS('http://www.w3.org/2000/svg','svg');try{JsBarcode(s,code,{format:'CODE128',displayValue:true,fontSize:14,height:40,margin:0,width:1.6,textMargin:1});svgs[code]=s.outerHTML}catch(e){svgs[code]=`<div>${esc(code)}</div>`}});
+  const big=h>=38;const body=labs.map(({it,code})=>`<div class="lb"><div class="t">${L.shop?`<b>${esc(b.name)}</b>`:''}${L.mrp?`<span class="mrp">MRP ₹${(+it.m||skPrice(it)).toLocaleString('en-IN')}</span>`:''}</div><div class="nm">${esc(it.n)}${L.dno&&it.dn?` · D.${esc(it.dn)}`:''}${L.code&&it.cd?` · ${esc(it.cd)}`:''}</div><div class="bc">${svgs[code]}</div></div>`).join('');
+  const html=`<!doctype html><html><head><meta charset="utf-8"><title>Labels ${esc(b.name)}</title><style>@page{size:${w}mm ${h}mm;margin:0}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#000}
+  .lb{width:${w}mm;height:${h}mm;padding:1.2mm 2mm;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;page-break-after:always;break-after:page}
+  .t{display:flex;justify-content:space-between;align-items:baseline;font-size:${big?11:8.5}pt;line-height:1.1}.t b{font-size:${big?10:7.5}pt}.mrp{font-weight:700}
+  .nm{font-size:${big?9:6.8}pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}.bc{flex:1;display:flex;align-items:flex-end;justify-content:center;min-height:0}.bc svg{width:100%;height:100%;max-height:${big?h*0.55:h*0.52}mm}
+  @media screen{body{background:#ddd;padding:10px;display:flex;flex-wrap:wrap;gap:8px}.lb{background:#fff}}</style></head><body>${body}<script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`;
+  const wdw=window.open('','_blank');if(!wdw){toast('Allow pop-ups to print labels');return}wdw.document.open();wdw.document.write(html);wdw.document.close()}
+async function skLabelsExcel(){const b=B();try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load Excel. Check the internet.');return}
+  const rows=Object.entries(SK.labelQ).map(([k,q])=>{const it=skItems(b.id)[k];return it?{'SKU':it.n,'Code (Variant)':it.cd||'','MRP (Rs)':+it.m||skPrice(it),'Qty':q,'D.no':it.dn||'','Category':it.c||'','Barcode':it.bc||''}:null}).filter(Boolean);
+  const ws=XLSX.utils.json_to_sheet(rows,{header:['SKU','Code (Variant)','MRP (Rs)','Qty','D.no','Category','Barcode']});const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Barcodes');XLSX.writeFile(wb,`${b.prefix||b.id}_Barcodes_${todayStr()}.xlsx`)}
+async function skExport(){const b=B();try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load Excel. Check the internet.');return}
+  const rows=skFiltered().map(({it})=>({'Item Name':it.n,'Category':it.c||'','Item Code':it.bc||'','D.no':it.dn||'','Code':it.cd||'','Party':it.pt||'','Brand':it.br||'','MRP':+it.m||0,'Sales Price':+it.sp||0,'Purchase Price':+it.co||0,'Current Stock':skQty(it),'Low Stock':+it.lo||1}));
+  const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'master data');XLSX.writeFile(wb,`${b.prefix||b.id}_Stock_${todayStr()}.xlsx`)}
+
+/* ---------- clicks ---------- */
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;const act=a.dataset.act;const b=B();
+  const k=a.dataset.k;
+  switch(act){
+    case 'skGoStock':go('stock');return;
+    case 'skAdd':{if(S.overlay==='skItem'){S.overlay=null}skAddToCart(k);return}
+    case 'skCam':skCamOpen(code=>skScan(code));return;
+    case 'skCamFind':skCamOpen(code=>{const f=skFind(b.id,code);if(f){SK.view=f.key;S.overlay='skItem';render()}else{SK.filter.q=code;render();toast(`"${code}" not found`)}});return;
+    case 'skCamX':skCamClose();return;
+    case 'skStatus':SK.filter.status=SK.filter.status===a.dataset.v&&a.classList.contains('skk')?'all':a.dataset.v;SK.filter.limit=60;render();return;
+    case 'skClear':SK.filter={q:'',cat:'',brand:'',status:'all',limit:60};render();return;
+    case 'skMore':SK.filter.limit+=100;render();return;
+    case 'skOpen':SK.view=k;S.overlay='skItem';render();return;
+    case 'skClose':S.overlay=null;S.skForm=null;render();return;
+    case 'skNew':S.skForm={};S.overlay='skNew';render();setTimeout(()=>{const n=$('nfName');if(n)n.focus()},60);return;
+    case 'skIn':case 'skSet':{const it=skItems(b.id)[SK.view];if(!it)return;const inp=$(act==='skIn'?'skInQty':'skSetQty');const v=parseInt(inp&&inp.value);if(isNaN(v)||(act==='skIn'&&v<=0)){toast('Type a quantity');return}
+      const d=act==='skIn'?v:v-skQty(it);if(!d){toast('Stock is already '+v);return}skMove(b.id,{[SK.view]:d},act==='skIn'?'stock in':'count');render();toast(act==='skIn'?`+${v} added · now ${skQty(it)}`:`Stock set to ${v}`);return}
+    case 'skSave':{const it=skItems(b.id)[SK.view];if(!it)return;const p={m:+$('skM').value||0,sp:+$('skSp').value||0,co:+$('skCo').value||0,lo:Math.max(1,+$('skLo').value||1)};Object.assign(it,p);skWrite(b.id,{[SK.view]:p});toast('Prices saved');render();return}
+    case 'skDel':{const it=skItems(b.id)[SK.view];if(!it)return;if(!confirm(`Remove ${it.n} from the stock list?`))return;skWrite(b.id,{[SK.view]:{del:true,q:0}});delete ST.stock[b.id][SK.view];skReindex(b.id);S.overlay=null;render();toast('Item removed');return}
+    case 'skLabel1':{const it=skItems(b.id)[SK.view];if(!it)return;SK.labelQ[SK.view]=Math.max(1,skQty(it));S.overlay='skLabels';render();return}
+    case 'skLabelsAll':{const list=skFiltered();let n=0;for(const {key,it} of list){const q=Math.max(0,skQty(it));if(!q)continue;SK.labelQ[key]=q;n+=q;if(n>=2000)break}if(!n){toast('These items have no stock to label');return}S.overlay='skLabels';render();return}
+    case 'skLabels':S.overlay='skLabels';render();return;
+    case 'lbSize':{const L=LS.get('rr.label',{size:'50x25',shop:true,mrp:true,dno:true,code:false});L.size=a.dataset.v;LS.set('rr.label',L);render();return}
+    case 'lbOpt':{const L=LS.get('rr.label',{size:'50x25',shop:true,mrp:true,dno:true,code:false});L[a.dataset.v]=!L[a.dataset.v];LS.set('rr.label',L);render();return}
+    case 'lbPrint':skPrintLabels();return;
+    case 'lbExcel':skLabelsExcel();return;
+    case 'lbClear':SK.labelQ={};S.overlay=null;render();return;
+    case 'skExport':skExport();return;
+    case 'skImpGo':skImpGo();return;
+    case 'skImpMode':if(S.skImp){S.skImp.mode=a.dataset.v;render()}return;
+    case 'rTabTrend':S.rTab='trend';render();return;
+  }
+});
+document.addEventListener('change',e=>{const t=e.target;
+  if(t.id==='skFile'){const f=t.files&&t.files[0];t.value='';if(f)skImport(f);return}
+  if(t.id==='skCat'){SK.filter.cat=t.value;SK.filter.limit=60;render();return}
+  if(t.id==='skBrand'){SK.filter.brand=t.value;SK.filter.limit=60;render();return}
+});
+document.addEventListener('submit',e=>{if(e.target.id!=='skNewForm')return;e.preventDefault();const b=B();
+  const n=$('nfName').value.trim().toUpperCase();if(!n){toast('Type the item name');return}
+  let bc=$('nfBc').value.trim();if(!bc)bc=skNewBarcode(b.id);const key=skKey(bc);
+  if(skItems(b.id)[key]){toast('An item with this barcode already exists');return}
+  const cd=$('nfCd').value.trim().toUpperCase();const pc=skParseCode(cd);const m=+$('nfM').value||0;if(!m){toast('Type the MRP');return}
+  const q=Math.max(0,parseInt($('nfQ').value)||0);
+  const it={n,c:$('nfCat').value.trim()||'Other',bc,dn:$('nfDn').value.trim(),cd,pt:pc.party,br:pc.brand,m,sp:m,co:+$('nfCo').value||(pc.rate?Math.round(pc.rate*25*100)/100:0),lo:1,q,del:false,at:Date.now()};
+  ST.stock[b.id]={...skItems(b.id),[key]:it};skReindex(b.id);skWrite(b.id,{[key]:it});
+  DB.A.set('stocklog','sl_'+uid(),{biz:b.id,at:Date.now(),date:todayStr(),by:'Owner',why:'new item',d:{[key]:q}},false);
+  S.skForm=null;SK.view=key;S.overlay='skItem';render();toast(`${n} added · ${q} pcs`)});
+
+/* ---------- where Stock appears ---------- */
+window.EXTRA_OV=Object.assign(window.EXTRA_OV||{},{skCam:skCamSheet,skItem:skItemSheet,skNew:skNewSheet,skImp:skImpSheet,skLabels:skLabelsSheet});
+NAV_OF.stock='more';
+const _more=screens.more;
+screens.more=function(){const h=_more();const b=B();const s=skStats(Object.entries(skItems(b.id)).map(([key,it])=>({key,it})));
+  const btn=`<button class="list-btn" data-go="stock">${ic('scan')}<span>Stock & barcodes<small>${skHas(b.id)?`${s.pcs.toLocaleString('en-IN')} pcs · ${s.low} low · ${s.out} out · labels`:'Import myBillBook Excel · scan to bill · TSC labels'}</small></span>${ic('chev','chev')}</button>`;
+  const i=h.indexOf('<button class="list-btn"');return i<0?h:h.slice(0,i)+btn+h.slice(i)};
+const _counterHome=counterHome;
+counterHome=function(){const h=_counterHome();const b=B();if(!skHas(b.id))return h;const s=skStats(Object.entries(skItems(b.id)).map(([key,it])=>({key,it})));
+  const btn=`<button class="list-btn" data-go="stock">${ic('scan')}<span>Stock<small>Check pieces in stock · ${s.low} low · ${s.out} out</small></span>${ic('chev','chev')}</button>`;
+  const j=h.lastIndexOf('</div>');return j<0?h+btn:h.slice(0,j)+btn+h.slice(j)};
+const _goS=go;go=function(s){if(s==='stock'&&S.screen!=='stock')SK.filter.limit=60;_goS(s)};
+
+/* ---------- Reports: Trends tab ---------- */
+const _reports=screens.reports;
+screens.reports=function(){if(S.rTab!=='trend'){const h=_reports();return h.replace('<div class="tabs">','<div class="tabs t4">').replace(/(<div class="tabs t4">[\s\S]*?)(<\/div>)/,`$1<button class="" data-act="rTabTrend">Trends</button>$2`)}
+  const tabs=[['staff','Staff'],['category','Category'],['item','Item']];
+  return `${topbar('Reports','home',bizPill())}<div class="pad" style="padding-top:4px">
+    <div class="tabs t4">${tabs.map(([k,l])=>`<button data-act="rTab" data-v="${k}">${l}</button>`).join('')}<button class="on" data-act="rTabTrend">Trends</button></div>
+    ${trendReport()}</div>`};
+const axk=v=>v>=100000?'₹'+(+(v/100000).toFixed(1))+'L':v>=1000?'₹'+(+(v/1000).toFixed(1))+'k':'₹'+v;
+function trendReport(){const b=B();const t=todayStr();const thisM=t.slice(0,7);const d0=new Date();const lastM=ym(new Date(d0.getFullYear(),d0.getMonth()-1,1));
+  const [lf]=monthRange(lastM);const docs=need(`d|${lf}|${addDays(t,-1)}`,()=>DB.daily(lf,addDays(t,-1)));if(!docs)return loading();
+  const byDay={};docs.filter(x=>x.biz===b.id).forEach(x=>byDay[x.date]=x);byDay[t]={sales:todaySales(b.id),bills:todayOf(b.id).length};
+  const dayOfM=+t.slice(8);const sumM=(m,upto)=>Object.entries(byDay).filter(([d])=>d.startsWith(m)&&(!upto||+d.slice(8)<=upto)).reduce((a,[,x])=>a+(x.sales||0),0);
+  const cur=sumM(thisM),prevSame=sumM(lastM,dayOfM),prevAll=sumM(lastM);const ch=prevSame?Math.round((cur-prevSame)/prevSame*100):null;
+  const [,mEnd]=monthRange(thisM);const daysIn=+mEnd.slice(8);const proj=dayOfM?Math.round(cur/dayOfM*daysIn):0;
+  // daily bars this month vs last month same day
+  const W=320,H=150,L=36,R=6,T=10,Bm=20,iw=W-L-R,ih=H-T-Bm;const vals=[],pv=[];for(let i=1;i<=daysIn;i++){const dd=`${thisM}-${pad2(i)}`,pd=`${lastM}-${pad2(i)}`;vals.push(i<=dayOfM?((byDay[dd]||{}).sales||0):null);pv.push((byDay[pd]||{}).sales||0)}
+  const max=Math.max(1000,...vals.filter(v=>v!=null),...pv);const step=niceStep(max/4),top=step*4;const slot=iw/daysIn,bw=Math.max(2,slot*.6);let g='';
+  for(let i=0;i<=4;i++){const y=T+ih-ih*i/4;g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${y}" y2="${y}"/><text x="${L-5}" y="${y+3}" text-anchor="end">${axk(step*i)}</text>`}
+  let path='';pv.forEach((v,i)=>{const x=L+slot*i+slot/2,y=T+ih-ih*v/top;path+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)});
+  vals.forEach((v,i)=>{if(v==null)return;const h=ih*v/top,x=L+slot*i+(slot-bw)/2;g+=`<rect class="b${i+1===dayOfM?' last':''}" x="${x.toFixed(1)}" y="${(T+ih-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" rx="1.5"><title>${i+1} ${MONTHS[+thisM.slice(5)-1]}: ${inr(v)}</title></rect>`;if(i===0||(i+1)%5===0)g+=`<text x="${(x+bw/2).toFixed(1)}" y="${H-5}" text-anchor="middle">${i+1}</text>`});
+  g+=`<path d="${path}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 3"/>`;
+  // weekdays (last 60 days)
+  const wd=[0,0,0,0,0,0,0],wn=[0,0,0,0,0,0,0];Object.entries(byDay).forEach(([d,x])=>{if(d===t)return;const w=parseYmd(d).getDay();wd[w]+=x.sales||0;wn[w]++});const wavg=wd.map((v,i)=>wn[i]?v/wn[i]:0);const wmax=Math.max(1,...wavg);const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  // payment share this month (bills)
+  const [mf]=monthRange(thisM);const bl=bizBills(billsBetween(mf,t),b.id);let pay=null;
+  if(bl){pay={Cash:0,UPI:0,Card:0,Due:0};bl.forEach(x=>{const p=billMoney(x);pay.Cash+=p.Cash||0;pay.UPI+=p.UPI||0;pay.Card+=p.Card||0;pay.Due+=x.due||0})}
+  const ptot=pay?Object.values(pay).reduce((a,v)=>a+v,0):0;
+  const best=Object.entries(byDay).filter(([d])=>d.startsWith(thisM)).sort((a,c)=>(c[1].sales||0)-(a[1].sales||0))[0];
+  // brands (stock lines) this month
+  const recs=bl?bl.flatMap(billRecs):[];const byBrand=Object.entries(groupBy(recs.filter(r=>r.brand),'brand')).map(([k,x])=>({k,o:agg(x)})).sort((x,y)=>y.o.sales-x.o.sales).slice(0,8);const bmax=Math.max(1,...byBrand.map(x=>x.o.sales));
+  const bySize=Object.entries(groupBy(recs.filter(r=>r.size),'size')).map(([k,x])=>({k,q:x.reduce((a,r)=>a+r.qty,0)})).sort((x,y)=>y.q-x.q).slice(0,8);const smax=Math.max(1,...bySize.map(x=>x.q));
+  return `<div class="kgrid">
+      <div class="kpi"><span>${MONTHS[+thisM.slice(5)-1]} so far</span><b>${inr(cur)}</b></div>
+      <div class="kpi"><span>vs ${MONTHS[+lastM.slice(5)-1]} 1–${dayOfM}</span><b style="color:${ch==null?'var(--muted)':ch>=0?'var(--good)':'var(--bad)'}">${ch==null?'—':(ch>=0?'▲ ':'▼ ')+Math.abs(ch)+'%'}</b><small class="hint">${inr(prevSame)}</small></div>
+      <div class="kpi"><span>On track for</span><b>${inr(proj)}</b><small class="hint">${MONTHS[+lastM.slice(5)-1]} total ${inr(prevAll)}</small></div>
+      <div class="kpi"><span>Best day</span><b>${best?inr(best[1].sales||0):'—'}</b><small class="hint">${best?dayLabel(best[0]):''}</small></div></div>
+    <div class="card"><div class="card-h"><h3>Daily sales · ${monthLabel(thisM)}</h3><span class="hint">dashed = ${MONTHS[+lastM.slice(5)-1]}</span></div><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Daily sales this month">${g}</svg></div>
+    ${pay&&ptot?`<div class="card"><div class="card-h"><h3>How customers paid · ${MONTHS[+thisM.slice(5)-1]}</h3></div><div class="paybar">${Object.entries(pay).filter(([,v])=>v>0).map(([k,v])=>`<i class="p-${k}" style="flex:${v}" title="${k} ${inr(v)}"></i>`).join('')}</div>
+      <div class="paylegend">${Object.entries(pay).map(([k,v])=>`<span><i class="p-${k}"></i>${k} <b>${inr(v)}</b> ${pct(v,ptot)}%</span>`).join('')}</div></div>`:''}
+    <div class="card"><div class="card-h"><h3>Average sale by weekday</h3><span class="hint">last 2 months</span></div>${wavg.map((v,i)=>({l:WD[i],v})).map(r=>`<div class="month-row"><span>${r.l}</span><div class="bar"><i style="width:${pct(r.v,wmax)}%"></i></div><b>${kfmt(r.v)}</b></div>`).join('')}</div>
+    ${byBrand.length?`<div class="card"><div class="card-h"><h3>Brands · ${MONTHS[+thisM.slice(5)-1]}</h3><span class="hint">scanned items</span></div>${byBrand.map(r=>`<div class="month-row"><span>${esc(r.k)}</span><div class="bar"><i style="width:${pct(r.o.sales,bmax)}%"></i></div><b>${kfmt(r.o.sales)}</b></div>`).join('')}</div>`:''}
+    ${bySize.length?`<div class="card"><div class="card-h"><h3>Sizes sold · ${MONTHS[+thisM.slice(5)-1]}</h3><span class="hint">pieces</span></div>${bySize.map(r=>`<div class="month-row"><span>${esc(r.k)}</span><div class="bar good"><i style="width:${pct(r.q,smax)}%"></i></div><b>${r.q}</b></div>`).join('')}</div>`:''}`}
+
+/* ============================================================
+   v1.4 · Item format, article form, returns & exchanges stock-wise,
+   goods return to supplier, returns report
+   Collection "skret": one record per item per return
+   kind: refund (customer return) · exchange · supplier (goods return to party)
+   cond: good (back to stock) · damaged (kept aside, not sellable)
+   ============================================================ */
+const SK_REASONS=['Size issue','Colour','Defect / damaged','Did not like','Wrong item','Other'];
+const SK_SUP_REASONS=['Defect','Damaged','Slow moving','Wrong supply','Excess stock','Other'];
+const SIZE_SETS={'Bra':'30B 32B 34B 36B 38B 32C 34C 36C 38C','Panty / nighty':'S M L XL XXL 3XL','Free size':'F','Numbers':'75 80 85 90 95 100'};
+SK.ret=null; // {bill, rq:{i:qty}, reason, cond}
+
+/* ---------- item format (Excel template) ---------- */
+async function skTemplate(){const b=B();try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load Excel. Check the internet.');return}
+  const H=['Item Name','Description','Category','Item Code','HSN','Unit','Sales Price','GST','Purchase Price','Tax','MRP','Current Stock','Low Stock Alert','Size','Color','D.No','Code'];
+  const ex=[['303081-WINE-L','Cotton nighty','Nighty','','6108','PCS',1299,'',785,'',1299,3,1,'L','WINE','','47-SUKANYA-31.40'],
+    ['303081-WINE-XL','Cotton nighty','Nighty','','6108','PCS',1299,'',785,'',1299,2,1,'XL','WINE','','47-SUKANYA-31.40'],
+    ['B501-BLACK-34B','Padded bra','Bra','','6212','PCS',499,'',300,'',499,4,1,'34B','BLACK','','31-JULIET-12.00']];
+  const ws=XLSX.utils.aoa_to_sheet([H,...ex]);ws['!cols']=H.map((h,i)=>({wch:[18,16,12,15,7,6,10,5,13,5,8,13,14,6,8,7,18][i]}));
+  const how=[['How to fill the Rosy item format'],[''],['Item Name','ARTICLE-COLOUR-SIZE, e.g. 303081-WINE-L. One row per colour and size. Required.'],['Category','Nighty, Bra, Panty, Socks… (same words every time)'],
+    ['Item Code','The barcode. Leave blank and the app makes one (then print labels from the app).'],['Sales Price / MRP','Selling price and MRP in rupees. If only MRP is filled, it is also the selling price.'],
+    ['Purchase Price','Cost per piece. Leave blank to work it out from Code (rate × 25).'],['Current Stock','Pieces. On import choose: Set stock, Add to stock (new purchase) or Keep current.'],
+    ['Low Stock Alert','Show as low when stock is at or below this.'],['D.No','Leave blank and the app gives the next number.'],['Code','PARTY-BRAND-RATE, e.g. 47-SUKANYA-31.40 (party 47, brand SUKANYA).'],[''],
+    ['Delete the 3 example rows before importing. Import: Stock & barcodes → Import / update from Excel.']];
+  const ws2=XLSX.utils.aoa_to_sheet(how);ws2['!cols']=[{wch:18},{wch:90}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'master data');XLSX.utils.book_append_sheet(wb,ws2,'How to fill');XLSX.writeFile(wb,`${b.prefix||b.id}_Item_Format.xlsx`)}
+
+/* ---------- add an article in many sizes & colours ---------- */
+function skArtSheet(){const b=B();const f=S.skArt||(S.skArt={art:'',cat:'',cd:'',m:'',co:'',colors:'',sizes:'',qty:{}});const cats=[...new Set(Object.values(skItems(b.id)).map(i=>i.c).filter(Boolean))].sort();
+  const colors=f.colors.split(/[,\s]+/).map(x=>x.trim().toUpperCase()).filter(Boolean),sizes=f.sizes.split(/[,\s]+/).map(x=>x.trim().toUpperCase()).filter(Boolean);
+  const combos=[];colors.forEach(c=>sizes.forEach(z=>combos.push(`${f.art.trim().toUpperCase()}-${c}-${z}`)));
+  const tot=combos.reduce((a,n)=>a+(f.qty[n]??1),0);
+  return `<button class="overlay-bg" data-act="skClose" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="Add article"><div class="grab"></div><form class="sh-body" id="skArtForm"><h3>Add article · sizes × colours</h3>
+    <div class="two"><div class="f"><label for="afArt">Article no.</label><input id="afArt" value="${esc(f.art)}" placeholder="303081" autocapitalize="characters" required></div>
+      <div class="f"><label for="afCat">Category</label><input id="afCat" list="afCats" value="${esc(f.cat)}" placeholder="Nighty"><datalist id="afCats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div></div>
+    <div class="f"><label for="afCd">Code (party-brand-rate)</label><input id="afCd" value="${esc(f.cd)}" placeholder="47-SUKANYA-31.40" autocapitalize="characters"></div>
+    <div class="two"><div class="f"><label for="afM">MRP ₹</label><input id="afM" inputmode="numeric" value="${esc(f.m)}"></div><div class="f"><label for="afCo">${ic('lock')}Cost ₹ (blank = from code)</label><input id="afCo" inputmode="numeric" value="${esc(f.co)}"></div></div>
+    <div class="f"><label for="afColors">Colours (comma or space)</label><input id="afColors" value="${esc(f.colors)}" placeholder="WINE NAVY BLACK" autocapitalize="characters"></div>
+    <div class="f"><label for="afSizes">Sizes</label><input id="afSizes" value="${esc(f.sizes)}" placeholder="S M L XL" autocapitalize="characters">
+      <div class="chips" style="margin-top:4px">${Object.entries(SIZE_SETS).map(([k,v])=>`<button type="button" class="chip" data-act="afSet" data-v="${esc(v)}">${esc(k)}</button>`).join('')}</div></div>
+    ${combos.length&&f.art.trim()?`<div class="f"><span class="lab">Pieces arrived · ${combos.length} items · ${tot} pcs</span><div class="afgrid">${combos.map(n=>`<label><span>${esc(n.split('-').slice(-2).join(' · '))}</span><input inputmode="numeric" data-afq="${esc(n)}" value="${f.qty[n]??1}"></label>`).join('')}</div></div>`:'<p class="hint">Type the article, colours and sizes to see every combination.</p>'}
+    <button class="primary" type="submit" ${combos.length&&f.art.trim()?'':'disabled'}>SAVE ${combos.length||''} ITEMS · MAKE BARCODES</button>
+    <p class="hint">Each colour-size gets its own barcode and D.no. Labels for all pieces are added to the print list.</p>
+  </form></div>`}
+function skArtKeep(){const f=S.skArt;if(!f)return;[['afArt','art'],['afCat','cat'],['afCd','cd'],['afM','m'],['afCo','co'],['afColors','colors'],['afSizes','sizes']].forEach(([id,k])=>{const el=$(id);if(el)f[k]=el.value})}
+function skArtRefresh(focusId){const el=document.activeElement;const pos=el&&el.selectionStart;skArtKeep();render();const n=$(focusId);if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}
+
+/* ---------- customer return / exchange: pieces, reason, condition ---------- */
+const _exchange=screens.exchange;
+screens.exchange=function(){const h=_exchange();if(!S.ex)return h;const x=S.ex.bill;
+  const R=SK.ret&&SK.ret.bill===x.id?SK.ret:(SK.ret={bill:x.id,rq:{},reason:'',cond:'good'});
+  const sel=x.lines.map((l,i)=>({l,i})).filter(({l,i})=>S.ex.sel[i]&&!l.returned);if(!sel.length)return h;
+  const block=`<div class="card skret"><div class="card-h"><h3>Coming back</h3><span class="hint">recorded item-wise</span></div>
+    ${sel.map(({l,i})=>{const q=R.rq[i]??l.qty;return `<div class="bline"><div class="grow"><b>${esc(l.name)}</b><span>${l.sk?'Stock item'+(l.dno?' · D.no '+esc(l.dno):''):esc(l.cat)} · sold ${l.qty}</span></div>${l.qty>1?`<div class="stepper sm"><button data-act="rtQ" data-i="${i}" data-d="-1" aria-label="Less">−</button><span>${q}</span><button data-act="rtQ" data-i="${i}" data-d="1" aria-label="More">+</button></div>`:`<b>${q}</b>`}</div>`}).join('')}
+    <div class="f" style="margin-top:8px"><span class="lab">Reason</span><div class="chips">${SK_REASONS.map(r=>`<button class="chip ${R.reason===r?'on':''}" data-act="rtReason" data-v="${esc(r)}">${esc(r)}</button>`).join('')}</div></div>
+    <div class="f" style="margin-top:8px"><span class="lab">Condition of the piece</span><div class="chips"><button class="chip ${R.cond==='good'?'on':''}" data-act="rtCond" data-v="good">Good · back to stock</button><button class="chip ${R.cond==='damaged'?'on':''}" data-act="rtCond" data-v="damaged">Damaged · keep aside</button></div></div>
+    ${R.cond==='damaged'?'<p class="warnline" style="margin-top:8px">Damaged pieces are not sellable. They go to the damaged list, ready for goods return to the party.</p>':''}</div>`;
+  // show the value of only the pieces coming back
+  const all=x.lines.reduce((a,l)=>a+lineAmt(l),0)||1;const share=(l,q)=>{const g=l.price*q;return g-Math.round((x.disc||0)*g/all)};
+  const full=sel.reduce((a,{l})=>a+share(l,l.qty),0),part=sel.reduce((a,{l,i})=>a+share(l,Math.min(l.qty,R.rq[i]??l.qty)),0);
+  let out=h;if(part!==full){out=out.split('<b>'+inr(full)+'</b>').join('<b>'+inr(part)+'</b>').split('refund '+inr(full)).join('refund '+inr(part))}
+  const k=out.indexOf('<div class="btn-row">');return k<0?out+block:out.slice(0,k)+block+out.slice(k)};
+const _applyReturn=applyReturn;
+applyReturn=function(kind){const x0=S.ex&&S.ex.bill;if(!x0)return _applyReturn(kind);const R=SK.ret&&SK.ret.bill===x0.id?SK.ret:{rq:{},reason:'',cond:'good'};
+  // split lines when only some pieces come back, so the rest stay on the bill
+  const x=clone(x0);const sel={};let off=0;const lines=[];
+  x.lines.forEach((l,i)=>{const on=S.ex.sel[i]&&!l.returned;const q=on?Math.min(l.qty,Math.max(1,R.rq[i]??l.qty)):0;
+    if(on&&q<l.qty){lines.push({...l,qty:l.qty-q});lines.push({...l,qty:q});sel[lines.length-1]=true}else{lines.push(l);if(on)sel[lines.length-1]=true}});
+  x.lines=lines;S.ex.bill=x;S.ex.sel=sel;
+  const back=lines.map((l,i)=>sel[i]?l:null).filter(Boolean);const all=lines.reduce((a,l)=>a+lineAmt(l),0)||1;
+  const recs=back.map(l=>({id:'rt_'+uid(),biz:x.biz,at:Date.now(),date:todayStr(),kind,bill:x.id,no:x.no,soldOn:x.date,staff:x.staff||'',sk:l.sk||'',name:l.name,cat:l.cat,bc:l.bc||'',dno:l.dno||'',brand:l.brand||'',size:l.size||'',qty:l.qty,
+    value:lineAmt(l)-Math.round((x.disc||0)*lineAmt(l)/all),reason:R.reason||'',cond:R.cond||'good',customer:(x.customer&&x.customer.mobile)||'',by:isAdmin()?'Owner':(DEVICE.name||'counter')}));
+  _applyReturn(kind);
+  recs.forEach(r=>DB.A.set('skret',r.id,r,false));
+  // damaged: the bill change already put the pieces back; move them from sellable to damaged
+  if(R.cond==='damaged'){const d={},m={};recs.filter(r=>r.sk).forEach(r=>{d[r.sk]=(d[r.sk]||0)-r.qty;m[r.sk]={dm:DB.A.inc(r.qty)};const it=skItems(x.biz)[r.sk];if(it)it.dm=(+it.dm||0)+r.qty});
+    if(Object.keys(d).length){skMove(x.biz,d,'damaged return');skWrite(x.biz,m)}}
+  SK.ret=null;delete CACHE['skret|'+x.biz]};
+
+/* ---------- goods return to supplier (party) ---------- */
+function skSupSheet(){const b=B();const f=S.skSup||(S.skSup={lines:{},from:'good',reason:'',note:'',q:''});const keys=Object.keys(f.lines);
+  const hits=f.q&&f.q.length>=2?skSearch(b.id,f.q,6):[];const parties=[...new Set(keys.map(k=>(skItems(b.id)[k]||{}).pt).filter(Boolean))];
+  const pcs=keys.reduce((a,k)=>a+f.lines[k],0);const val=keys.reduce((a,k)=>a+f.lines[k]*(+(skItems(b.id)[k]||{}).co||0),0);
+  return `<button class="overlay-bg" data-act="skClose" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="Goods return to party"><div class="grab"></div><div class="sh-body"><h3>Goods return to party</h3>
+    <div class="f"><span class="lab">Take the pieces from</span><div class="chips"><button class="chip ${f.from==='good'?'on':''}" data-act="supFrom" data-v="good">Sellable stock</button><button class="chip ${f.from==='damaged'?'on':''}" data-act="supFrom" data-v="damaged">Damaged list</button></div></div>
+    <div class="search"><div class="inp">${ic('scan')}<input id="supQ" value="${esc(f.q)}" placeholder="Scan or type barcode, D.no, name" autocomplete="off" autocapitalize="characters"></div><button class="scan-btn" data-act="supCam" aria-label="Scan with camera">${ic('camera')}</button></div>
+    ${hits.length?`<div class="sksug">${hits.map(({key,it})=>`<button data-act="supAdd" data-k="${esc(key)}"><b>${esc(it.n)}</b><span>${esc([it.br,it.pt?'Party '+it.pt:''].filter(Boolean).join(' · '))}</span><em>${f.from==='damaged'?'dmg '+(+it.dm||0):''}</em><i>${f.from==='damaged'?(+it.dm||0):skQty(it)}</i></button>`).join('')}</div>`:''}
+    ${f.from==='damaged'&&!keys.length?skDamagedList():''}
+    <div class="sklist">${keys.map(k=>{const it=skItems(b.id)[k];if(!it)return '';const have=f.from==='damaged'?(+it.dm||0):skQty(it);return `<div class="skrow"><div><b>${esc(it.n)}</b><span>${esc([it.br,it.pt?'Party '+it.pt:''].filter(Boolean).join(' · '))} · ${f.from==='damaged'?'damaged':'in stock'} ${have}</span></div><input class="lq" data-supq="${esc(k)}" inputmode="numeric" value="${f.lines[k]}" aria-label="Pieces"></div>`}).join('')}</div>
+    ${keys.length?`<p class="hint">${pcs} pcs${isAdmin()&&val?` · cost ${inr(val)}`:''}${parties.length?` · party ${parties.map(esc).join(', ')}`:''}</p>`:''}
+    <div class="f"><span class="lab">Reason</span><div class="chips">${SK_SUP_REASONS.map(r=>`<button class="chip ${f.reason===r?'on':''}" data-act="supReason" data-v="${esc(r)}">${esc(r)}</button>`).join('')}</div></div>
+    <div class="f"><label for="supNote">Note (challan no., transport…)</label><input id="supNote" value="${esc(f.note)}"></div>
+    <button class="primary" data-act="supSave" ${keys.length?'':'disabled'}>SAVE GOODS RETURN · ${pcs} PCS</button>
+  </div></div>`}
+function skDamagedList(){const b=B();const d=Object.entries(skItems(b.id)).filter(([,it])=>+it.dm>0);if(!d.length)return '<p class="hint">No damaged pieces right now.</p>';
+  return `<p class="lab" style="margin:0">Damaged pieces · tap to add</p><div class="sksug">${d.map(([key,it])=>`<button data-act="supAdd" data-k="${esc(key)}"><b>${esc(it.n)}</b><span>${esc([it.br,it.pt?'Party '+it.pt:''].filter(Boolean).join(' · '))}</span><em></em><i class="out">${+it.dm}</i></button>`).join('')}</div>`}
+function skSupSave(){const b=B();const f=S.skSup;if(!f)return;const keys=Object.keys(f.lines).filter(k=>f.lines[k]>0);if(!keys.length)return;
+  const gid='gr_'+uid();const now=Date.now();const d={},m={};
+  for(const k of keys){const it=skItems(b.id)[k];if(!it)continue;const q=f.lines[k];
+    if(f.from==='damaged'){const have=+it.dm||0;if(q>have){toast(`${it.n}: only ${have} damaged`);return}m[k]={dm:DB.A.inc(-q)};it.dm=have-q}else d[k]=-q;
+    DB.A.set('skret','rt_'+uid(),{id:gid,biz:b.id,at:now,date:todayStr(),kind:'supplier',group:gid,sk:k,name:it.n,cat:it.c||'',bc:it.bc||'',dno:it.dn||'',brand:it.br||'',party:it.pt||'',qty:q,value:q*(+it.co||0),reason:f.reason||'',cond:f.from,note:f.note||'',by:isAdmin()?'Owner':(DEVICE.name||'counter')},false)}
+  if(Object.keys(d).length)skMove(b.id,d,'goods return to party');if(Object.keys(m).length)skWrite(b.id,m);
+  const pcs=keys.reduce((a,k)=>a+f.lines[k],0);S.skSup=null;S.overlay=null;delete CACHE['skret|'+b.id];render();toast(`Goods return saved · ${pcs} pcs taken out of stock`)}
+
+/* ---------- returns report ---------- */
+function skRetData(biz){return need('skret|'+biz,()=>DB.A.query('skret',[['biz','==',biz]]))}
+screens.skReturns=function(){const b=B();const all=skRetData(b.id);const tb=topbar('Returns & exchanges','stock',bizPill());if(!all)return `${tb}<div class="pad">${loading()}</div>`;
+  const per=S.rtPer||'month';const t=todayStr();const from=per==='month'?t.slice(0,8)+'01':per==='last'?ym(new Date(new Date().getFullYear(),new Date().getMonth()-1,1))+'-01':per==='3m'?addDays(t,-90):'0000';
+  const to=per==='last'?monthRange(ym(new Date(new Date().getFullYear(),new Date().getMonth()-1,1)))[1]:'9999';
+  const kind=S.rtKind||'all';let rs=all.filter(r=>r.date>=from&&r.date<=to);const sum=k=>rs.filter(r=>r.kind===k).reduce((a,r)=>a+r.qty,0);
+  const tot={refund:sum('refund'),exchange:sum('exchange'),supplier:sum('supplier'),damaged:rs.filter(r=>r.kind!=='supplier'&&r.cond==='damaged').reduce((a,r)=>a+r.qty,0)};
+  if(kind!=='all')rs=rs.filter(r=>r.kind===kind);
+  const grp=(key)=>Object.entries(groupBy(rs,key)).map(([k,x])=>({k:k||'—',q:x.reduce((a,r)=>a+r.qty,0),v:x.reduce((a,r)=>a+(r.value||0),0)})).sort((a,c)=>c.q-a.q);
+  const bars=(rows,lim=8)=>{const mx=Math.max(1,...rows.map(r=>r.q));return rows.slice(0,lim).map(r=>`<div class="month-row"><span>${esc(r.k)}</span><div class="bar"><i style="width:${pct(r.q,mx)}%"></i></div><b>${r.q}</b></div>`).join('')};
+  const KL={refund:'Return',exchange:'Exchange',supplier:'To party'};
+  const sold=need(`b|${from<'2000'?addDays(t,-365):from}|${addDays(t,-1)}`,()=>DB.billsRange(from<'2000'?addDays(t,-365):from,addDays(t,-1)));
+  return `${tb}<div class="pad" style="padding-top:4px;gap:12px">
+    <div class="chips scroll">${[['month','This month'],['last','Last month'],['3m','3 months'],['all','All time']].map(([k,l])=>`<button class="chip ${per===k?'on':''}" data-act="rtPer" data-v="${k}">${l}</button>`).join('')}</div>
+    <div class="kgrid">
+      <button class="kpi skk ${kind==='refund'?'on':''}" data-act="rtKind" data-v="refund"><span>Customer returns</span><b>${tot.refund} pcs</b></button>
+      <button class="kpi skk ${kind==='exchange'?'on':''}" data-act="rtKind" data-v="exchange"><span>Exchanges</span><b>${tot.exchange} pcs</b></button>
+      <button class="kpi skk ${kind==='supplier'?'on':''}" data-act="rtKind" data-v="supplier"><span>Goods return to party</span><b>${tot.supplier} pcs</b></button>
+      <div class="kpi"><span>Came back damaged</span><b style="color:var(--bad)">${tot.damaged} pcs</b></div></div>
+    ${kind!=='all'?`<p class="hint">Showing ${KL[kind].toLowerCase()}s only · <button class="linkbtn" data-act="rtKind" data-v="all">Show all</button></p>`:''}
+    ${rs.length?`<div class="card"><div class="card-h"><h3>Most returned items</h3><span class="hint">pieces</span></div>${bars(grp('name'),10)}</div>
+    <div class="card"><div class="card-h"><h3>Why</h3></div>${bars(grp('reason'))}</div>
+    <div class="card"><div class="card-h"><h3>By brand</h3></div>${bars(grp('brand'))}</div>
+    ${kind==='supplier'||kind==='all'?`<div class="card"><div class="card-h"><h3>Goods return by party</h3></div>${bars(grp(r=>r.kind==='supplier'?(r.party?'Party '+r.party:'—'):null).filter(r=>r.k!=='null'))||'<p class="hint">None</p>'}</div>`:''}
+    ${kind!=='supplier'?`<div class="card"><div class="card-h"><h3>By size</h3></div>${bars(grp(r=>r.kind==='supplier'?null:r.size).filter(r=>r.k!=='null'&&r.k!=='—'))||'<p class="hint">No sizes</p>'}</div>`:''}
+    <div class="card"><div class="card-h"><h3>All entries</h3><button class="linkbtn" data-act="rtExport">${ic('download')} Excel</button></div>
+      ${rs.slice().sort((a,c)=>c.at-a.at).slice(0,80).map(r=>`<div class="bline"><div class="grow"><b>${esc(r.name)}</b><span>${dayLabel(r.date)} · ${KL[r.kind]}${r.no?' · '+esc(r.no):''}${r.party?' · Party '+esc(r.party):''}${r.reason?' · '+esc(r.reason):''}${r.cond==='damaged'?' · damaged':''}</span></div><b>${r.qty}</b></div>`).join('')}</div>`:'<div class="empty">No returns, exchanges or goods returns in this period.</div>'}
+  </div>`};
+async function skRetExport(){const b=B();const all=skRetData(b.id)||[];try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load Excel');return}
+  const KL={refund:'Customer return',exchange:'Exchange',supplier:'Goods return to party'};
+  const rows=all.sort((a,c)=>a.at-c.at).map(r=>({Date:r.date,Type:KL[r.kind],'Bill no':r.no||'','Item':r.name,'Barcode':r.bc,'D.no':r.dno,'Category':r.cat,'Brand':r.brand,'Party':r.party||'','Size':r.size||'','Qty':r.qty,'Value':r.value||0,'Reason':r.reason,'Condition':r.cond,'Customer':r.customer||'','Note':r.note||'','By':r.by}));
+  const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Returns');XLSX.writeFile(wb,`${b.prefix||b.id}_Returns_${todayStr()}.xlsx`)}
+NAV_OF.skReturns='more';
+
+/* ---------- item sheet: return history + damaged ---------- */
+const _skItemSheet=skItemSheet;
+skItemSheet=function(){let h=_skItemSheet();const b=B();const it=skItems(b.id)[SK.view];if(!it)return h;const all=skRetData(b.id);
+  const mine=(all||[]).filter(r=>r.sk===SK.view);const q=k=>mine.filter(r=>r.kind===k).reduce((a,r)=>a+r.qty,0);
+  const box=`<div class="tags">${+it.dm?`<span class="tag" style="color:var(--bad)">Damaged ${+it.dm}</span>`:''}<span class="tag">Returned ${q('refund')}</span><span class="tag">Exchanged ${q('exchange')}</span><span class="tag">To party ${q('supplier')}</span></div>`;
+  const k=h.indexOf('<div class="tags">');return k<0?h:h.slice(0,k)+box+h.slice(k)};
+
+/* ---------- stock screen: new buttons ---------- */
+const _stockScr=screens.stock;
+screens.stock=function(){let h=_stockScr();const b=B();if(!isAdmin()||!skHas(b.id))return h.replace(`<button class="secondary" data-act="skNew">${ic('plus')} Add an item by hand</button>`,`<button class="secondary" data-act="skNew">${ic('plus')} Add an item by hand</button><button class="secondary" data-act="skTpl">${ic('download')} Download item format (Excel)</button>`);
+  const dmg=Object.values(skItems(b.id)).reduce((a,it)=>a+(+it.dm||0),0);
+  const extra=`<div class="two"><button class="secondary" data-go="skReturns">${ic('swap')} Returns report</button><button class="secondary" data-act="skSup">${ic('out')} Goods return to party${dmg?` <span class="pill-state wait">${dmg} dmg</span>`:''}</button></div>`;
+  h=h.replace('<div class="sklist">',extra+'<div class="sklist">');
+  return h.replace(`<button class="secondary" data-act="skNew">${ic('plus')} Add new item (stock in)</button>`,`<button class="secondary" data-act="skArt">${ic('grid')} Add article · all sizes & colours</button><button class="secondary" data-act="skNew">${ic('plus')} Add one item</button><button class="secondary" data-act="skTpl">${ic('download')} Download item format (Excel)</button>`)};
+window.EXTRA_OV=Object.assign(window.EXTRA_OV,{skArt:skArtSheet,skSup:skSupSheet,skItem:skItemSheet});
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;const act=a.dataset.act;const b=B();const i=+a.dataset.i;
+  switch(act){
+    case 'skTpl':skTemplate();return;
+    case 'skArt':S.skArt=null;S.overlay='skArt';render();setTimeout(()=>{const n=$('afArt');if(n)n.focus()},60);return;
+    case 'afSet':skArtKeep();S.skArt.sizes=a.dataset.v;render();return;
+    case 'rtQ':{const x=S.ex&&S.ex.bill;if(!x||!SK.ret)return;const l=x.lines[i];SK.ret.rq[i]=Math.min(l.qty,Math.max(1,(SK.ret.rq[i]??l.qty)+ +a.dataset.d));render();return}
+    case 'rtReason':if(SK.ret){SK.ret.reason=SK.ret.reason===a.dataset.v?'':a.dataset.v;render()}return;
+    case 'rtCond':if(SK.ret){SK.ret.cond=a.dataset.v;render()}return;
+    case 'rtPer':S.rtPer=a.dataset.v;render();return;
+    case 'rtKind':S.rtKind=S.rtKind===a.dataset.v?'all':a.dataset.v;render();return;
+    case 'rtExport':skRetExport();return;
+    case 'skSup':S.skSup=null;S.overlay='skSup';render();return;
+    case 'supFrom':S.skSup.from=a.dataset.v;S.skSup.lines={};render();return;
+    case 'supAdd':{const it=skItems(b.id)[a.dataset.k];if(!it)return;S.skSup.lines[a.dataset.k]=(S.skSup.lines[a.dataset.k]||0)+1;S.skSup.q='';render();return}
+    case 'supReason':S.skSup.reason=S.skSup.reason===a.dataset.v?'':a.dataset.v;render();return;
+    case 'supCam':{const keep=S.skSup;skCamOpen(code=>{S.skSup=keep;S.overlay='skSup';const f=skFind(b.id,code);if(f){keep.lines[f.key]=(keep.lines[f.key]||0)+1;render()}else{render();toast(`"${code}" not found`)}});return}
+    case 'supSave':skSupSave();return;
+  }
+});
+document.addEventListener('input',e=>{const t=e.target;
+  if(['afArt','afColors','afSizes'].includes(t.id)){clearTimeout(SK.afT);SK.afT=setTimeout(()=>skArtRefresh(t.id),350);return}
+  if(['afCat','afCd','afM','afCo'].includes(t.id)){skArtKeep();return}
+  if(t.dataset.afq!==undefined&&S.skArt){S.skArt.qty[t.dataset.afq]=Math.max(0,parseInt(t.value)||0);return}
+  if(t.id==='supQ'&&S.skSup){S.skSup.q=t.value;clearTimeout(SK.supT);SK.supT=setTimeout(()=>{const pos=t.selectionStart;render();const n=$('supQ');if(n){n.focus();n.setSelectionRange(pos,pos)}},250);return}
+  if(t.id==='supNote'&&S.skSup){S.skSup.note=t.value;return}
+  if(t.dataset.supq!==undefined&&S.skSup){const v=Math.max(0,parseInt(t.value)||0);if(v)S.skSup.lines[t.dataset.supq]=v;else delete S.skSup.lines[t.dataset.supq];return}
+});
+document.addEventListener('keydown',e=>{if(e.target&&e.target.id==='supQ'&&e.key==='Enter'){e.preventDefault();const b=B();const f=skFind(b.id,e.target.value);if(f){S.skSup.lines[f.key]=(S.skSup.lines[f.key]||0)+1;S.skSup.q='';render();setTimeout(()=>{const n=$('supQ');if(n)n.focus()},30)}else toast('Not found')}});
+document.addEventListener('submit',e=>{if(e.target.id!=='skArtForm')return;e.preventDefault();skArtKeep();const b=B();const f=S.skArt;
+  const art=f.art.trim().toUpperCase();const colors=f.colors.split(/[,\s]+/).map(x=>x.trim().toUpperCase()).filter(Boolean),sizes=f.sizes.split(/[,\s]+/).map(x=>x.trim().toUpperCase()).filter(Boolean);
+  const m=+f.m||0;if(!art||!colors.length||!sizes.length){toast('Fill article, colours and sizes');return}if(!m){toast('Type the MRP');return}
+  const cd=f.cd.trim().toUpperCase();const pc=skParseCode(cd);const co=+f.co||(pc.rate?Math.round(pc.rate*25*100)/100:0);let dn=+skNextDno(b.id);
+  const map={};const used=new Set();let made=0,pcs=0,skipped=0;
+  colors.forEach(c=>sizes.forEach(z=>{const n=`${art}-${c}-${z}`;const q=f.qty[n]??1;const ex=ST.skIdx[b.id]&&ST.skIdx[b.id].name.get(n);
+    if(ex){if(q>0){skMove(b.id,{[ex]:q},'stock in');pcs+=q;SK.labelQ[ex]=(SK.labelQ[ex]||0)+q}skipped++;return}
+    let bc;do{bc=skNewBarcode(b.id)}while(used.has(bc));used.add(bc);const key=skKey(bc);
+    map[key]={n,c:f.cat.trim()||'Other',bc,dn:String(dn++),cd,pt:pc.party,br:pc.brand,m,sp:m,co,lo:1,q,del:false,at:Date.now()};made++;pcs+=q;if(q>0)SK.labelQ[key]=q}));
+  if(made){ST.stock[b.id]={...skItems(b.id),...map};skReindex(b.id);skWrite(b.id,map);DB.A.set('stocklog','sl_'+uid(),{biz:b.id,at:Date.now(),date:todayStr(),by:'Owner',why:'new article '+art,n:made},false)}
+  S.skArt=null;S.overlay=skLabelTotal()?'skLabels':null;render();toast(`${made} new item${made===1?'':'s'}${skipped?` · ${skipped} already existed (stock added)`:''} · ${pcs} pcs · labels ready`)});
+
+/* ============================================================
+   v1.5 · A sales dashboard for every store
+   - Owner home: one colour card per store (today, month, vs last month, target)
+   - Store dashboard: cards chosen per store (Rosy: stock, sizes, brands, returns;
+     Pinky: categories, price ranges; Cmore: items, staff…), order and on/off saved
+     on the business record (b.dash) and a monthly store target (b.target)
+   ============================================================ */
+const DCARDS={
+  today:['Today by hour','Sales hour by hour today'],
+  trend:['Last 30 days','Daily sales, last 30 days'],
+  staff:['Staff & targets','Who sold how much this month'],
+  cats:['Categories','Sales by category this month'],
+  items:['Top items','Best sellers this month'],
+  price:['Price ranges','Which price range sells most'],
+  pay:['How customers paid','Cash, UPI, card, due this month'],
+  week:['Best weekdays','Average sale by weekday'],
+  stock:['Stock alerts','Low and out of stock (barcode stores)'],
+  brands:['Brands','Brand-wise sales (barcode stores)'],
+  sizes:['Sizes','Sizes sold this month (barcode stores)'],
+  returns:['Returns','Returns and exchanges this month'],
+  cash:['Cash today','Drawer cash and expenses today']
+};
+function dashDefault(b){const k=`${b.kind||''} ${b.name||''}`.toLowerCase();
+  if(/inner|night|lingerie|rosy|garment|cloth/.test(k))return ['today','staff','stock','sizes','brands','cats','returns','pay','trend'];
+  if(/jewel|pinky|bangle|ring/.test(k))return ['today','staff','cats','price','items','pay','week','trend'];
+  if(/watch|cmore|clock/.test(k))return ['today','staff','items','cats','price','pay','trend','week'];
+  return ['today','staff','cats','items','pay','trend']}
+const dashCards=b=>(Array.isArray(b.dash)&&b.dash.length?b.dash:dashDefault(b)).filter(k=>DCARDS[k]);
+const storeTarget=b=>+b.target||(b.staff||[]).filter(s=>s.active!==false).reduce((a,s)=>a+(+s.target||0),0);
+const dk=v=>v>=100000?'₹'+(+(v/100000).toFixed(1))+'L':v>=1000?'₹'+(+(v/1000).toFixed(1))+'k':'₹'+Math.round(v);
+
+/* ---------- numbers for one store ---------- */
+function storeNums(b){const t=todayStr();const mStart=t.slice(0,8)+'01';const d0=new Date();const lastM=ym(new Date(d0.getFullYear(),d0.getMonth()-1,1));const [lf]=monthRange(lastM);
+  const td=todayOf(b.id);const today=agg(td.flatMap(billRecs));
+  const mo=ST.month[b.id]||{sales:0,bills:0,profit:0};
+  const docs=need(`d|${lf}|${addDays(t,-1)}`,()=>DB.daily(lf,addDays(t,-1)));
+  const day=+t.slice(8);let lastSame=null,lastAll=null;
+  if(docs){const mine=docs.filter(x=>x.biz===b.id);lastSame=mine.filter(x=>x.date.startsWith(lastM)&&+x.date.slice(8)<=day).reduce((a,x)=>a+(x.sales||0),0);lastAll=mine.filter(x=>x.date.startsWith(lastM)).reduce((a,x)=>a+(x.sales||0),0)}
+  const [,mEnd]=monthRange(t.slice(0,7));const days=+mEnd.slice(8);const target=storeTarget(b);
+  return {today,bills:td.length,avg:td.length?Math.round(today.sales/td.length):0,month:mo.sales||0,mBills:mo.bills||0,mProfit:mo.profit||0,lastSame,lastAll,
+    change:lastSame?Math.round(((mo.sales||0)-lastSame)/lastSame*100):null,proj:day?Math.round((mo.sales||0)/day*days):0,target,tp:target?pct(mo.sales||0,target):0,
+    need:target&&day<days?Math.max(0,Math.round((target-(mo.sales||0))/(days-day+1))):0}}
+function spark(b){const t=todayStr();const docs=need(`d|${addDays(t,-13)}|${addDays(t,-1)}`,()=>DB.daily(addDays(t,-13),addDays(t,-1)));if(!docs)return '';
+  const vals=[];for(let i=13;i>=1;i--){const d=addDays(t,-i);vals.push((docs.find(x=>x.biz===b.id&&x.date===d)||{}).sales||0)}vals.push(todaySales(b.id));
+  const mx=Math.max(1,...vals);const W=120,H=34;const pts=vals.map((v,i)=>`${(i*(W/(vals.length-1))).toFixed(1)},${(H-2-(v/mx)*(H-6)).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>`}
+
+/* ---------- owner home: store cards ---------- */
+function storeCardsHTML(){const list=activeBiz();const all=list.reduce((a,x)=>a+agg(todayOf(x.id).flatMap(billRecs)).sales,0);
+  return `<section class="stores"><div class="card-h" style="margin:0"><h3>Store dashboards</h3><b class="tnum">${inr(all)} today</b></div>
+    <div class="store-grid">${list.map(x=>{const n=storeNums(x);return `<button class="store-card" data-act="openDash" data-v="${x.id}" style="--sc:${x.color}">
+      <div class="sc-top"><span class="sc-dot">${esc(x.short)}</span><b>${esc(x.name)}</b>${ic('chev','chev')}</div>
+      <div class="sc-today"><span>Today</span><b>${inr(n.today.sales)}</b><small>${n.bills} bill${n.bills===1?'':'s'}</small></div>
+      ${spark(x)}
+      <div class="sc-month"><span>Month ${dk(n.month)}</span>${n.change==null?'':`<em class="${n.change>=0?'up':'down'}">${n.change>=0?'▲':'▼'} ${Math.abs(n.change)}%</em>`}</div>
+      ${n.target?`<div class="bar ${n.tp>=100?'good':''}"><i style="width:${Math.min(100,n.tp)}%;background:var(--sc)"></i></div><small class="sc-t">${n.tp}% of ${dk(n.target)} target</small>`:'<small class="sc-t">No target set</small>'}
+    </button>`}).join('')}</div></section>`}
+const _adminHome=adminHome;
+adminHome=function(){const h=_adminHome();const a=h.indexOf('<section class="card all-biz">');if(a<0)return h;const z=h.indexOf('</section>',a)+'</section>'.length;return h.slice(0,a)+storeCardsHTML()+h.slice(z)};
+const _counterHomeD=counterHome;
+counterHome=function(){const h=_counterHomeD();const b=B();const n=storeNums(b);
+  const card=`<button class="list-btn" data-act="openDash" data-v="${b.id}">${ic('chart')}<span>${esc(b.name)} dashboard<small>Today ${inr(n.today.sales)} · month ${dk(n.month)}${n.target?` · ${n.tp}% of target`:''}</small></span>${ic('chev','chev')}</button>`;
+  const k=h.indexOf('<div class="kgrid">');return k<0?h:h.slice(0,k)+card+h.slice(k)};
+
+/* ---------- store dashboard screen ---------- */
+screens.dash=function(){const b=B();const n=storeNums(b);const own=isAdmin();const t=todayStr();const mStart=t.slice(0,8)+'01';
+  const bl=bizBills(billsBetween(mStart,t),b.id);const recs=bl?bl.flatMap(billRecs):null;
+  const cards=dashCards(b).map(k=>{try{return dashCard(k,b,recs,bl)}catch(e){console.warn(k,e);return ''}}).join('');
+  return `${topbar(esc(b.name)+' dashboard','home',bizPill())}
+  <div class="pad" style="padding-top:4px;gap:12px;--accent:${b.color};--bar:color-mix(in srgb,${b.color} 35%,var(--surface))">
+    <section class="dash-hero" style="--sc:${b.color}">
+      <div class="dh-top"><span>${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'})}</span>${own?`<button data-act="dashEdit">${ic('sliders')} Customise</button>`:''}</div>
+      <p class="dh-l">Today's sales</p><p class="dh-big">${inr(n.today.sales)}</p>
+      <div class="dh-row"><div><span>Bills</span><b>${n.bills}</b></div><div><span>Avg bill</span><b>${inr(n.avg)}</b></div><div><span>Items</span><b>${n.today.items}</b></div>${own?`<div><span>${ic('lock')}Profit</span><b>${inr(n.today.profit)}</b></div>`:''}</div>
+      <div class="dh-month"><div><span>This month</span><b>${inr(n.month)}</b>${n.change==null?'':`<em>${n.change>=0?'▲':'▼'} ${Math.abs(n.change)}% vs last month</em>`}</div>
+        <div><span>On track for</span><b>${inr(n.proj)}</b>${n.lastAll!=null?`<em>last month ${dk(n.lastAll)}</em>`:''}</div></div>
+      ${n.target?`<div class="dh-target"><div class="bar"><i style="width:${Math.min(100,n.tp)}%"></i></div><span>${n.tp}% of ${inr(n.target)} target${n.tp<100&&n.need?` · need ${inr(n.need)}/day`:n.tp>=100?' · target reached 🎉':''}</span></div>`:own?`<button class="dh-set" data-act="dashEdit">Set a monthly target for ${esc(b.name)}</button>`:''}
+    </section>
+    <div class="qa"><button data-act="newSale">${ic('bill')}New sale</button>${skHas(b.id)?`<button data-go="stock">${ic('scan')}Stock</button>`:''}<button data-go="exchange">${ic('swap')}Exchange</button>${own?`<button data-go="reports">${ic('chart')}Reports</button>`:''}</div>
+    ${cards||'<div class="empty">No cards switched on. Tap Customise.</div>'}
+  </div>`};
+NAV_OF.dash='home';
+
+function dashCard(k,b,recs,bl){const [title]=DCARDS[k];const box=(body,link)=>`<section class="card dcard"><div class="card-h"><h3>${title}</h3>${link||''}</div>${body}</section>`;
+  const wait='<p class="hint">Loading…</p>';const rows=(list,fmt,max,col)=>{const mx=max||Math.max(1,...list.map(r=>r.v));return list.map(r=>`<div class="month-row"><span>${esc(r.l)}</span><div class="bar"><i style="width:${pct(r.v,mx)}%;background:${col||b.color}"></i></div><b>${fmt(r)}</b></div>`).join('')};
+  switch(k){
+    case 'today':return box(chart('today'));
+    case 'trend':return box(chart('30d'));
+    case 'staff':{const mo=ST.month[b.id]||{};const st=(b.staff||[]).filter(x=>x.active!==false).map(s=>({s,m:(mo.staff&&mo.staff[s.id])||{sales:0,bills:0}})).sort((x,y)=>y.m.sales-x.m.sales);
+      return box(st.length?`<div class="rows">${st.map(({s,m},i)=>{const a=pct(m.sales,s.target||0);return `<div class="row" style="flex-wrap:wrap" ${isAdmin()?`data-act="openStaff" data-v="${s.id}"`:''}><div class="rank">${i+1}</div><div class="grow"><b>${esc(s.name)}</b><span>${m.bills||0} bills${s.target?` · target ${dk(s.target)}`:''}</span></div><div class="end"><b>${inr(m.sales)}</b><span>${s.target?a+'%':''}</span></div>${s.target?`<div class="bar ${a>=100?'good':''}" style="flex-basis:100%"><i style="width:${Math.min(a,100)}%;background:${a>=100?'':b.color}"></i></div>`:''}</div>`}).join('')}</div>`:'<p class="hint">No staff yet.</p>')}
+    case 'cats':{if(!recs)return box(wait);const g=Object.entries(groupBy(recs,'cat')).map(([c,x])=>({l:c,v:agg(x).sales,q:agg(x).items})).sort((x,y)=>y.v-x.v).slice(0,8);return box(g.length?rows(g,r=>dk(r.v)):'<p class="hint">No sales yet this month.</p>')}
+    case 'items':{if(!recs)return box(wait);const g=Object.values(groupBy(recs,r=>r.cat+'|'+r.item)).map(x=>({l:x[0].item,c:x[0].cat,o:agg(x)})).sort((x,y)=>y.o.sales-x.o.sales).slice(0,6);
+      return box(g.length?`<div class="rows">${g.map((r,i)=>`<div class="row"><div class="rank">${i+1}</div><div class="grow"><b>${esc(r.l)}</b><span>${esc(r.c)}</span></div><div class="end"><b>${inr(r.o.sales)}</b><span>${r.o.items} sold</span></div></div>`).join('')}</div>`:'<p class="hint">No sales yet this month.</p>')}
+    case 'price':{if(!recs)return box(wait);const g=Object.entries(groupBy(recs,r=>bandOf(r.price))).map(([i,x])=>({i:+i,v:x.reduce((a,r)=>a+r.qty,0)})).sort((x,y)=>x.i-y.i).map(r=>({l:BANDS[r.i+1]===Infinity?`${dk(BANDS[r.i])}+`:`${dk(BANDS[r.i])}–${dk(BANDS[r.i+1])}`,v:r.v}));
+      const top=g.reduce((m,r)=>r.v>(m?m.v:-1)?r:m,null);return box(g.length?rows(g,r=>r.v+' pcs')+(top?`<p class="hint" style="margin-top:6px">Most pieces sell at <b>${esc(top.l)}</b></p>`:''):'<p class="hint">No sales yet this month.</p>')}
+    case 'pay':{if(!bl)return box(wait);const p={Cash:0,UPI:0,Card:0,Due:0};bl.forEach(x=>{const m=billMoney(x);p.Cash+=m.Cash||0;p.UPI+=m.UPI||0;p.Card+=m.Card||0;p.Due+=x.due||0});const tot=Object.values(p).reduce((a,v)=>a+v,0);
+      return box(tot?`<div class="paybar">${Object.entries(p).filter(([,v])=>v>0).map(([k2,v])=>`<i class="p-${k2}" style="flex:${v}"></i>`).join('')}</div><div class="paylegend">${Object.entries(p).map(([k2,v])=>`<span><i class="p-${k2}"></i>${k2} <b>${inr(v)}</b> ${pct(v,tot)}%</span>`).join('')}</div>`:'<p class="hint">No payments yet this month.</p>')}
+    case 'week':{const t=todayStr();const docs=need(`d|${addDays(t,-56)}|${addDays(t,-1)}`,()=>DB.daily(addDays(t,-56),addDays(t,-1)));if(!docs)return box(wait);
+      const s=[0,0,0,0,0,0,0],c=[0,0,0,0,0,0,0];docs.filter(x=>x.biz===b.id).forEach(x=>{const w=parseYmd(x.date).getDay();s[w]+=x.sales||0;c[w]++});const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const g=[1,2,3,4,5,6,0].map(i=>({l:WD[i],v:c[i]?s[i]/c[i]:0}));return box(rows(g,r=>dk(r.v))+'<p class="hint" style="margin-top:6px">Last 8 weeks</p>')}
+    case 'stock':{if(!skHas(b.id))return isAdmin()?box(`<p class="hint">No stock list for ${esc(b.name)} yet.</p><button class="secondary" data-go="stock" style="margin-top:8px">${ic('scan')} Import stock</button>`):'';
+      const its=Object.entries(skItems(b.id)).map(([key,it])=>({key,it}));const s=skStats(its);const low=its.filter(x=>skLow(x.it)).sort((a,c)=>skQty(a.it)-skQty(c.it)).slice(0,5);
+      return box(`<div class="kgrid"><div class="kpi"><span>Pieces</span><b>${s.pcs.toLocaleString('en-IN')}</b></div><div class="kpi"><span>At MRP</span><b>${dk(s.mrp)}</b></div><button class="kpi skk" data-act="dashStock" data-v="low"><span>Low</span><b style="color:var(--warn)">${s.low}</b></button><button class="kpi skk" data-act="dashStock" data-v="out"><span>Out</span><b style="color:var(--bad)">${s.out}</b></button></div>
+        ${low.length?`<div class="sklist" style="margin-top:8px">${low.map(({key,it})=>`<button class="skrow" data-act="skOpen" data-k="${esc(key)}"><div><b>${esc(it.n)}</b><span>${esc(it.c||'')}</span></div><em></em><i class="low">${skQty(it)}</i></button>`).join('')}</div>`:''}`,`<button class="ghost-btn" data-go="stock">Open</button>`)}
+    case 'brands':{if(!recs)return box(wait);const g=Object.entries(groupBy(recs.filter(r=>r.brand),'brand')).map(([c,x])=>({l:c,v:agg(x).sales})).sort((x,y)=>y.v-x.v).slice(0,8);if(!g.length&&!skHas(b.id))return '';return box(g.length?rows(g,r=>dk(r.v)):'<p class="hint">Brands appear once barcode items are sold.</p>')}
+    case 'sizes':{if(!recs)return box(wait);const g=Object.entries(groupBy(recs.filter(r=>r.size),'size')).map(([c,x])=>({l:c,v:x.reduce((a,r)=>a+r.qty,0)})).sort((x,y)=>y.v-x.v).slice(0,10);if(!g.length&&!skHas(b.id))return '';return box(g.length?rows(g,r=>r.v+' pcs',0,'var(--good)'):'<p class="hint">Sizes appear once barcode items are sold.</p>')}
+    case 'returns':{const all=skRetData(b.id);if(!all)return box(wait);const m=todayStr().slice(0,7);const rs=all.filter(r=>r.date.startsWith(m));const q=k2=>rs.filter(r=>r.kind===k2).reduce((a,r)=>a+r.qty,0);
+      const reasons=Object.entries(groupBy(rs.filter(r=>r.kind!=='supplier'),'reason')).map(([c,x])=>({l:c||'—',v:x.reduce((a,r)=>a+r.qty,0)})).sort((x,y)=>y.v-x.v).slice(0,4);
+      return box(`<div class="kgrid"><div class="kpi"><span>Returned</span><b>${q('refund')}</b></div><div class="kpi"><span>Exchanged</span><b>${q('exchange')}</b></div></div>${reasons.length?`<div style="margin-top:8px">${rows(reasons,r=>r.v)}</div>`:''}`,skHas(b.id)?`<button class="ghost-btn" data-go="skReturns">Report</button>`:'')}
+    case 'cash':return typeof moneyCard==='function'?moneyCard(b):'';
+  }return ''}
+
+/* ---------- customise sheet ---------- */
+function dashEditSheet(){const b=B();const on=S.dashDraft||(S.dashDraft=dashCards(b).slice());const off=Object.keys(DCARDS).filter(k=>!on.includes(k));const tg=S.dashTarget!=null?S.dashTarget:(+b.target||'');
+  return `<button class="overlay-bg" data-act="dashClose" aria-label="Close"></button>
+  <div class="sheet" role="dialog" aria-label="Customise dashboard"><div class="grab"></div><div class="sh-body"><h3>${esc(b.name)} dashboard</h3>
+    <div class="f"><label for="dashTgt">Monthly sales target for ${esc(b.name)} ₹</label><input id="dashTgt" inputmode="numeric" value="${tg}" placeholder="${storeTarget({...b,target:0})||'e.g. 500000'}"><small>Blank = total of staff targets</small></div>
+    <p class="lab" style="margin:0">Cards shown, in order</p>
+    <div class="dlist">${on.map((k,i)=>`<div class="drow on"><div class="grow"><b>${DCARDS[k][0]}</b><span>${DCARDS[k][1]}</span></div><button data-act="dashMove" data-v="${k}" data-d="-1" ${i?'':'disabled'} aria-label="Move up">▲</button><button data-act="dashMove" data-v="${k}" data-d="1" ${i<on.length-1?'':'disabled'} aria-label="Move down">▼</button><button class="x" data-act="dashToggle" data-v="${k}" aria-label="Hide">×</button></div>`).join('')}</div>
+    ${off.length?`<p class="lab" style="margin:0">Add a card</p><div class="chips">${off.map(k=>`<button class="chip" data-act="dashToggle" data-v="${k}">+ ${DCARDS[k][0]}</button>`).join('')}</div>`:''}
+    <button class="primary" data-act="dashSave">SAVE DASHBOARD</button>
+    <button class="linkbtn" data-act="dashReset">Reset to ${esc(b.name)} default</button>
+  </div></div>`}
+window.EXTRA_OV=Object.assign(window.EXTRA_OV,{dashEdit:dashEditSheet});
+
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;const b=B();const v=a.dataset.v;
+  switch(a.dataset.act){
+    case 'openDash':if(isAdmin()&&v&&S.biz!==v){S.biz=v;resetSale();S.saleCat=null;S.ex=null;S.exResults=null;S.rCat='All';S.bookBiz=null}go('dash');return;
+    case 'dashEdit':S.dashDraft=null;S.dashTarget=null;S.overlay='dashEdit';render();return;
+    case 'dashClose':S.overlay=null;S.dashDraft=null;S.dashTarget=null;render();return;
+    case 'dashToggle':{const d=S.dashDraft;const i=d.indexOf(v);if(i>=0)d.splice(i,1);else d.push(v);render();return}
+    case 'dashMove':{const d=S.dashDraft;const i=d.indexOf(v);const j=i+ +a.dataset.d;if(j<0||j>=d.length)return;[d[i],d[j]]=[d[j],d[i]];render();return}
+    case 'dashReset':S.dashDraft=dashDefault(b).slice();render();return;
+    case 'dashSave':{const tg=$('dashTgt')?Math.max(0,parseInt($('dashTgt').value)||0):(+b.target||0);b.dash=S.dashDraft.slice();b.target=tg;DB.saveBiz(b);S.overlay=null;S.dashDraft=null;S.dashTarget=null;render();toast(`${b.name} dashboard saved`);return}
+    case 'dashStock':SK.filter={q:'',cat:'',brand:'',status:v,limit:60};go('stock');return;
+  }});
+document.addEventListener('input',e=>{if(e.target.id==='dashTgt')S.dashTarget=e.target.value.replace(/\D/g,'')});
+
+/* ============================================================
+   v1.6 · Sales style per store
+   stock  = barcode / stock billing only (Rosy): scan bar + stock search, tiles hidden
+   quick  = quick items: category tiles → price → cost code word, no scan bar, no stock
+   both   = both on the same screen
+   Saved on the business record as b.saleMode
+   ============================================================ */
+const SM_LABEL={stock:['Stock · barcode','Scan or search stock. Stock goes down with every bill.'],quick:['Quick items','Tap category → item → price → code word. No stock.'],both:['Both','Scan stock items and tap quick items on the same bill.']};
+const saleMode=b=>b&&SM_LABEL[b.saleMode]?b.saleMode:(b&&skHas(b.id)?'both':'quick');
+S.smManual=false;
+
+/* New sale screen per style */
+const _saleSM=screens.sale;
+screens.sale=function(){const b=B();const mode=saleMode(b);let h=_saleSM();
+  if(mode==='stock'){
+    const manual=S.smManual||(S.cart.some(l=>!l.sk)&&!!S.cart.length);
+    h=h.replace('<div class="pad" style="padding-top:2px;gap:12px">',`<div class="pad ${manual?'':'sm-stock'}" style="padding-top:2px;gap:12px">`);
+    const i=h.indexOf('id="saleSearch"');if(i>0){const j=h.lastIndexOf('<div class="search">',i);if(j>0)h=h.slice(0,j)+'<div class="search sale-find">'+h.slice(j+'<div class="search">'.length)}
+    h=h.replace('Tap an item → type price and code → Add','Scan a barcode to start the bill');
+    const k=h.indexOf('<div class="skbar" id="skBar">');const end=k>0?h.indexOf('</div></div>',h.indexOf('id="skSug"',k)):-1;
+    const link=`<button class="linkbtn sm-manual" data-act="smManual">${manual?'Hide items without barcode':'+ Item without barcode (tap from list)'}</button>`;
+    if(k>0){const p=h.indexOf('<p class="hint">',k);const q=h.indexOf('</p>',p)+4;h=h.slice(0,q)+link+h.slice(q)}else h=h.replace('<div class="search sale-find">',link+'<div class="search sale-find">');
+  }
+  return h};
+const _skBarSM=skBarHTML;
+skBarHTML=function(){const b=B();if(saleMode(b)==='quick')return '<div id="skBar" hidden></div>';return _skBarSM()};
+const _skScanSM=skScan;
+skScan=function(code){const b=B();if(saleMode(b)==='quick')return false;return _skScanSM(code)};
+
+/* counter home + dashboard follow the style */
+const _counterHomeSM=counterHome;
+counterHome=function(){let h=_counterHomeSM();const b=B();if(saleMode(b)==='quick'){const a=h.indexOf('<button class="list-btn" data-go="stock">');if(a>=0){const z=h.indexOf('</button>',a)+9;h=h.slice(0,a)+h.slice(z)}}
+  return h.replace('+ NEW SALE',saleMode(b)==='stock'?'+ NEW SALE · SCAN':'+ NEW SALE')};
+const _dashCardSM=dashCard;
+dashCard=function(k,b,recs,bl){if(saleMode(b)==='quick'&&['stock','brands','sizes','returns'].includes(k)&&!skHas(b.id))return '';return _dashCardSM(k,b,recs,bl)};
+
+/* Businesses screen: choose the style for each store */
+const _bizScr=screens.businesses;
+screens.businesses=function(){let h=_bizScr();
+  activeBiz().forEach(b=>{const tag=`data-act="editBiz" data-v="${b.id}"`;const a=h.indexOf(tag);if(a<0)return;const g=h.indexOf('<div class="sm-grid">',a);if(g<0)return;const m=saleMode(b);
+    const block=`<div class="sm-style"><span class="lab">Sales screen</span><div class="chips">${Object.entries(SM_LABEL).map(([k,[l]])=>`<button class="chip ${m===k?'on':''}" data-act="smSet" data-b="${b.id}" data-v="${k}">${l}</button>`).join('')}</div><small class="hint">${SM_LABEL[m][1]}${m!=='quick'&&!skHas(b.id)?' Import stock first: More → Stock & barcodes.':''}</small></div>`;
+    h=h.slice(0,g)+block+h.slice(g)});
+  return h};
+
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;
+  if(a.dataset.act==='smSet'){const x=ST.biz.find(y=>y.id===a.dataset.b);if(!x)return;x.saleMode=a.dataset.v;DB.saveBiz(x);render();toast(`${x.name}: ${SM_LABEL[x.saleMode][0]}`);return}
+  if(a.dataset.act==='smManual'){S.smManual=!S.smManual;render();return}
+  if(a.dataset.act==='newSale'||a.dataset.act==='setBiz')S.smManual=false;
+},true);
+const _saveSaleSM=saveSale;saveSale=function(){_saveSaleSM();S.smManual=false};
 
 </script>
 </body>
