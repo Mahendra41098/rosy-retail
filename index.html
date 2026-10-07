@@ -821,6 +821,17 @@ b.in,.in{color:var(--good)} b.out,.out{color:var(--bad)}
 .ed-card .card-h h3{display:flex;align-items:center;gap:6px}.ed-card .card-h h3 svg{width:18px;height:18px;flex:none}
 .ed-rs{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 8px}.ed-rs span{background:#fff4e5;border:1px solid #f0d4a8;color:#7a4a00;border-radius:14px;padding:3px 10px;font-size:12px;font-weight:600}.ed-rs b{margin-left:2px}
 .edit-reason select{width:100%}
+.ed-hist{display:flex;flex-direction:column;gap:6px}
+.ed-h{border:1px solid #f0d4a8;background:#fffaf2;border-radius:12px;padding:8px 10px}.ed-h summary{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;cursor:pointer;list-style:none}.ed-h summary::-webkit-details-marker{display:none}
+.ed-h .no{width:22px;height:22px;border-radius:11px;background:#a3122a;color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center}.ed-h .w{font-size:12.5px;display:flex;flex-direction:column}.ed-h .w em{font-style:normal;font-weight:700}.ed-h .a{font-weight:800;font-size:13px;white-space:nowrap}
+.ed-ch{margin:8px 0 6px;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px;font-size:13px}.ed-ch li{padding:3px 8px;border-radius:7px;background:#f3eef0}.ed-ch li.add{background:#e5f5ea;color:#0b5d2e}.ed-ch li.del{background:#fde7e7;color:#8f1b1b}.ed-ch li.chg{background:#fff1d6;color:#6b4500}
+.ed-ba{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ed-side{background:#fff;border:1px solid #eadfe3;border-radius:10px;padding:8px;font-size:12px;display:flex;flex-direction:column;gap:2px}.ed-side>b{font-size:12px;text-transform:uppercase;letter-spacing:.05em;opacity:.7;margin-bottom:2px}
+.ed-side div{display:flex;justify-content:space-between;gap:6px}.ed-side em{font-style:normal;font-weight:700;white-space:nowrap}.ed-side .t{border-top:1px solid #ddd;padding-top:3px;margin-top:2px;font-weight:800;font-size:13px}.ed-side .m{opacity:.8}
+.hist.ed-hist .ed-ba{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-wrap:nowrap}
+.hist.ed-hist .ed-side{display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;gap:2px;font-weight:500;color:var(--ink)}
+.hist.ed-hist .ed-side div{display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:baseline;gap:6px;font-weight:500}
+.hist.ed-hist .ed-side div span{min-width:0;overflow-wrap:anywhere}.hist.ed-hist .ed-side em{flex-basis:auto;font-weight:700;color:inherit}
+.hist.ed-hist .ed-side .t{font-weight:800}.hist.ed-hist .ed-h .w em{flex-basis:auto}
 .rx-card .card-h h3{display:flex;align-items:center;gap:6px}.rx-card .card-h h3 svg{width:18px;height:18px}
 .rx-or{text-align:center;font-size:12px;color:var(--muted,#777);margin:2px 0}
 .rx-h{margin:10px 0 4px;font-weight:800;font-size:14px}
@@ -877,7 +888,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.15.0';
+const APP_VERSION='1.18.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -3634,16 +3645,17 @@ function a5HTML(x,bz){const c=a5Cfg(bz);const t=billTot(x);const cu=x.customer||
   const lines=(x.lines||[]).filter(l=>!l.returned);const pcs=lines.reduce((s,l)=>s+(+l.qty||0),0);
   const p=billMoney(x)||{};const recv=['Cash','UPI','Card'].reduce((s,k)=>s+(+p[k]||0),0);const due=+x.due||0;const cr=x.credit?+x.credit.amount||0:0;
   const pay=due>0?due:recv>0?0:Math.max(0,t.final-cr);const upi=a5Upi(c,pay);
-  const rows=lines.map((l,i)=>{const it=l.sk?items[l.sk]||{}:{};return `<tr><td class="c">${i+1}</td><td>${esc(l.name)}${l.note&&!l.sk?`<small>${esc(l.note)}</small>`:''}</td><td class="c">${esc(l.dno||it.dn||'')}</td>${c.showCode?`<td class="c cdc">${esc(it.cd||l.code||'')}</td>`:''}<td class="c">${esc(it.c||l.cat||'')}</td><td class="r">${l.qty} PCS</td><td class="r">${a5F(l.price)}</td><td class="r">${a5F(lineAmt(l))}</td></tr>`}).join('');
+  const itOf=l=>l.sk?items[l.sk]||{}:{};const hasDn=lines.some(l=>l.dno||itOf(l).dn),hasCd=c.showCode&&lines.some(l=>itOf(l).cd);
+  const rows=lines.map((l,i)=>{const it=itOf(l);return `<tr><td class="c">${i+1}</td><td>${esc(l.name)}${l.note&&!l.sk?`<small>${esc(l.note)}</small>`:''}</td>${hasDn?`<td class="c">${esc(l.dno||it.dn||'')}</td>`:''}${hasCd?`<td class="c cdc">${esc(it.cd||'')}</td>`:''}<td class="c">${esc(it.c||l.cat||'')}</td><td class="r">${l.qty} PCS</td><td class="r">${a5F(l.price)}</td><td class="r">${a5F(lineAmt(l))}</td></tr>`}).join('');
   return `<div class="a5"><i class="cn tl">${a5Corner()}</i><i class="cn tr">${a5Corner()}</i><i class="cn bl">${a5Corner()}</i><i class="cn br">${a5Corner()}</i>
-  <header class="a5h">${c.logo?`<img class="lg" src="${c.logo}" alt="">`:'<span class="lg"></span>'}
+  <header class="a5h">${c.logo?`<img class="lg" src="${c.logo}" alt="">`:''}
     <div class="sh"><h1>${esc(c.title)}</h1>${c.tag?`<p class="tg">${esc(c.tag)}</p>`:''}
       <p class="ct">${c.phone?`<span><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>${esc(c.phone)}</span>`:''}${c.email?`<span><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3zm2 2v.5l7 4.5 7-4.5V7z"/></svg>${esc(c.email)}</span>`:''}</p>
       ${c.addr?`<p class="ad"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg><span>${esc(c.addr)}</span></p>`:''}${c.gst?`<p class="ad"><b>GSTIN:</b>&nbsp;${esc(c.gst)}</p>`:''}</div>
     <div class="dt"><b>${esc(c.doc)}</b><span>ORIGINAL FOR RECIPIENT</span></div></header>
   <section class="a5m"><div><b>Invoice No.</b><span>${esc(x.no)}</span></div><div><b>Invoice Date</b><span>${a5Dt(x.at)}</span></div>${due>0&&c.dueDays>0?`<div><b>Due Date</b><span>${a5D(x.at+c.dueDays*864e5)}</span></div>`:''}${x.staff?`<div><b>Sold by</b><span>${esc(x.staff)}</span></div>`:''}</section>
   <section class="a5to"><b>Bill To</b><p>${esc(cu.name||'Cash customer')}</p>${cu.mobile?`<p class="mb"><b>Mobile</b> ${esc(cu.mobile)}</p>`:''}</section>
-  <table class="a5t"><thead><tr><th class="c">No</th><th>Items</th><th class="c">D.NO</th>${c.showCode?'<th class="c">CODE</th>':''}<th class="c">PRODUCT</th><th class="r">Qty.</th><th class="r">Rate</th><th class="r">Total</th></tr></thead><tbody>${rows}</tbody></table>
+  <table class="a5t"><thead><tr><th class="c">No</th><th>Items</th>${hasDn?'<th class="c">D.NO</th>':''}${hasCd?'<th class="c">CODE</th>':''}<th class="c">PRODUCT</th><th class="r">Qty.</th><th class="r">Rate</th><th class="r">Total</th></tr></thead><tbody>${rows}</tbody></table>
   <div class="a5g"></div>
   <div class="a5s"><span>SUBTOTAL</span><b class="q">${pcs}</b><b>₹ ${a5F(t.sub)}</b></div>
   <footer class="a5f"><div class="pq">${upi?`<div class="qrb"><div class="qr" data-upi="${esc(upi)}"></div></div><div class="pqt"><b>Payment QR Code</b><span class="apps">PhonePe · GPay · Paytm · UPI</span><span><b>UPI ID:</b> ${esc(c.upi)}</span>${pay>0?`<span class="am">Scan to pay ₹ ${a5F(pay)}</span>`:''}</div>`:''}${c.footer?`<p class="ft">${esc(c.footer)}</p>`:''}</div>
@@ -3747,12 +3759,39 @@ function a5Print(){var was=document.body.classList.contains('a5on');document.bod
 const _a5Saved=screens.saved;screens.saved=function(){const b=S.lastBill;let h=_a5Saved();if(!b)return h;const bz=ST.biz.find(x=>x.id===b.biz)||B();
   if((bz.paper||'80')!=='a5')return h;a5Load().then(()=>a5Fill());const full=a5HTML(b,bz);
   h=h.replace(full,`<div class="a5saved">${a5Preview(b,bz)}</div>`);
-  if(a5Cfg(bz).showCode)h=h.replace('The bill never shows the purchase code or cost.','The A5 bill shows the CODE column like your myBillBook bill. Hide it in Settings → A5 bill.');
+  if(a5Cfg(bz).showCode&&(b.lines||[]).some(l=>l.sk&&(skItems(b.biz)[l.sk]||{}).cd))h=h.replace('The bill never shows the purchase code or cost.','The A5 bill shows the CODE column like your myBillBook bill. Hide it in Settings → A5 bill.');
   return h};
 const _a5Render2=render;render=function(){_a5Render2();if(S.screen==='saved'&&window.qrcode)a5Fill()};
 (function(){const s=document.createElement('style');s.textContent='.a5saved{display:flex;justify-content:center;margin:4px 0 6px}.a5saved .a5wrap{overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.18);border-radius:2px}';document.head.appendChild(s)})();
 /* Rosy prints on A5 from now on (one time switch; change it any time in Settings → Shop details → Printer paper) */
-const _a5Render3=render;render=function(){const r=ST.bizFromServer&&(ST.biz||[]).find(x=>x.id==='rosy');if(r&&!r.a5Init){r.a5Init=true;r.paper='a5';try{DB.saveBiz(r)}catch(e){}}_a5Render3()};
+const _a5Render3=render;render=function(){if(ST.bizFromServer)(ST.biz||[]).forEach(r=>{if(!r.a5Init){r.a5Init=true;r.paper='a5';try{DB.saveBiz(r)}catch(e){}}});_a5Render3()};
+
+/* v1.17 · quick sale: price alone is enough. No code / no MRP → cost taken as price less the owner's MRP-off % */
+const _a5UC=unitCost;unitCost=function(it){if(it&&!it.sk){const p=+it.price||0;const est=()=>({ok:true,val:Math.round(p*(100-(+cfg().mrpOff||0))/100),est:true});
+  if(it.mode==='mrp'&&!(+it.mrp)&&p)return est();if(it.mode!=='mrp'&&!String(it.code||'').trim()&&p)return est()}return _a5UC(it)};
+const _a5EI=entryInfo;entryInfo=function(c){const h=_a5EI(c);const e=S.entry;if(!e||c.err)return h;const d=unitCost(e);
+  return d&&d.est?h+`<small class="est">${e.mode==='mrp'?'No MRP':'No code'} · ${isAdmin()?`cost taken as ${100-(+cfg().mrpOff||0)}% of price`:'fine to leave empty'}</small>`:h};
+const _a5EP=entryPanel;entryPanel=function(){return _a5EP().replace('placeholder="Code" ','placeholder="Code (optional)" ').replace('placeholder="MRP">','placeholder="MRP (optional)">').replace('>Sales code</label>','>Sales code <i class="opt">optional</i></label>').replace('>MRP ₹</label>','>MRP ₹ <i class="opt">optional</i></label>')};
+(function(){const s=document.createElement('style');s.textContent='#enInfo .est{display:block;font-size:11.5px;opacity:.75;margin-top:2px}.fl label .opt{font-style:normal;font-weight:500;opacity:.6;font-size:10.5px}';document.head.appendChild(s)})();
+
+/* v1.18 · Owner picks the bill printer for every shop in one place; staff print on that printer only */
+const BP_OPTS=[['a5','A5 printer','Full bill, A5 sheet'],['80','3 inch thermal','80 mm roll'],['58','2 inch thermal','58 mm roll']];
+const bpName=v=>(BP_OPTS.find(o=>o[0]===(v||'80'))||BP_OPTS[1])[1];
+function bpCard(){return `<div class="card bp-card" id="bpCard"><div class="card-h"><h3>${ic('print')} Bill printer for each shop</h3><span class="hint">Used on every Print</span></div>
+  ${activeBiz().map(b=>`<div class="bp-row"><div class="bp-shop"><span class="dot" style="background:${b.color}">${esc(b.short)}</span><b>${esc(b.name)}</b></div>
+    <div class="bp-opts">${BP_OPTS.map(([v,l,s])=>`<button type="button" class="bp-o ${(b.paper||'80')===v?'on':''}" data-act="bpSet" data-b="${b.id}" data-v="${v}"><b>${l}</b><small>${s}</small></button>`).join('')}</div></div>`).join('')}
+  <p class="hint" style="margin:6px 0 0">Staff phones print on the printer chosen here. Only the owner can change it, here or on the print screen.</p></div>`}
+const _bpSet=screens.settings;screens.settings=function(){const h=_bpSet();const k='<div class="card"><div class="card-h"><h3>Shop details';const i=h.indexOf(k);return i<0?h:h.slice(0,i)+bpCard()+h.slice(i)};
+const _bpSheet=printSheet;printSheet=function(){if(!isAdmin()&&S.printBill){const bz=S.printBill._bz||ST.biz.find(y=>y.id===S.printBill.biz)||B();S.printPaper=bz.paper||'80'}
+  let h=_bpSheet();if(!isAdmin())h=h.replace(/<div class="cmode" style="width:210px">[\s\S]*?<\/div>/,`<span class="bp-lock">${ic('lock')} ${bpName(S.printPaper)}</span>`);return h};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="bpSet"],[data-act="paper"]');if(!a)return;
+  if(a.dataset.act==='paper'&&!isAdmin()){e.stopImmediatePropagation();return}
+  if(a.dataset.act==='bpSet'){e.stopImmediatePropagation();if(!isAdmin())return;const b=ST.biz.find(x=>x.id===a.dataset.b);if(!b)return;b.paper=a.dataset.v;b.a5Init=true;DB.saveBiz(b);toast(`${b.name}: bills print on ${bpName(b.paper)}`);render()}},true);
+(function(){const s=document.createElement('style');s.textContent=`.bp-card .card-h h3{display:flex;align-items:center;gap:6px}.bp-card .card-h h3 svg{width:18px;height:18px}
+.bp-row{padding:10px 0;border-top:1px solid var(--line,#eee)}.bp-row:first-of-type{border-top:0}.bp-shop{display:flex;align-items:center;gap:8px;margin-bottom:6px}.bp-shop .dot{width:24px;height:24px;border-radius:12px;color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center}
+.bp-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.bp-o{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line,#e6dde1);background:var(--surface,#fff);cursor:pointer;text-align:left;color:inherit;font:inherit}
+.bp-o b{font-size:13px}.bp-o small{font-size:11px;opacity:.7}.bp-o.on{border-color:var(--brand,#a3325c);background:#fbeff4;box-shadow:inset 0 0 0 1px var(--brand,#a3325c)}
+.bp-lock{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;padding:6px 10px;border-radius:10px;background:var(--surface-2,#f4eef1)}.bp-lock svg{width:14px;height:14px}`;document.head.appendChild(s)})();
 
 /* ===== v1.11 · bill time on every bill + bill edit counts for the owner ===== */
 function edN(x){return (x.history||[]).length||(x.edited?1:0)}
@@ -3786,6 +3825,28 @@ document.addEventListener('input',e=>{if(e.target.id==='editReason'&&S.edRsn==='
 const _edCard2=editCard;editCard=function(b){let h=_edCard2(b);const td=edRows(todayOf(b.id));const C={};td.forEach(x=>(x.history||[]).forEach(r=>{if(ymd(new Date(r.at))!==todayStr())return;const k=r.reason||'No reason';C[k]=(C[k]||0)+1}));
   const ks=Object.entries(C).sort((p,q)=>q[1]-p[1]);if(!ks.length)return h;
   return h.replace('</div></div>\n    ',`</div></div><div class="ed-rs">${ks.map(([k,n])=>`<span>${esc(k)} <b>${n}</b></span>`).join('')}</div>\n    `)};
+
+/* v1.16 · every edit keeps a before / after copy of the bill, shown as "what changed" */
+function edSnap(b,ex){ex=ex||{};const t=billTot(b);return {l:(b.lines||[]).map((l,i)=>({n:l.name,q:+l.qty||0,p:+l.price||0,m:+l.mrp||0,bc:l.bc||(ex[i]&&ex[i].bc)||'',r:l.returned?1:0})),
+  sub:t.sub,d:t.disc,f:t.final,pay:b.payText||'',due:+b.due||0,cr:b.credit?+b.credit.amount||0:0,cu:{n:(b.customer&&b.customer.name)||'',m:(b.customer&&b.customer.mobile)||''},st:b.staff||''}}
+const _edSB=DB.saveBill;DB.saveBill=function(b,prev){try{if(b&&prev&&b.history&&b.history.length>(prev.history||[]).length){const h=b.history[b.history.length-1];if(!h.before){h.before=edSnap(prev);h.after=edSnap(b,SK.pendingExtras)}}}catch(e){}return _edSB.apply(this,arguments)};
+function edDiff(a,b){const out=[];const key=l=>(l.bc||l.n)+(l.r?'#r':'');const A={},Bm={};a.l.forEach(l=>{const k=key(l);(A[k]=A[k]||[]).push(l)});b.l.forEach(l=>{const k=key(l);(Bm[k]=Bm[k]||[]).push(l)});
+  const sum=ls=>({q:ls.reduce((s,l)=>s+l.q,0),p:ls[0].p,n:ls[0].n,r:ls[0].r});
+  new Set([...Object.keys(A),...Object.keys(Bm)]).forEach(k=>{const x=A[k]&&sum(A[k]),y=Bm[k]&&sum(Bm[k]);if(x&&x.r&&y&&y.r)return;
+    if(!x)out.push({c:'add',t:`Added ${y.q} × ${y.n} @ ${inr(y.p)}`});else if(!y)out.push({c:'del',t:`Removed ${x.q} × ${x.n} @ ${inr(x.p)}`});
+    else{if(x.q!==y.q)out.push({c:'chg',t:`${y.n}: qty ${x.q} → ${y.q}`});if(x.p!==y.p)out.push({c:'chg',t:`${y.n}: price ${inr(x.p)} → ${inr(y.p)}`})}});
+  if(a.d!==b.d)out.push({c:'chg',t:`Discount ${inr(a.d)} → ${inr(b.d)}`});if(a.f!==b.f)out.push({c:a.f>b.f?'del':'add',t:`Bill total ${inr(a.f)} → ${inr(b.f)} (${b.f>a.f?'+':'−'}${inr(Math.abs(b.f-a.f))})`});
+  if(a.pay!==b.pay)out.push({c:'chg',t:`Payment: ${a.pay||'—'} → ${b.pay||'—'}`});if(a.due!==b.due)out.push({c:'chg',t:`Due ${inr(a.due)} → ${inr(b.due)}`});
+  if(a.cu.m!==b.cu.m||a.cu.n!==b.cu.n)out.push({c:'chg',t:`Customer: ${a.cu.n||''} ${a.cu.m||'—'} → ${b.cu.n||''} ${b.cu.m||'—'}`});if(a.st!==b.st)out.push({c:'chg',t:`Sold by: ${a.st} → ${b.st}`});
+  return out}
+function edSide(s,label){return `<div class="ed-side"><b>${label}</b>${s.l.filter(l=>!l.r).map(l=>`<div><span>${l.q} × ${esc(l.n)}</span><em>${inr(l.q*l.p)}</em></div>`).join('')}
+  ${s.d?`<div class="m"><span>Discount</span><em>− ${inr(s.d)}</em></div>`:''}<div class="t"><span>Total</span><em>${inr(s.f)}</em></div><div class="m"><span>${esc(s.pay||'')}</span></div>${s.due?`<div class="m"><span>Due</span><em>${inr(s.due)}</em></div>`:''}</div>`}
+function edHistHTML(x){return `<div class="hist ed-hist"><b>Edit history · ${x.history.length} edit${x.history.length>1?'s':''}</b>${x.history.map((h,i)=>{const d=h.before&&h.after?edDiff(h.before,h.after):null;
+  return `<details class="ed-h" ${i===x.history.length-1?'open':''}><summary><span class="no">${i+1}</span><span class="w">${dayLabel(ymd(new Date(h.at)))} ${timeLabel(h.at)} · ${esc(h.by)}<em>“${esc(h.reason||'')}”</em></span><span class="a">${inr(h.from)} → ${inr(h.to)}</span></summary>
+    ${d?`<ul class="ed-ch">${d.map(c=>`<li class="${c.c}">${esc(c.t)}</li>`).join('')||'<li>No change to items or money</li>'}</ul><div class="ed-ba">${edSide(h.before,'Before')}${edSide(h.after,'After')}</div>`:'<p class="hint" style="margin:6px 0 0">Item details were not saved for this edit (made before v1.16). Only the totals are known.</p>'}</details>`}).join('')}</div>`}
+const _edBD=billDetail;billDetail=function(x,c){let h=_edBD(x,c);if(!x||!x.history||!x.history.length)return h;
+  const orig=`<div class="hist"><b>Edit history</b>${x.history.map(h=>`<div><span>${dayLabel(ymd(new Date(h.at)))} ${timeLabel(h.at)} · ${esc(h.by)}</span><span>${inr(h.from)} → ${inr(h.to)}</span><em>“${esc(h.reason)}”</em></div>`).join('')}</div>`;
+  return h.includes(orig)?h.replace(orig,edHistHTML(x)):h+edHistHTML(x)};
 
 /* ===== v1.14 · Return / exchange by scanning the item, credit notes, refund by cash or UPI,
    owner changes price / MRP while billing ===== */
