@@ -821,6 +821,29 @@ b.in,.in{color:var(--good)} b.out,.out{color:var(--bad)}
 .ed-card .card-h h3{display:flex;align-items:center;gap:6px}.ed-card .card-h h3 svg{width:18px;height:18px;flex:none}
 .ed-rs{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 8px}.ed-rs span{background:#fff4e5;border:1px solid #f0d4a8;color:#7a4a00;border-radius:14px;padding:3px 10px;font-size:12px;font-weight:600}.ed-rs b{margin-left:2px}
 .edit-reason select{width:100%}
+.rx-card .card-h h3{display:flex;align-items:center;gap:6px}.rx-card .card-h h3 svg{width:18px;height:18px}
+.rx-or{text-align:center;font-size:12px;color:var(--muted,#777);margin:2px 0}
+.rx-h{margin:10px 0 4px;font-weight:800;font-size:14px}
+.rx-bill{display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;background:var(--surface,#fff);border:1.5px solid var(--line,#e6dde1);border-radius:14px;padding:10px 12px;margin-top:8px;cursor:pointer;color:inherit;font:inherit}
+.rx-bill:hover{border-color:var(--brand,#a3325c)}.rx-bill.done{opacity:.55;cursor:not-allowed}
+.rx-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.rx-top b{font-size:13px}.rx-top em{font-style:normal;font-weight:700;font-size:12.5px}
+.rx-bill>span{font-size:12.5px;opacity:.8}.rx-pr{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;margin-top:2px}.rx-pr .net{color:#0b7a3e}.rx-pr .net b{font-size:15px}
+.rx-q{font-size:12px!important}
+.rx-none{display:flex;flex-direction:column;gap:6px;margin-top:10px;padding:12px;border-radius:12px;background:#fff4f4}.rx-none span{font-size:13px;opacity:.8}
+.rxpp{display:block;font-size:12px;margin-top:2px;color:var(--muted,#666)}.rxpp b{color:#0b7a3e}
+.rx-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rx-o{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:12px;border-radius:14px;border:1.5px solid var(--line,#e6dde1);background:var(--surface,#fff);cursor:pointer;color:inherit;font:inherit}
+.rx-o b{display:flex;align-items:center;gap:6px;font-size:14px}.rx-o b svg{width:18px;height:18px}.rx-o span{font-size:12px;opacity:.75}.rx-o:disabled{opacity:.45}
+.rx-o[data-v=ex]{border-color:var(--brand,#a3325c);background:#fbeff4}.rx-o[data-v=cn]{border-color:#c98b1c;background:#fff8ea}
+.cn-list summary{display:flex;justify-content:space-between;cursor:pointer;list-style:none}.cn-list summary::-webkit-details-marker{display:none}.cn-list .rows{margin-top:8px}.cn-list .row{width:100%;text-align:left;background:none;border:0;color:inherit;font:inherit;cursor:pointer}
+.cn-link{display:inline-flex;align-items:center;gap:5px;margin:8px 0 2px}.cn-link svg{width:16px;height:16px}
+.cn-hint{display:flex;gap:10px;align-items:center;width:100%;text-align:left;margin:10px 0 2px;padding:10px 12px;border-radius:12px;border:1.5px solid #c98b1c;background:#fff8ea;color:#6b4500;cursor:pointer;font:inherit}.cn-hint svg{width:20px;height:20px;flex:none}.cn-hint span{display:flex;flex-direction:column}.cn-hint small{font-size:12px;opacity:.8}
+.cn-use{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:#6b4500;background:#fff8ea;border-radius:10px;padding:6px 10px;margin-top:6px}
+.cn-big{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px dashed #333;padding:8px;margin:4px 0;font-weight:700;letter-spacing:.08em}.cn-big b{font-size:16px;letter-spacing:.04em}.cn-big em{font-style:normal;font-size:22px}
+.lp-btn{flex:none;width:30px;height:30px;border-radius:9px;border:1px solid var(--line,#e6dde1);background:var(--surface-2,#f6f1f3);display:grid;place-items:center;cursor:pointer;padding:0;margin-right:4px}.lp-btn svg{width:15px;height:15px}
+.lp-ed{background:#fbeff4;border-radius:12px;padding:10px;margin:4px 0 8px;display:flex;flex-direction:column;gap:8px}.lp-ed p{margin:0;font-size:13px}.lp-ed .ck{display:flex;gap:8px;align-items:center;font-size:13px}
+.pay-sum{display:grid;grid-template-columns:repeat(3,auto 1fr);gap:4px 8px;align-items:baseline;margin:10px 0 6px;font-size:13px}.pay-sum b{font-size:15px}.pay-sum .due{color:#b3261e}
+.pay-fill{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}.pay-fill .chip{font-size:12px;padding:6px 10px}
+.pay-methods .chip.fcred.on{background:#b3261e;border-color:#b3261e;color:#fff}
 </style>
 </head>
 <body>
@@ -854,7 +877,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.13.0';
+const APP_VERSION='1.15.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -3763,6 +3786,184 @@ document.addEventListener('input',e=>{if(e.target.id==='editReason'&&S.edRsn==='
 const _edCard2=editCard;editCard=function(b){let h=_edCard2(b);const td=edRows(todayOf(b.id));const C={};td.forEach(x=>(x.history||[]).forEach(r=>{if(ymd(new Date(r.at))!==todayStr())return;const k=r.reason||'No reason';C[k]=(C[k]||0)+1}));
   const ks=Object.entries(C).sort((p,q)=>q[1]-p[1]);if(!ks.length)return h;
   return h.replace('</div></div>\n    ',`</div></div><div class="ed-rs">${ks.map(([k,n])=>`<span>${esc(k)} <b>${n}</b></span>`).join('')}</div>\n    `)};
+
+/* ===== v1.14 · Return / exchange by scanning the item, credit notes, refund by cash or UPI,
+   owner changes price / MRP while billing ===== */
+let RX=null;const RXC={};let CNS=null;
+
+/* every bill remembers the barcodes on it, so a scan finds the bill fast */
+const _rxSaveBill=DB.saveBill;DB.saveBill=function(b,prev){try{if(b&&b.lines){const ex=SK.pendingExtras||{};const s=new Set();b.lines.forEach((l,i)=>{const c=l.bc||(ex[i]&&ex[i].bc);if(c)s.add(String(c).toUpperCase())});b.bcs=[...s]}}catch(e){}return _rxSaveBill.apply(this,arguments)};
+
+function rxHit(l){if(!RX)return false;return (RX.key&&l.sk===RX.key)||(RX.bc&&String(l.bc||'').toUpperCase()===RX.bc)||(!RX.key&&l.dno&&String(l.dno)===RX.code)}
+function rxRange(days){const k=B().id+'|'+days+'|'+todayStr();if(!RXC[k])RXC[k]=DB.billsRange(addDays(todayStr(),-days),addDays(todayStr(),-1)).catch(()=>[]);return RXC[k]}
+async function rxFind(code,older){const b=B();code=String(code||'').trim();if(!code)return;const f=skFind(b.id,code);
+  RX={code:code.toUpperCase(),bc:String(f?(f.it.bc||code):code).toUpperCase(),key:f?f.key:null,name:f?f.it.n:'',res:null,older:!!older};render();
+  const pool=new Map();const add=list=>(list||[]).forEach(x=>{if(x&&x.biz===b.id&&!x.deleted&&(x.lines||[]).some(rxHit))pool.set(x.id,x)});
+  add(todayOf(b.id));try{add(await DB.A.query('bills',[['bcs','array-contains',RX.bc]]))}catch(e){}
+  add(await rxRange(older?180:30));if(!RX||RX.code!==code.toUpperCase())return;
+  RX.res=[...pool.values()].sort((p,q)=>q.at-p.at);render();if(navigator.vibrate)navigator.vibrate(30)}
+function rxPer(x,l){const all=(x.lines||[]).reduce((a,y)=>a+lineAmt(y),0)||1;const amt=lineAmt(l);const sh=Math.round((x.disc||0)*amt/all);const q=+l.qty||1;
+  return {mrp:+l.mrp||+l.price,price:+l.price,disc:Math.round(sh/q),net:Math.round((amt-sh)/q)}}
+function rxCard(){const b=B();if(!skHas(b.id))return '';
+  let res='';if(RX){if(RX.res===null)res=`<p class="hint" style="margin:8px 0 0">Looking for "${esc(RX.code)}" in ${esc(b.name)}'s bills…</p>`;
+    else if(!RX.res.length)res=`<div class="rx-none"><b>No bill found with ${esc(RX.name||RX.code)}</b><span>Checked today and the last ${RX.older?'6 months':'30 days'}.</span>${RX.older?'':`<button class="secondary" data-act="rxOlder">Look in older bills (6 months)</button>`}</div>`;
+    else res=`<p class="rx-h">${esc(RX.name||RX.code)} · sold in ${RX.res.length} bill${RX.res.length>1?'s':''}</p>`+RX.res.map(x=>{const cu=x.customer||{};
+      return (x.lines||[]).map((l,i)=>({l,i})).filter(({l})=>rxHit(l)).map(({l,i})=>{const p=rxPer(x,l);
+        return `<button class="rx-bill ${l.returned?'done':''}" data-act="rxPick" data-v="${x.id}" data-i="${i}" ${l.returned?'disabled':''}><div class="rx-top"><b class="mono">${esc(x.no)}</b><em>${dayLabel(x.date)} · ${timeLabel(x.at)}</em></div>
+          <span>${esc(x.staff||'')}${cu.name||cu.mobile?' · '+esc(cu.name||'')+' '+esc(cu.mobile||''):''}</span>
+          <div class="rx-pr"><span>MRP <b>${inr(p.mrp)}</b></span><span>Sold <b>${inr(p.price)}</b></span>${p.disc?`<span>Discount <b>− ${inr(p.disc)}</b></span>`:''}<span class="net">Paid <b>${inr(p.net)}</b>${l.qty>1?' each':''}</span></div>
+          <span class="rx-q">${l.qty} pc${l.qty>1?'s':''} on this bill${l.returned?' · already returned':''} · bill total ${inr(billTot(x).final)}</span></button>`}).join('')}).join('')+(RX.older?'':`<button class="linkbtn" data-act="rxOlder" style="margin-top:4px">Not here? Look in older bills (6 months)</button>`)}
+  return `<div class="card rx-card"><div class="card-h"><h3>${ic('scan')} Scan the item coming back</h3>${RX?'<button class="ghost-btn" data-act="rxClear">Clear</button>':''}</div>
+    <form class="search" id="rxForm"><div class="inp">${ic('scan')}<input id="rxScan" placeholder="Scan barcode · or type D.no" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="search" value="${RX?esc(RX.code):''}" aria-label="Scan item"></div><button class="scan-btn" type="button" data-act="rxCam" aria-label="Scan with camera">${ic('camera')}</button></form>
+    ${res}</div>`}
+
+/* the exchange screen: scan card on top, per-piece prices, refund cash / UPI / credit note / exchange */
+const _rxEx=screens.exchange;screens.exchange=function(){let h=_rxEx();const b=B();
+  if(!S.ex){const i=h.indexOf('<form class="search" id="exForm">');const cn=cnListHTML();
+    return i<0?h:h.slice(0,i)+rxCard()+`<p class="rx-or">or find the bill by number / mobile</p>`+h.slice(i).replace(/(<\/div>\s*)$/,cn+'$1')}
+  const x=S.ex.bill;
+  h=h.replace(/data-exline="(\d+)"([\s\S]*?)<\/span><\/div><\/label>/g,(m,i,rest)=>{const l=x.lines[+i];if(!l)return m;const p=rxPer(x,l);
+    return `data-exline="${i}"${rest}</span><small class="rxpp">${l.mrp&&+l.mrp!==+l.price?`MRP ${inr(p.mrp)} · `:''}sold ${inr(p.price)}${p.disc?` · discount − ${inr(p.disc)}`:''} · <b>paid ${inr(p.net)}${l.qty>1?' each':''}</b></small></div></label>`});
+  const R=SK.ret&&SK.ret.bill===x.id?SK.ret:{rq:{}};const all=x.lines.reduce((a,l)=>a+lineAmt(l),0)||1;
+  const val=x.lines.reduce((s,l,i)=>{if(!S.ex.sel[i]||l.returned)return s;const q=Math.min(l.qty,R.rq[i]??l.qty);const g=l.price*q;return s+g-Math.round((x.disc||0)*g/all)},0);
+  const dis=val?'':'disabled';
+  const blk=`<div class="card rx-set"><div class="card-h"><h3>Give back ${inr(val)} as</h3></div>
+    <div class="rx-opts"><button class="rx-o" data-act="rxDo" data-v="ex" ${dis}><b>${ic('swap')} Exchange now</b><span>Pick new items · ${inr(val)} comes off the new bill</span></button>
+    <button class="rx-o" data-act="rxDo" data-v="cn" ${dis}><b>${ic('note')} Credit note</b><span>Customer uses ${inr(val)} on a later visit</span></button>
+    <button class="rx-o" data-act="rxDo" data-v="Cash" ${dis}><b>${ic('cash')} Refund cash</b><span>Give ${inr(val)} from the drawer</span></button>
+    <button class="rx-o" data-act="rxDo" data-v="UPI" ${dis}><b>${ic('rupee')} Refund UPI</b><span>Send ${inr(val)} by UPI · drawer cash not touched</span></button></div></div>`;
+  return h.replace(/<div class="btn-row"><button class="secondary" data-act="exRefund"[\s\S]*?<\/button><\/div>/,blk)};
+
+function rxApply(v){const x=S.ex&&S.ex.bill;if(!x)return;const b=B();const mode=v==='cn'?'Credit note':v==='ex'?'Exchange':v;const kind=v==='ex'?'exchange':v==='cn'?'credit':'refund';
+  const os=DB.A.set;let total=0;const names=[];
+  DB.A.set=function(c,id,d,m){if(d&&(c==='returns'||c==='skret')){d=Object.assign({},d,{mode});if(c==='skret'){if(d.kind==='credit')d.kind='refund';names.push((d.qty>1?d.qty+' × ':'')+d.name)}if(c==='returns')total=+d.amount||0}return os.call(this,c,id,d,m)};
+  try{applyReturn(kind)}finally{DB.A.set=os}
+  if(v==='cn'){resetSale();const cu=x.customer||{};const no='CN'+String(Date.now()).slice(-6);
+    const cn={id:'cn_'+uid(),biz:b.id,no,amount:total,orig:total,status:'open',bill:x.no,billId:x.id,customer:{name:cu.name||'',mobile:cu.mobile||''},items:names,at:Date.now(),date:todayStr(),by:isAdmin()?'Owner':(DEVICE.name||'counter'),uses:[]};
+    DB.A.set('credits',cn.id,cn,false);if(CNS)CNS.push(cn);S.cnShow=cn;S.screen='exchange';S.overlay='cnShow';RX=null;render();toast(`Credit note ${no} · ${inr(total)}`);return}
+  RX=null;if(v==='Cash'||v==='UPI')toast(`Return saved · give back ${inr(total)} by ${v}`)}
+
+/* UPI refunds don't come out of the cash drawer */
+const _rxMoney=moneyDay;moneyDay=function(bizId,date){const o=_rxMoney(bizId,date);if(!o)return o;const r=returnsFor(date)||[];
+  const u=entries(r,bizId).filter(x=>x.kind==='refund'&&x.mode==='UPI').reduce((a,x)=>a+(+x.amount||0),0);if(u){o.refunds-=u;o.expected+=u;o.refundUpi=u}return o};
+
+/* ---------- credit notes ---------- */
+function cnLoad(){const b=B();if(CNS&&CNS.biz===b.id)return CNS;CNS=null;DB.A.query('credits',[['biz','==',b.id]]).then(l=>{CNS=(l||[]).filter(c=>c.biz===b.id);CNS.biz=b.id;render()}).catch(()=>{CNS=[];CNS.biz=b.id});return null}
+function cnOpen(){const l=cnLoad();return l?l.filter(c=>c.status==='open'&&c.amount>0).sort((p,q)=>q.at-p.at):null}
+function cnListHTML(){const l=cnOpen();if(!l||!l.length)return '';const t=l.reduce((a,c)=>a+c.amount,0);
+  return `<details class="card cn-list"><summary><b>Open credit notes · ${l.length}</b><span>${inr(t)}</span></summary><div class="rows">${l.map(c=>`<button class="row" data-act="cnView" data-v="${c.id}"><div class="grow"><b class="mono">${esc(c.no)}</b><span>${dayLabel(c.date)} · ${esc(c.customer.name||'')} ${esc(c.customer.mobile||'')} · from ${esc(c.bill)}</span></div><div class="end"><b>${inr(c.amount)}</b>${c.amount<c.orig?`<span>of ${inr(c.orig)}</span>`:''}</div></button>`).join('')}</div></details>`}
+function cnText(c,bz){return [`*${bz.name}*`,`*Credit note ${c.no}*`,`Amount: ${inr(c.amount)}`,c.amount<c.orig?`(was ${inr(c.orig)})`:'',`Date: ${dateTimeLabel(c.at)}`,`Against bill: ${c.bill}`,c.items&&c.items.length?`Items returned: ${c.items.join(', ')}`:'',c.customer.name||c.customer.mobile?`Customer: ${c.customer.name||''} ${c.customer.mobile||''}`:'','','Show this credit note on your next purchase.'].filter(v=>v!=='').join('\n')}
+function cnSlip(c,bz){return `<div class="receipt p80 cn-slip"><div class="r-shop"><b>${esc(bz.name)}</b>${bz.addr?`<span>${esc(bz.addr)}</span>`:''}${bz.phone?`<span>Ph: ${esc(bz.phone)}</span>`:''}</div>
+  <div class="cn-big">CREDIT NOTE<b>${esc(c.no)}</b><em>${inr(c.amount)}</em></div>
+  <div class="r-meta"><span>${dateTimeLabel(c.at)}</span></div><div class="r-meta"><span>Against bill: ${esc(c.bill)}</span></div>
+  ${c.customer.name||c.customer.mobile?`<div class="r-meta"><span>Customer: ${esc(c.customer.name||'')}</span><span>${esc(c.customer.mobile||'')}</span></div>`:''}
+  ${c.items&&c.items.length?`<div class="r-lines">${c.items.map(n=>`<div class="r-row" style="grid-template-columns:1fr"><span>${esc(n)}</span></div>`).join('')}</div>`:''}
+  ${c.amount<c.orig?`<p class="r-foot">Balance left of ${inr(c.orig)}</p>`:''}<p class="r-thanks">Use this credit note on your next purchase</p></div>`}
+function cnSheet(){const c=S.cnShow;if(!c)return '';const bz=ST.biz.find(y=>y.id===c.biz)||B();
+  return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Credit note"><div class="grab"></div><div class="sh-body">
+    <div class="card-h" style="margin:0"><h3>Credit note ${esc(c.no)}</h3><span class="hint">${c.status==='open'?'Open':'Used'}</span></div>
+    <div class="paper-wrap">${cnSlip(c,bz)}</div>
+    <div class="f"><label for="cnMob">Customer mobile</label><input id="cnMob" inputmode="tel" value="${esc(c.customer.mobile||'')}" placeholder="98xxx xxxxx"></div>
+    <div class="btn-row"><button class="secondary" data-act="cnPrint">${ic('print')} Print</button><button class="primary wa" data-act="cnWa">WhatsApp</button></div>
+    <button class="secondary" data-act="closeSheet">Done</button></div></div>`}
+function cnUseSheet(){const l=cnOpen();const q=(S.cnQ||'').trim().toUpperCase();const m=digits(S.customer&&S.customer.mobile||'');
+  const list=l?l.filter(c=>!q||c.no.includes(q)||(c.customer.mobile||'').includes(digits(q)||'~')||(c.customer.name||'').toUpperCase().includes(q)).sort((p,r)=>((r.customer.mobile===m)-(p.customer.mobile===m))||r.at-p.at):null;
+  return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Use a credit note"><div class="grab"></div><div class="sh-body">
+    <h3>Use a credit note</h3><div class="search"><div class="inp">${ic('search')}<input id="cnQ" placeholder="Credit note no. · mobile · name" value="${esc(S.cnQ||'')}" autocomplete="off"></div></div>
+    <div class="rows">${list===null?'<p class="hint">Loading…</p>':list.map(c=>`<button class="row" data-act="cnApply" data-v="${c.id}"><div class="grow"><b class="mono">${esc(c.no)}</b><span>${dayLabel(c.date)} · ${esc(c.customer.name||'')} ${esc(c.customer.mobile||'')}</span></div><div class="end"><b>${inr(c.amount)}</b><span>Use</span></div></button>`).join('')||'<p class="hint">No open credit note matches.</p>'}</div>
+    <button class="secondary" data-act="closeSheet">Close</button></div></div>`}
+window.EXTRA_OV=window.EXTRA_OV||{};Object.assign(window.EXTRA_OV,{cnShow:cnSheet,cnUse:cnUseSheet,rxCamWrap:()=>''});
+
+/* sale: use a credit note; the note pays at most the bill total, the rest stays on the note */
+const _rxCT=cartTotals;cartTotals=function(){const c=S.credit;if(c&&c.cnFull){S.credit=null;let t0;try{t0=_rxCT()}finally{S.credit=c}c.amount=Math.min(c.cnFull,Math.max(0,t0.final))}return _rxCT()};
+const _rxTot=totalsHTML;totalsHTML=function(){let h=_rxTot();const c=S.credit;if(c&&c.cnFull){h=h.replace('<span>Exchange credit</span>',`<span>Credit note ${esc(c.no)}</span>`);
+    h+=`<div class="cn-use"><span>${c.cnFull>c.amount?`${inr(c.amount)} used now · ${inr(c.cnFull-c.amount)} stays on the note`:`Full ${inr(c.cnFull)} used`}</span><button class="linkbtn" data-act="cnRemove">Remove</button></div>`}return h};
+const _rxPanel=billPanel;billPanel=function(){let h=_rxPanel();if(!S.cart.length)return h;const b=B();
+  if(!S.credit&&!S.editing){const l=cnOpen();const m=digits(S.customer&&S.customer.mobile||'');const mine=l&&m.length===10?l.filter(c=>c.customer.mobile===m):[];
+    const btn=mine.length?`<button class="cn-hint" data-act="cnApply" data-v="${mine[0].id}">${ic('note')}<span><b>${esc(S.customer.name||'This customer')} has credit note ${esc(mine[0].no)} · ${inr(mine[0].amount)}</b><small>Tap to use it on this bill</small></span></button>`
+      :`<button class="linkbtn cn-link" data-act="cnUse">${ic('note')} Use a credit note</button>`;
+    h=h.replace('<div id="saleTotals">',btn+'<div id="saleTotals">')}
+  if(isAdmin()&&skHas(b.id)){let n=-1;
+    h=h.replace(/<div class="bline"><div class="grow">/g,m=>{n++;const l=S.cart[n];return l&&l.sk?`<div class="bline"><button class="lp-btn" data-act="lpEdit" data-i="${n}" aria-label="Change price or MRP">${ic('pen')}</button><div class="grow">`:m});
+    const i=S.lpEdit;const l=i!=null&&S.cart[i];
+    if(l){const ed=`<div class="lp-ed"><p><b>${esc(l.name)}</b> · change for this bill</p><div class="two"><div class="f"><label for="lpPrice">Price on this bill</label><input id="lpPrice" class="money" inputmode="numeric" value="${l.price}"></div><div class="f"><label for="lpMrp">MRP</label><input id="lpMrp" class="money" inputmode="numeric" value="${l.mrp||l.price}"></div></div>
+        <label class="ck"><input type="checkbox" id="lpSave"> Also save this MRP in stock for next time</label><div class="btn-row"><button class="secondary" data-act="lpX">Cancel</button><button class="primary" data-act="lpSet" data-i="${i}">Set price</button></div></div>`;
+      const mk=`<button class="x" data-act="rm" data-i="${i}" aria-label="Remove">×</button></div>`;h=h.replace(mk,mk+ed)}}
+  return h};
+const _rxSave=saveSale;saveSale=function(){const c=S.credit&&S.credit.cnId?{...S.credit}:null;const before=S.lastBill;const r=_rxSave.apply(this,arguments);
+  if(c&&S.lastBill&&S.lastBill!==before){const left=Math.max(0,c.cnFull-c.amount);const use={at:Date.now(),bill:S.lastBill.no,amount:c.amount};
+    const cn=(CNS||[]).find(x=>x.id===c.cnId);const uses=(cn&&cn.uses||[]).concat([use]);
+    DB.A.set('credits',c.cnId,{amount:left,status:left>0?'open':'used',uses,lastUsed:use.at},true);if(cn){cn.amount=left;cn.status=left>0?'open':'used';cn.uses=uses}}
+  return r};
+
+/* actions */
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;const k=a.dataset.act;const v=a.dataset.v;const b=B();
+  if(k==='rxPick'){e.stopImmediatePropagation();const x=(RX&&RX.res||[]).find(y=>y.id===v);if(!x)return;const i=+a.dataset.i;S.ex={bill:x,sel:{[i]:true}};SK.ret={bill:x.id,rq:{[i]:1},reason:'',cond:'good'};render();scrollTo(0,0);return}
+  if(k==='rxOlder'){e.stopImmediatePropagation();if(RX)rxFind(RX.code,true);return}
+  if(k==='rxClear'){e.stopImmediatePropagation();RX=null;render();setTimeout(()=>{const n=$('rxScan');if(n)n.focus()},30);return}
+  if(k==='rxCam'){e.stopImmediatePropagation();skCamOpen(code=>rxFind(code));return}
+  if(k==='rxDo'){e.stopImmediatePropagation();rxApply(v);return}
+  if(k==='cnView'){e.stopImmediatePropagation();S.cnShow=(CNS||[]).find(c=>c.id===v);if(S.cnShow){S.overlay='cnShow';render()}return}
+  if(k==='cnPrint'){e.stopImmediatePropagation();const c=S.cnShow;const bz=ST.biz.find(y=>y.id===c.biz)||b;const pa=$('printArea');pa.innerHTML=cnSlip(c,bz);
+    let st=$('pageSize');if(!st){st=document.createElement('style');st.id='pageSize';document.head.appendChild(st)}st.textContent=bz.paper==='a5'?'@page{size:A5 portrait;margin:8mm}':`@page{size:${bz.paper==='58'?'58mm':'80mm'} auto;margin:2mm}`;setTimeout(()=>window.print(),50);return}
+  if(k==='cnWa'){e.stopImmediatePropagation();const c=S.cnShow;const m=$('cnMob')?$('cnMob').value:c.customer.mobile;if(digits(m).length<10){toast("Type the customer's 10-digit mobile first");return}openWA(m,cnText(c,ST.biz.find(y=>y.id===c.biz)||b));return}
+  if(k==='cnUse'){e.stopImmediatePropagation();S.cnQ='';cnLoad();S.overlay='cnUse';render();return}
+  if(k==='cnApply'){e.stopImmediatePropagation();const c=(CNS||[]).find(x=>x.id===v);if(!c)return;S.credit={no:c.no,billId:c.billId,amount:c.amount,cnId:c.id,cnFull:c.amount};
+    if(c.customer&&c.customer.mobile&&!digits(S.customer.mobile))S.customer={name:c.customer.name||'',mobile:c.customer.mobile};S.overlay=null;render();toast(`Credit note ${c.no} added`);return}
+  if(k==='cnRemove'){e.stopImmediatePropagation();S.credit=null;render();return}
+  if(k==='lpEdit'){e.stopImmediatePropagation();S.lpEdit=+a.dataset.i;render();setTimeout(()=>{const n=$('lpPrice');if(n){n.focus();n.select()}},40);return}
+  if(k==='lpX'){e.stopImmediatePropagation();S.lpEdit=null;render();return}
+  if(k==='lpSet'){e.stopImmediatePropagation();const i=+a.dataset.i;const l=S.cart[i];if(!l)return;const p=Math.round(+($('lpPrice').value||0)),m=Math.round(+($('lpMrp').value||0));
+    if(!(p>0)){toast('Type a price');return}if(m>0&&p>m){toast('Price is more than MRP. Raise the MRP too.');return}
+    l.price=p;if(m>0)l.mrp=m;if($('lpSave')&&$('lpSave').checked&&m>0&&l.sk){skWrite(b.id,{[l.sk]:{m,sp:m}});const it=skItems(b.id)[l.sk];if(it){it.m=m;it.sp=m}toast(`MRP ${inr(m)} saved in stock`)}else toast(`Price on this bill: ${inr(p)}`);
+    S.lpEdit=null;render();return}
+},true);
+document.addEventListener('submit',e=>{if(e.target.id!=='rxForm')return;e.preventDefault();e.stopImmediatePropagation();rxFind($('rxScan').value)},true);
+document.addEventListener('input',e=>{if(e.target.id==='cnQ'){S.cnQ=e.target.value;const pos=e.target.selectionStart;render();const n=$('cnQ');if(n){n.focus();n.setSelectionRange(pos,pos)}}});
+/* scanner gun on the exchange screen */
+const RXG={buf:'',t:0};
+document.addEventListener('keydown',e=>{if(S.screen!=='exchange'||S.ex||S.overlay)return;const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'))return;
+  const now=Date.now();if(now-RXG.t>80)RXG.buf='';RXG.t=now;if(e.key==='Enter'){if(RXG.buf.length>=3){e.preventDefault();rxFind(RXG.buf)}RXG.buf='';return}if(e.key.length===1)RXG.buf+=e.key},true);
+/* reset the scan when leaving */
+const _rxGo=go;go=function(s){if(s!=='exchange'){RX=null}return _rxGo.apply(this,arguments)};
+/* clearer name for the bulk tools on the stock screen */
+const _rxStock=screens.stock;screens.stock=function(){return _rxStock().replace(`${ic('check')} Select items</button>`,`${ic('check')} Select · edit / delete many</button>`)};
+
+/* ===== v1.15 · Payment: Cash · UPI · Card · Split (cash + UPI + card, rest due) · Full credit ===== */
+const PAY_OPTS=['Cash','UPI','Card','Split','Full credit'];
+const paySum=p=>['Cash','UPI','Card'].reduce((s,k)=>s+(+(p.split&&p.split[k])||0),0);
+const _pInfo=payInfo;payInfo=function(t){const p=S.pay;if(t.refund||!t.pay)return _pInfo(t);
+  if(p.mode==='credit')return {text:`Full ${inr(t.pay)} on credit`,due:t.pay};
+  if(p.mode==='split'){const sum=paySum(p);const txt=Object.entries(p.split).filter(([k,v])=>+v).map(([k,v])=>`${inr(+v)} ${k}`).join(' + ');const due=Math.max(0,t.pay-sum);
+    return {text:(txt||'Nothing received')+(due?` · ${inr(due)} due`:''),due}}
+  return _pInfo(t)};
+const _pErr=payErr;payErr=function(t){const p=S.pay;if(t.refund||!t.pay)return '';const mob=digits(S.customer.mobile).length>=10;
+  if(p.mode==='credit')return mob?'':'Enter the customer mobile to give full credit';
+  if(p.mode==='split'){const sum=paySum(p);if(sum>t.pay)return `${inr(sum-t.pay)} more than the bill`;if(!sum)return 'Enter the cash, UPI or card amount received';if(sum<t.pay&&!mob)return `${inr(t.pay-sum)} left as due · enter the customer mobile`;return ''}
+  return _pErr(t)};
+const _pPaid=paidOf;paidOf=function(t){const p=S.pay;if(p.mode==='credit'){return {Cash:0,UPI:0,Card:0,refund:t.refund||0}}return _pPaid(t)};
+const _pMoney=billMoney;billMoney=function(b){if(!b.paid&&b.pay&&b.pay.mode==='credit')return {Cash:0,UPI:0,Card:0,refund:0};return _pMoney(b)};
+const _pStatus=payStatus;payStatus=function(){const t=cartTotals();const p=S.pay;if(t.refund||!t.pay)return _pStatus();const e=payErr(t);
+  if(p.mode==='split'){const sum=paySum(p);const due=Math.max(0,t.pay-sum);
+    const parts=['Cash','UPI','Card'].filter(k=>+p.split[k]).map(k=>`${k} ${inr(+p.split[k])}`).join(' + ');
+    return `<div id="payStatus"><div class="pay-sum"><span>Bill</span><b>${inr(t.pay)}</b><span>Received</span><b>${inr(sum)}</b><span class="${due?'due':''}">Remaining due</span><b class="${due?'due':''}">${inr(due)}</b></div>
+      ${due&&sum?`<div class="pay-fill">${['Cash','UPI','Card'].map(k=>`<button class="chip" data-act="payRest" data-v="${k}">Rest ${inr(due)} in ${k}</button>`).join('')}</div>`:''}
+      <div class="pay-status ${e?'bad':due?'due':'ok'}">${e||(due?`Received ${parts} · ${inr(due)} due added to customer`:`Paid in full · ${parts}`)}</div></div>`}
+  if(p.mode==='credit')return `<div id="payStatus"><div class="pay-status ${e?'bad':'due'}">${e||`Nothing received now · full ${inr(t.pay)} added to ${esc(S.customer.name||'customer')}'s due`}</div></div>`;
+  return _pStatus()};
+payHTML=function(){const p=S.pay;const on=x=>(x==='Split'&&p.mode==='split')||(x==='Full credit'&&p.mode==='credit')||(p.mode==='single'&&p.method===x);
+  return `<div class="card"><h3 style="margin:0 0 8px;font-size:14px">Payment</h3>
+    <div class="pay-methods">${PAY_OPTS.map(x=>`<button class="chip ${on(x)?'on':''} ${x==='Full credit'?'fcred':''}" data-act="payPick" data-v="${x}">${x}</button>`).join('')}</div>
+    ${p.mode==='split'?`<p class="hint" style="margin:6px 0 2px">Type what came in each way. Whatever is left becomes due on the customer.</p>`+['Cash','UPI','Card'].map(x=>`<div class="pay-row"><b>${x}</b><input class="money" data-split="${x}" inputmode="numeric" value="${p.split[x]||''}" placeholder="0" aria-label="${x} amount"></div>`).join(''):''}
+    ${payStatus()}</div>`};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="payPick"],[data-act="payRest"]');if(!a)return;const v=a.dataset.v;
+  if(a.dataset.act==='payRest'){e.stopImmediatePropagation();const t=cartTotals();const due=Math.max(0,t.pay-paySum(S.pay));S.pay.split[v]=String((+S.pay.split[v]||0)+due);render();return}
+  if(v==='Full credit'){e.stopImmediatePropagation();S.pay.mode='credit';render();if(digits(S.customer.mobile).length<10)setTimeout(()=>{const m=$('cuMob');if(m)m.focus()},60);return}
+  if(v==='Split'){e.stopImmediatePropagation();S.pay.mode='split';S.pay.split=S.pay.split||{Cash:'',UPI:'',Card:''};render();return}},true);
+/* old "part paid" bills open in edit as Split with the same amounts */
+const _pEdit=startEdit;startEdit=function(bill){const r=_pEdit.apply(this,arguments);const p=S.pay;if(p&&p.mode==='partial'){S.pay={mode:'split',method:p.method||'Cash',split:{Cash:'',UPI:'',Card:'',[p.method||'Cash']:String(+p.recv||0)},recv:''};render()}return r};
+/* customer mobile typed → refresh the payment message */
+document.addEventListener('input',e=>{if(e.target.id==='cuMob'&&(S.pay.mode==='credit'||S.pay.mode==='split')){const ps=$('payStatus');if(ps)ps.outerHTML=payStatus();const sb=$('saveBtn');if(sb)sb.disabled=!canSave()}});
 
 </script>
 </body>
