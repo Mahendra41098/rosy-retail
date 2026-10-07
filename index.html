@@ -819,6 +819,8 @@ b.in,.in{color:var(--good)} b.out,.out{color:var(--bad)}
 .ed-card details{margin-top:6px}.ed-card summary{cursor:pointer;font-weight:700;font-size:13px;padding:6px 0}
 .eod-bill small{opacity:.7;font-size:10.5px;font-weight:600}
 .ed-card .card-h h3{display:flex;align-items:center;gap:6px}.ed-card .card-h h3 svg{width:18px;height:18px;flex:none}
+.ed-rs{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 8px}.ed-rs span{background:#fff4e5;border:1px solid #f0d4a8;color:#7a4a00;border-radius:14px;padding:3px 10px;font-size:12px;font-weight:600}.ed-rs b{margin-left:2px}
+.edit-reason select{width:100%}
 </style>
 </head>
 <body>
@@ -852,7 +854,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.11.0';
+const APP_VERSION='1.13.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -3718,6 +3720,17 @@ function a5Print(){var was=document.body.classList.contains('a5on');document.bod
       w.document.write(h)},close(){w.document.close()}}}};
   try{_a5Tab(b,d,E)}finally{window.open=ow}};
 
+/* v1.12 · Sale saved screen shows the A5 bill when the shop prints on A5 (Rosy by default) */
+const _a5Saved=screens.saved;screens.saved=function(){const b=S.lastBill;let h=_a5Saved();if(!b)return h;const bz=ST.biz.find(x=>x.id===b.biz)||B();
+  if((bz.paper||'80')!=='a5')return h;a5Load().then(()=>a5Fill());const full=a5HTML(b,bz);
+  h=h.replace(full,`<div class="a5saved">${a5Preview(b,bz)}</div>`);
+  if(a5Cfg(bz).showCode)h=h.replace('The bill never shows the purchase code or cost.','The A5 bill shows the CODE column like your myBillBook bill. Hide it in Settings → A5 bill.');
+  return h};
+const _a5Render2=render;render=function(){_a5Render2();if(S.screen==='saved'&&window.qrcode)a5Fill()};
+(function(){const s=document.createElement('style');s.textContent='.a5saved{display:flex;justify-content:center;margin:4px 0 6px}.a5saved .a5wrap{overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.18);border-radius:2px}';document.head.appendChild(s)})();
+/* Rosy prints on A5 from now on (one time switch; change it any time in Settings → Shop details → Printer paper) */
+const _a5Render3=render;render=function(){const r=ST.bizFromServer&&(ST.biz||[]).find(x=>x.id==='rosy');if(r&&!r.a5Init){r.a5Init=true;r.paper='a5';try{DB.saveBiz(r)}catch(e){}}_a5Render3()};
+
 /* ===== v1.11 · bill time on every bill + bill edit counts for the owner ===== */
 function edN(x){return (x.history||[]).length||(x.edited?1:0)}
 function withTime(fn){return function(){const o=ago;ago=function(ts){const d=new Date(ts);return timeLabel(ts)+(Date.now()-ts<864e5&&ymd(d)===todayStr()?' · '+o(ts):'')};try{return fn.apply(this,arguments)}finally{ago=o}}}
@@ -3735,6 +3748,21 @@ function editCard(b){const td=edRows(todayOf(b.id));const nT=td.reduce((s,x)=>s+
 const _edAdmin=adminHome;adminHome=function(){let h=withTime(_edAdmin)();const b=B();const c=editCard(b);
   const r=/<button class="edit-notice"[\s\S]*?<\/button>/;if(r.test(h))return h.replace(r,c);const k='<h3 class="sec">Quick actions</h3>';return h.includes(k)?h.replace(k,c+k):h+c};
 if(screens.dash){const _edDash=screens.dash;screens.dash=function(){const h=withTime(_edDash)();if(!isAdmin())return h;const i=h.lastIndexOf('</div>');return i>0?h.slice(0,i)+editCard(B())+h.slice(i):h+editCard(B())}}
+
+/* v1.13 · edit reason picked from a list */
+const ED_RSN=[['disc','Extra discount'],['cancel','Item cancelled'],['over','Filled over price'],['other','Other (type it)']];
+function edRsnHTML(){const v=S.edRsn||'';return `<div class="card edit-reason"><div class="f"><label for="edRsnSel">Reason for editing this bill (required)</label>
+  <select id="edRsnSel" class="sel"><option value="" ${v?'':'selected'} disabled>Select a reason…</option>${ED_RSN.map(([k,l])=>`<option value="${k}" ${v===k?'selected':''}>${l}</option>`).join('')}</select></div>
+  ${v==='other'?`<div class="f" style="margin-top:8px"><label for="editReason">Type the reason</label><textarea id="editReason" rows="2" placeholder="e.g. Customer changed size">${esc(S.edOther||'')}</textarea></div>`:''}
+  <p class="hint" style="margin:6px 0 0">The owner sees this reason and the old total.</p></div>`}
+const _edSale=screens.sale;screens.sale=function(){const h=_edSale();if(!S.editing)return h;return h.replace(/<div class="card edit-reason">[\s\S]*?The owner sees this reason and the old total\.<\/p><\/div>/,edRsnHTML())};
+const _edStart=startEdit;startEdit=function(){S.edRsn='';S.edOther='';return _edStart.apply(this,arguments)};
+document.addEventListener('change',e=>{if(e.target.id!=='edRsnSel')return;const k=e.target.value;S.edRsn=k;const it=ED_RSN.find(x=>x[0]===k);S.editReason=k==='other'?(S.edOther||''):(it?it[1]:'');render();if(k==='other'){const t=$('editReason');if(t)t.focus()}});
+document.addEventListener('input',e=>{if(e.target.id==='editReason'&&S.edRsn==='other')S.edOther=e.target.value},true);
+/* reason totals on the owner's Bill edits card */
+const _edCard2=editCard;editCard=function(b){let h=_edCard2(b);const td=edRows(todayOf(b.id));const C={};td.forEach(x=>(x.history||[]).forEach(r=>{if(ymd(new Date(r.at))!==todayStr())return;const k=r.reason||'No reason';C[k]=(C[k]||0)+1}));
+  const ks=Object.entries(C).sort((p,q)=>q[1]-p[1]);if(!ks.length)return h;
+  return h.replace('</div></div>\n    ',`</div></div><div class="ed-rs">${ks.map(([k,n])=>`<span>${esc(k)} <b>${n}</b></span>`).join('')}</div>\n    `)};
 
 </script>
 </body>
