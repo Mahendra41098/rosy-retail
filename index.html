@@ -863,6 +863,8 @@ b.in,.in{color:var(--good)} b.out,.out{color:var(--bad)}
 button.lk-row{cursor:pointer}button.lk-row:hover{border-color:var(--brand,#a3325c)}.lk-row .grow{display:flex;flex-direction:column;min-width:0}.lk-row b{font-size:13px}.lk-row small{font-size:12px;opacity:.8}.lk-row em{font-style:normal;font-weight:700;font-size:12px;color:var(--brand,#a3325c);white-space:nowrap}
 .lk-ic{flex:none;width:30px;height:30px;border-radius:15px;display:grid;place-items:center;font-weight:800;font-size:13px}.lk-ic.in{background:#e5f5ea;color:#0b5d2e}.lk-ic.out{background:#fff1d6;color:#6b4500}.lk-ic.cash{background:#fde7e7;color:#8f1b1b}
 .rt-card{display:flex;flex-direction:column;gap:6px}
+.lp-btn{width:auto;padding:0 7px;gap:1px;display:inline-flex;align-items:center;font-weight:800;font-size:12px;color:var(--brand,#a3325c);border-color:color-mix(in srgb,var(--brand,#a3325c) 40%,#fff);background:#fbeff4}
+.lp-amt{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}.lp-q{display:flex;flex-wrap:wrap;gap:6px}.lp-q .chip{padding:6px 12px;font-size:13px}
 .pay-sum{display:grid;grid-template-columns:repeat(3,auto 1fr);gap:4px 8px;align-items:baseline;margin:10px 0 6px;font-size:13px}.pay-sum b{font-size:15px}.pay-sum .due{color:#b3261e}
 .pay-fill{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}.pay-fill .chip{font-size:12px;padding:6px 10px}
 .pay-methods .chip.fcred.on{background:#b3261e;border-color:#b3261e;color:#fff}
@@ -914,6 +916,19 @@ button.lk-row{cursor:pointer}button.lk-row:hover{border-color:var(--brand,#a3325
 .flt-card .card-h h3{display:flex;align-items:center;gap:6px}.flt-card .card-h h3 svg{width:18px;height:18px}.flt-amt{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}.flt-amt label{font-weight:700;font-size:13px}.flt-amt .secondary{width:auto;padding:0 12px}
 .flt-split{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}.flt-split>div{padding:8px 10px;border-radius:12px;background:#eef7ee;display:flex;flex-direction:column;gap:1px}.flt-split>div.o{background:#fff1d6}.flt-split span{font-size:12px;opacity:.8}.flt-split b{font-size:18px}.flt-split small{font-size:11.5px;opacity:.85}.flt-split .pay-status{grid-column:1/-1;margin:0}
 .flt-take{grid-column:1/-1;display:flex;gap:8px;align-items:flex-start;font-size:13px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid #e3d3ad}.flt-take input{margin-top:3px}
+.cn-in.slip{border:1.5px solid #8a7a52;border-radius:8px;border-collapse:separate;border-spacing:0;overflow:hidden;background:#fffdf6}
+.cn-in.slip th{background:#f3ecd6;color:#5a4a1e;opacity:1;border-bottom:1.5px solid #8a7a52;padding:6px}.cn-in.slip td{border-top:1px dashed #d8ccaa;padding:2px 6px}.cn-in.slip td:first-child{width:auto;white-space:nowrap}
+.cn-in.slip td.op{width:14px;text-align:center;opacity:.55;font-weight:700;padding:0}.cn-in.slip td:nth-child(3){width:30%}.cn-in.slip input{border:0;border-bottom:1.5px solid #b7a777;border-radius:0;background:transparent;text-align:center;font-size:17px;padding:6px 4px}
+.cn-in.slip input:focus{outline:none;border-bottom-color:var(--brand,#a3325c);background:#fff}.cn-in.slip td.am{font-weight:700;min-width:70px}.cn-in.slip tfoot td{border-top:1.5px solid #8a7a52;background:#f8f2df}.cn-in.slip tr.wd td{border-top:1px dashed #d8ccaa;text-align:left;font-size:12px;font-weight:500}
+.td-mode{margin:0 0 8px;max-width:240px}
+.lp-in{width:84px;text-align:right;font-weight:800;font-size:15px;padding:6px 8px;border-radius:9px;border:1.5px solid var(--brand,#a3325c);background:#fff8fb}
+.sl-st{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:4px}.sl-st button{height:38px;border-radius:10px;border:1.5px solid #d8ccaa;background:#fff;font-size:20px;font-weight:800;color:#5a4a1e;cursor:pointer;padding:0;line-height:1}
+.sl-st button:active{background:#f3ecd6}.cn-in.slip td:nth-child(3){width:46%}.cn-in.slip tr.big td:first-child b{font-size:16px}.cn-in.slip tr.mid td{background:#fffefa}
+.cn-in.slip.nocoin tr.coin{display:none}.cn-in.slip tr.cbtn td{text-align:left;padding:4px 8px}
+.td-grid{grid-template-columns:repeat(3,1fr)!important}.td-n{height:56px;font-size:20px}.td-n.coin{height:40px;font-size:14px}
+.td-n:nth-child(n+4):not(.coin){height:46px;font-size:16px}
+.td-n .mn{position:absolute;top:-8px;left:-6px;width:24px;height:24px;border-radius:12px;background:#fff;color:#a3122a;border:1.5px solid #a3122a;font-size:16px;font-weight:900;line-height:20px;text-align:center}
+.td-later{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:10px 12px;border-radius:14px;border:1.5px dashed #9cc59c;background:#f3f8ee;color:#1d5a21;cursor:pointer;font:inherit;margin:2px 0 10px}.td-later svg{width:18px;height:18px;flex:none}.td-later span{display:flex;flex-direction:column}.td-later small{font-size:12px;opacity:.8}.after-print{display:flex;flex-direction:column}
 .mv-card .card-h h3{display:flex;align-items:center;gap:6px}.mv-card .card-h h3 svg{width:18px;height:18px}.mv-m{width:96px}
 .mv-p{margin:0 0 6px}.mv-d{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:var(--surface-2,#f4eef1);padding:3px;border-radius:12px;margin-bottom:6px}.mv-d button{border:0;background:none;padding:7px 2px;border-radius:9px;font:inherit;font-size:12.5px;font-weight:700;color:inherit;cursor:pointer}.mv-d button.on{background:var(--surface,#fff);box-shadow:0 1px 3px rgba(0,0,0,.12);color:var(--accent,#a3325c)}
 .mv-tot{margin:2px 0 8px;font-size:12.5px;opacity:.85}
@@ -955,7 +970,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.28.0';
+const APP_VERSION='1.31.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -4047,11 +4062,13 @@ const _rxPanel=billPanel;billPanel=function(){let h=_rxPanel();if(!S.cart.length
     const btn=mine.length?`<button class="cn-hint" data-act="cnApply" data-v="${mine[0].id}">${ic('note')}<span><b>${esc(S.customer.name||'This customer')} has credit note ${esc(mine[0].no)} · ${inr(mine[0].amount)}</b><small>Tap to use it on this bill</small></span></button>`
       :`<button class="linkbtn cn-link" data-act="cnUse">${ic('note')} Use a credit note</button>`;
     h=h.replace('<div id="saleTotals">',btn+'<div id="saleTotals">')}
-  if(isAdmin()&&skHas(b.id)){let n=-1;
-    h=h.replace(/<div class="bline"><div class="grow">/g,m=>{n++;const l=S.cart[n];return l&&l.sk?`<div class="bline"><button class="lp-btn" data-act="lpEdit" data-i="${n}" aria-label="Change price or MRP">${ic('pen')}</button><div class="grow">`:m});
+  if(isAdmin()||S.priceOk){let n=-1,q=-1;
+    h=h.replace(/<div class="bline"><div class="grow">/g,m=>{n++;const l=S.cart[n];return l?`<div class="bline"><button class="lp-btn" data-act="lpEdit" data-i="${n}" aria-label="Change price">₹${ic('pen')}</button><div class="grow">`:m});
+    h=h.replace(/<b class="amt">/g,m=>{q++;return S.cart[q]?`<b class="amt lp-amt" data-act="lpEdit" data-i="${q}" title="Tap to change price">`:m});
     const i=S.lpEdit;const l=i!=null&&S.cart[i];
-    if(l){const ed=`<div class="lp-ed"><p><b>${esc(l.name)}</b> · change for this bill</p><div class="two"><div class="f"><label for="lpPrice">Price on this bill</label><input id="lpPrice" class="money" inputmode="numeric" value="${l.price}"></div><div class="f"><label for="lpMrp">MRP</label><input id="lpMrp" class="money" inputmode="numeric" value="${l.mrp||l.price}"></div></div>
-        <label class="ck"><input type="checkbox" id="lpSave"> Also save this MRP in stock for next time</label><div class="btn-row"><button class="secondary" data-act="lpX">Cancel</button><button class="primary" data-act="lpSet" data-i="${i}">Set price</button></div></div>`;
+    if(l){const hasM=!!(l.sk||l.mode==='mrp');const ed=`<div class="lp-ed"><p><b>${esc(l.name)}</b> · change for this bill</p><div class="${hasM?'two':''}"><div class="f"><label for="lpPrice">Price on this bill</label><input id="lpPrice" class="money" inputmode="numeric" value="${l.price}"></div>${hasM?`<div class="f"><label for="lpMrp">MRP</label><input id="lpMrp" class="money" inputmode="numeric" value="${l.mrp||l.price}"></div>`:''}</div>
+        <div class="lp-q">${[-100,-50,-20,-10].map(v=>`<button type="button" class="chip" data-act="lpQuick" data-v="${v}">${v}</button>`).join('')}<button type="button" class="chip" data-act="lpQuick" data-v="mrp">MRP</button></div>
+        ${l.sk&&(isAdmin()||(S.priceOk&&S.priceOk.by==='Owner PIN'))?'<label class="ck"><input type="checkbox" id="lpSave"> Also save this MRP in stock for next time</label>':''}<div class="btn-row"><button class="secondary" data-act="lpX">Cancel</button><button class="primary" data-act="lpSet" data-i="${i}">Set price</button></div></div>`;
       const mk=`<button class="x" data-act="rm" data-i="${i}" aria-label="Remove">×</button></div>`;h=h.replace(mk,mk+ed)}}
   return h};
 const _rxSave=saveSale;saveSale=function(){const c=S.credit&&S.credit.cnId?{...S.credit}:null;const before=S.lastBill;const r=_rxSave.apply(this,arguments);
@@ -4078,10 +4095,11 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(
     if(c.customer&&c.customer.mobile&&!digits(S.customer.mobile))S.customer={name:c.customer.name||'',mobile:c.customer.mobile};const rm=`Credit note ${c.no} used · issued on ${rxDate(c.date)} against bill ${c.bill}${c.billDate?' dated '+rxDate(c.billDate):''}`;S.remark=S.remark&&!S.remark.startsWith('Credit note')?S.remark+' · '+rm:rm;S.remarkPrint=true;S.exRef={billId:c.billId,no:c.bill,date:c.billDate||'',kind:'credit note',cn:c.no,amount:c.amount};S.overlay=null;render();toast(`Credit note ${c.no} added`);return}
   if(k==='cnRemove'){e.stopImmediatePropagation();if(S.exRef&&S.exRef.kind==='credit note'){S.remark=String(S.remark||'').replace(/ ?·? ?Credit note CN\d+ used[^·]*·[^·]*$/,'').replace(/^Credit note CN\d+ used.*$/,'');S.exRef=null}S.credit=null;render();return}
   if(k==='lpEdit'){e.stopImmediatePropagation();S.lpEdit=+a.dataset.i;render();setTimeout(()=>{const n=$('lpPrice');if(n){n.focus();n.select()}},40);return}
+  if(k==='lpQuick'){e.stopImmediatePropagation();const i=S.lpEdit;const l=S.cart[i];const inp=$('lpPrice');if(!l||!inp)return;const base=+(l.mrp||l.price);inp.value=v==='mrp'?String(base):String(Math.max(1,(+inp.value||base)+(+v)));inp.focus();return}
   if(k==='lpX'){e.stopImmediatePropagation();S.lpEdit=null;render();return}
-  if(k==='lpSet'){e.stopImmediatePropagation();const i=+a.dataset.i;const l=S.cart[i];if(!l)return;const p=Math.round(+($('lpPrice').value||0)),m=Math.round(+($('lpMrp').value||0));
+  if(k==='lpSet'){e.stopImmediatePropagation();const i=+a.dataset.i;const l=S.cart[i];if(!l)return;const p=Math.round(+($('lpPrice').value||0)),m=Math.round(+(($('lpMrp')||{}).value||0));
     if(!(p>0)){toast('Type a price');return}if(m>0&&p>m){toast('Price is more than MRP. Raise the MRP too.');return}
-    l.price=p;if(m>0)l.mrp=m;if($('lpSave')&&$('lpSave').checked&&m>0&&l.sk){skWrite(b.id,{[l.sk]:{m,sp:m}});const it=skItems(b.id)[l.sk];if(it){it.m=m;it.sp=m}toast(`MRP ${inr(m)} saved in stock`)}else toast(`Price on this bill: ${inr(p)}`);
+    if(!isAdmin()&&+l.price!==p){(S.priceChanges=S.priceChanges||[]).push({name:l.name,from:+l.price,to:p,at:Date.now()})}l.price=p;if(m>0)l.mrp=m;if($('lpSave')&&$('lpSave').checked&&m>0&&l.sk){skWrite(b.id,{[l.sk]:{m,sp:m}});const it=skItems(b.id)[l.sk];if(it){it.m=m;it.sp=m}toast(`MRP ${inr(m)} saved in stock`)}else toast(`Price on this bill: ${inr(p)}`);
     S.lpEdit=null;render();return}
 },true);
 document.addEventListener('submit',e=>{if(e.target.id!=='rxForm')return;e.preventDefault();e.stopImmediatePropagation();rxFind($('rxScan').value)},true);
@@ -4111,6 +4129,16 @@ const _rxMon=screens.money;screens.money=function(){let h=_rxMon();const b=B();c
   const card=`<div class="card rt-card"><div class="card-h"><h3>Returns & refunds · ${list.length}</h3><span class="hint">${inr(list.reduce((a,r)=>a+(+r.amount||0),0))}</span></div>
     ${list.map(r=>`<button class="lk-row" data-act="viewBill" data-v="${r.bill}"><span class="lk-ic ${r.kind==='refund'&&r.mode!=='UPI refund'&&r.mode!=='UPI'?'cash':'out'}">${r.kind==='exchange'?'⇄':r.kind==='credit'?'CN':'₹'}</span><span class="grow"><b>${esc(r.mode||(r.kind==='refund'?'Cash refund':r.kind==='exchange'?'Exchange':'Credit note'))} · ${inr(r.amount||0)}${r.cn?' · '+esc(r.cn):''}</b><small>${timeLabel(r.at)} · bill ${esc(r.no||'')}${r.billDate?' dated '+rxDate(r.billDate):''}${r.note&&r.note.split(' · ').length>2?' · '+esc(r.note.split(' · ').slice(2).join(' · ')):''}</small></span><em>${r.kind==='refund'&&!/UPI/.test(r.mode||'')?'from drawer':''}</em></button>`).join('')}</div>`;
   const k='<div class="kgrid" style="grid-template-columns:repeat(3,1fr)">';return h.includes(k)?h.replace(k,card+k):h+card};
+
+/* v1.30 · Owner (or unlocked staff): type the new price straight in the bill line */
+const _lpPanel2=billPanel;billPanel=function(){let h=_lpPanel2();const b=B();if(!(isAdmin()||S.priceOk)||!skHas(b.id))return h;
+  S.cart.forEach((l,i)=>{if(!l.sk)return;const mk=`<button class="lp-btn" data-act="lpEdit" data-i="${i}" aria-label="Change price or MRP">${ic('pen')}</button>`;
+    h=h.replace(mk,`<input class="lp-in" data-lpi="${i}" inputmode="numeric" value="${l.price}" aria-label="Price of ${esc(l.name)}" title="Type the price for this bill">`+mk)});return h};
+document.addEventListener('change',e=>{const i=e.target.dataset.lpi;if(i===undefined)return;const l=S.cart[+i];if(!l)return;const p=Math.round(+e.target.value.replace(/[^0-9.]/g,''));
+  if(!(p>0)){e.target.value=l.price;return}if(!isAdmin()&&l.mrp&&p>+l.mrp){toast('Price is more than MRP');e.target.value=l.price;return}
+  if(!isAdmin()&&+l.price!==p)(S.priceChanges=S.priceChanges||[]).push({name:l.name,from:+l.price,to:p,at:Date.now()});
+  l.price=p;if(isAdmin()&&l.mrp&&p>+l.mrp)l.mrp=p;render();toast(`${l.name}: ${inr(p)} on this bill`)});
+document.addEventListener('keydown',e=>{if(e.target.dataset&&e.target.dataset.lpi!==undefined&&e.key==='Enter'){e.preventDefault();e.target.blur()}});
 
 /* ===== v1.15 · Payment: Cash · UPI · Card · Split (cash + UPI + card, rest due) · Full credit ===== */
 const PAY_OPTS=['Cash','UPI','Card','Split','Full credit'];
@@ -4349,6 +4377,20 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="dp"]
   if(k==='dpClear'&&a.dataset.sure!=='1'){a.dataset.sure='1';a.textContent='Clear? Tap again';setTimeout(()=>{a.dataset.sure='';a.textContent='Clear all'},3000);return}
   if(ST.cfg)ST.cfg.discPins=vals;DB.saveConfig({discPins:vals});render();toast(k==='dpClear'?'Passwords cleared':'Discount passwords saved')},true);
 
+/* v1.29 · Staff / manager: unlock price change with the owner's PIN or a discount password */
+function pzBox(){if(isAdmin()||!S.cart.some(l=>l.sk))return '';if(S.priceOk)return `<div class="cp-on ok">${ic('pen')}<span><b>Price change allowed · ${esc(S.priceOk.by)}</b><small>Tap ✎ on an item to change its price${(S.priceChanges||[]).length?` · ${S.priceChanges.length} changed`:''}</small></span><button class="linkbtn" data-act="pzLock">Lock</button></div>`;
+  if(!S.pzOpen)return `<button class="linkbtn cp-link" data-act="pzOpen">${ic('lock')} Change a price (owner password)</button>`;
+  return `<div class="cp-box"><p><b>Owner permission to change prices on this bill.</b> Owner PIN or discount password.</p><div class="cp-in"><input id="pzCode" type="password" placeholder="Password" autocomplete="new-password"><button class="primary" data-act="pzApply">Unlock</button></div><p class="cp-msg" id="pzMsg"></p></div>`}
+const _pzPanel=billPanel;billPanel=function(){const h=_pzPanel();return h.includes('<div id="cpWrap">')?h.replace('<div id="cpWrap">',`<div id="pzWrap">${pzBox()}</div><div id="cpWrap">`):h};
+const _pzReset=resetSale;resetSale=function(){S.priceOk=null;S.priceChanges=null;S.pzOpen=false;return _pzReset.apply(this,arguments)};
+function pzTry(){const v=String(($('pzCode')||{}).value||'').trim();const by=v?dpMatch(v):'';const m=$('pzMsg');if(!by){if(m){m.textContent='Wrong password';m.className='cp-msg bad'}return}S.priceOk={by,at:Date.now()};S.pzOpen=false;render();toast(`Price change allowed (${by}) · tap ✎ on the item`)}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="pz"]');if(!a||!/^pz[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const k=a.dataset.act;
+  if(k==='pzOpen'){S.pzOpen=true;render();setTimeout(()=>{const n=$('pzCode');if(n)n.focus()},50)}else if(k==='pzApply')pzTry();else if(k==='pzLock'){S.priceOk=null;S.lpEdit=null;render()}},true);
+document.addEventListener('keydown',e=>{if(e.target&&e.target.id==='pzCode'&&e.key==='Enter'){e.preventDefault();pzTry()}});
+let PZ_SAVING=false;const _pzSave=saveSale;saveSale=function(){PZ_SAVING=true;try{return _pzSave.apply(this,arguments)}finally{PZ_SAVING=false}};
+const _pzSB=DB.saveBill;DB.saveBill=function(b,prev){if(PZ_SAVING&&b&&S.priceOk&&(S.priceChanges||[]).length)b.priceAuth={by:S.priceOk.by,at:S.priceOk.at,changes:S.priceChanges.slice(),staff:DEVICE.name||''};return _pzSB.apply(this,arguments)};
+const _pzBD=billDetail;billDetail=function(x,c){let h=_pzBD(x,c);if(x&&x.priceAuth)h+=`<div class="cp-note">${ic('pen')} Price changed with ${esc(x.priceAuth.by)} · ${timeLabel(x.priceAuth.at)}: ${x.priceAuth.changes.map(c=>`${esc(c.name)} ${inr(c.from)} → ${inr(c.to)}`).join(', ')}</div>`;return h};
+
 /* ===== v1.24 · Unpaid and part-paid bills ===== */
 function duRecv(x){const m=billMoney(x)||{};return (+m.Cash||0)+(+m.UPI||0)+(+m.Card||0)}
 /* customer payments clear the oldest bills first, so a bill's open due = what is still owed on it */
@@ -4399,27 +4441,42 @@ function cnDrawer(biz,date){const op=cnOpening(biz,date);if(!op)return null;cons
 function cnChange(amt,avail){const pick=(lim)=>{let left=amt;const o={};for(const d of DEN){let n=Math.floor(left/d);if(lim)n=Math.min(n,Math.max(0,+(lim[d]||0)));if(n>0){o[d]=n;left-=n*d}}return left===0?o:null};return pick(avail)?{notes:pick(avail),ok:true}:{notes:pick(null)||{},ok:false}}
 /* ---------- sale saved: notes the customer gave → change ---------- */
 function tdState(x){if(!S.td||S.td.id!==x.id)S.td={id:x.id,in:{...((x.tender||{}).in||{})},out:x.tender?{...x.tender.out}:null,open:!x.tender};return S.td}
-function tdHTML(x){if(!x||x.deleted)return '';const cash=+(billMoney(x)||{}).Cash||0;if(!cash)return '';const st=tdState(x);
-  if(x.tender&&!st.open){return `<div class="td-done">${ic('cash')}<span><b>Cash ${inr(nsum(x.tender.in))} received${nsum(x.tender.out)?` · ${inr(nsum(x.tender.out))} change given`:''}</b><small>${DEN.filter(d=>x.tender.in[d]).map(d=>`${x.tender.in[d]}×${d}`).join(' + ')}${nsum(x.tender.out)?' · back '+DEN.filter(d=>x.tender.out[d]).map(d=>`${x.tender.out[d]}×${d}`).join(' + '):''}</small></span><button class="linkbtn" data-act="tdEdit" data-v="${x.id}">Change</button></div>`}
-  const rec=nsum(st.in);const ch=rec-cash;const dr=cnDrawer(x.biz,x.date);const avail=dr?nadd(dr.now,x.tender?nadd(x.tender.out,x.tender.in,-1):{}):null;
-  const sug=ch>0?cnChange(ch,avail?nadd(avail,st.in):null):{notes:{},ok:true};const out=st.out&&nsum(st.out)===ch?st.out:sug.notes;
-  return `<div class="card td-card" id="tdCard"><div class="card-h"><h3>${ic('cash')} Cash from customer</h3><span class="hint">Bill cash ${inr(cash)}</span></div>
-    <p class="hint" style="margin:0 0 6px">Tap each note the customer gave</p>
-    <div class="td-grid">${DEN.map(d=>`<button class="td-n ${st.in[d]?'on':''} ${d<10?'coin':''}" data-act="tdIn" data-v="${d}"><b>${d}</b>${st.in[d]?`<i>×${st.in[d]}</i>`:''}</button>`).join('')}</div>
-    <div class="td-sum"><span>Received</span><b>${inr(rec)}</b>${rec?`<button class="linkbtn" data-act="tdClr">Clear</button>`:''}<span>${ch>=0?'Give back':'Still to take'}</span><b class="${ch<0?'bad':'ch'}">${inr(Math.abs(ch))}</b></div>
+function tdCalc(x){const st=tdState(x);const cash=+(billMoney(x)||{}).Cash||0;const rec=nsum(st.in);const ch=rec-cash;const dr=cnDrawer(x.biz,x.date);const avail=dr?nadd(dr.now,x.tender?nadd(x.tender.out,x.tender.in,-1):{}):null;
+  const sug=ch>0?cnChange(ch,avail?nadd(avail,st.in):null):{notes:{},ok:true};const out=st.out&&nsum(st.out)===ch?st.out:sug.notes;return {st,cash,rec,ch,sug,out}}
+function tdLive(x){const {st,cash,rec,ch,sug,out}=tdCalc(x);
+  return `<div class="td-sum"><span>Received</span><b>${inr(rec)}</b>${rec?`<button class="linkbtn" data-act="tdClr">Clear</button>`:''}<span>${ch>=0?'Give back':'Still to take'}</span><b class="${ch<0?'bad':'ch'}">${inr(Math.abs(ch))}</b></div>
     ${ch>0?`<div class="td-out"><p><b>Give back these notes</b>${sug.ok?'':' <em>· not enough small notes in the box</em>'}</p><div class="td-row">${DEN.filter(d=>d<ch||out[d]).map(d=>`<div class="td-o ${out[d]?'on':''}"><span>${denL(d)}</span><div class="stepper sm"><button data-act="tdOut" data-v="${d}" data-d="-1">−</button><span>${out[d]||0}</span><button data-act="tdOut" data-v="${d}" data-d="1">+</button></div></div>`).join('')}</div>
       ${nsum(out)!==ch?`<p class="pay-status bad">Change notes add up to ${inr(nsum(out))}, should be ${inr(ch)}</p>`:''}</div>`:''}
-    ${rec&&rec<cash?`<p class="pay-status bad">Take ${inr(cash-rec)} more</p>`:''}
-    <div class="btn-row"><button class="secondary" data-act="tdExact" data-v="${x.id}">Exact cash, no change</button><button class="primary" data-act="tdSave" data-v="${x.id}" ${rec<cash||(ch>0&&nsum(out)!==ch)?'disabled':''}>Done</button></div></div>`}
+    ${rec&&rec<cash?`<p class="pay-status bad">Take ${inr(cash-rec)} more</p>`:''}`}
+function tdHTML(x){if(!x||x.deleted)return '';const cash=+(billMoney(x)||{}).Cash||0;if(!cash)return '';const st=tdState(x);
+  if(x.tender&&!st.open){return `<div class="td-done">${ic('cash')}<span><b>Cash ${inr(nsum(x.tender.in))} received${nsum(x.tender.out)?` · ${inr(nsum(x.tender.out))} change given`:''}</b><small>${DEN.filter(d=>x.tender.in[d]).map(d=>`${x.tender.in[d]}×${d}`).join(' + ')}${nsum(x.tender.out)?' · back '+DEN.filter(d=>x.tender.out[d]).map(d=>`${x.tender.out[d]}×${d}`).join(' + '):''}</small></span><button class="linkbtn" data-act="tdEdit" data-v="${x.id}">Change</button></div>`}
+  const {rec,ch,out}=tdCalc(x);const typ=S.tdType;
+  return `<div class="card td-card" id="tdCard"><div class="card-h"><h3>${ic('cash')} Cash from customer</h3><span class="hint">Bill cash ${inr(cash)}</span></div>
+    <div class="cmode td-mode"><button class="${typ?'':'on'}" data-act="tdMode" data-v="tap">Tap notes</button><button class="${typ?'on':''}" data-act="tdMode" data-v="type">Type counts</button></div>
+    ${typ?cnGrid('tdi',st.in):`<p class="hint" style="margin:0 0 6px">Tap each note the customer gave</p><div class="td-grid">${DEN.map(d=>`<button class="td-n ${st.in[d]?'on':''} ${d<10?'coin':''}" data-act="tdIn" data-v="${d}"><b>${d}</b>${st.in[d]?`<i>×${st.in[d]}</i><span class="mn" data-act="tdInMinus" data-v="${d}" aria-label="One less">−</span>`:''}</button>`).join('')}</div>`}
+    <div id="tdLive">${tdLive(x)}</div>
+    <div class="btn-row"><button class="secondary" data-act="tdExact" data-v="${x.id}">Exact cash, no change</button><button class="primary" id="tdDone" data-act="tdSave" data-v="${x.id}" ${rec<cash||(ch>0&&nsum(out)!==ch)?'disabled':''}>Done</button></div></div>`}
 function tdBill(id){return (S.lastBill&&S.lastBill.id===id&&S.lastBill)||(S.viewBill&&S.viewBill.id===id&&S.viewBill)||ST.today.find(y=>y.id===id)}
 function tdSave(x,inn,out){const tender={in:nz(inn),out:nz(out),at:Date.now(),by:isAdmin()?'Owner':(DEVICE.name||'counter')};DB.A.set('bills',x.id,{tender},true);
   [x,ST.today.find(y=>y.id===x.id),S.lastBill&&S.lastBill.id===x.id?S.lastBill:null,S.viewBill&&S.viewBill.id===x.id?S.viewBill:null].forEach(y=>{if(y)y.tender=tender});patchCache(x);S.td=null;render();
   toast(nsum(tender.out)?`Give back ${inr(nsum(tender.out))}: ${DEN.filter(d=>tender.out[d]).map(d=>`${tender.out[d]}×₹${d}`).join(' + ')}`:'Cash noted')}
-const _tdSaved=screens.saved;screens.saved=function(){const h=_tdSaved();const x=S.lastBill;if(!x)return h;const k='<div class="f"><label for="sendMob">';const i=h.indexOf(k);return i<0?h:h.slice(0,i)+tdHTML(x)+h.slice(i)};
+S.tdShown=S.tdShown||{};
+/* after the bill is printed: settle + cash notes go under the print / WhatsApp buttons */
+const _tdSaved=screens.saved;screens.saved=function(){let h=_tdSaved();const x=S.lastBill;if(!x)return h;
+  const st=h.match(/<button class="st-open"[\s\S]*?<\/button>|<div class="st-done">[\s\S]*?<\/div>|<div class="card st-card" id="stCard">[\s\S]*?<\/div><\/div>(?=<div class="f"><label for="sendMob">)/);if(st)h=h.replace(st[0],'');
+  const cashDue=+(billMoney(x)||{}).Cash||0;const shown=S.tdShown[x.id]||x.tender||(S.td&&S.td.id===x.id);
+  const cash=cashDue?(shown?tdHTML(x):`<button class="td-later" data-act="tdShow" data-v="${x.id}">${ic('cash')}<span><b>Count cash from customer</b><small>Opens after you print the bill</small></span></button>`):'';
+  const k='<div class="btn-row"><button class="secondary" data-act="printBill"';const i=h.indexOf(k);if(i<0)return h;const j=h.indexOf('</div>',i)+6;
+  return h.slice(0,j)+`<div class="after-print">${st?st[0]:''}${cash}</div>`+h.slice(j)};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="printBill"],[data-act="doPrint"],[data-act="tdShow"]');if(!a)return;const x=S.lastBill;
+  if(a.dataset.act==='tdShow'){e.stopImmediatePropagation();S.tdShown[a.dataset.v]=true;render();setTimeout(()=>{const c=$('tdCard');if(c)c.scrollIntoView({block:'start',behavior:'smooth'})},60);return}
+  if(x&&S.screen==='saved'&&(a.dataset.act==='doPrint'||a.dataset.v===x.id))S.tdShown[x.id]=true},true);
 const _tdSheet=billSheet;billSheet=function(){const h=_tdSheet();const x=S.viewBill;if(!x||x.date!==todayStr()||S.screen==='saved')return h;const k='<div class="btn-row"><button class="secondary" data-act="printBill"';const i=h.indexOf(k);return i<0?h:h.slice(0,i)+tdHTML(x)+h.slice(i)};
 document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="td"]');if(!a||!/^td[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const k=a.dataset.act,v=a.dataset.v;
   const x=tdBill(v)||tdBill(S.td&&S.td.id);if(!x)return;const st=tdState(x);const cash=+(billMoney(x)||{}).Cash||0;
   if(k==='tdIn'){st.in[v]=(+st.in[v]||0)+1;st.out=null;render();return}
+  if(k==='tdInMinus'){const n=(+st.in[v]||0)-1;if(n>0)st.in[v]=n;else delete st.in[v];st.out=null;render();return}
+  if(k==='tdMode'){S.tdType=v==='type';render();return}
   if(k==='tdClr'){st.in={};st.out=null;render();return}
   if(k==='tdOut'){const ch=nsum(st.in)-cash;const dr=cnDrawer(x.biz,x.date);const cur=st.out&&nsum(st.out)===ch?st.out:(st.out||cnChange(ch,dr?nadd(dr.now,st.in):null).notes);st.out={...cur};st.out[v]=Math.max(0,(+st.out[v]||0)+(+a.dataset.d));render();return}
   if(k==='tdEdit'){S.td={id:x.id,in:{...x.tender.in},out:{...x.tender.out},open:true};render();return}
@@ -4435,8 +4492,9 @@ function cnCard(b,d){const dr=cnDrawer(b.id,d);if(!dr)return `<div class="card c
     <p class="hint" style="margin:6px 0 0">Opening: ${esc(dr.src)}.${other?` Cash in drawer expected ${inr(exp)}: ${inr(Math.abs(other))} ${other>0?'more':'less'} than the notes above (expenses, refunds, cash bills without notes, opening not set).`:' Matches the expected cash in drawer.'}</p>
     <div class="btn-row"><button class="secondary" data-act="cnOpenSet">Set opening notes</button><button class="secondary" data-act="cnShare">${ic('share')} Share report</button></div></div>`}
 const _cnMoney=screens.money;screens.money=function(){const h=_cnMoney();const b=B();const d=S.mDate||todayStr();const card=cnCard(b,d);const k='<div class="kgrid" style="grid-template-columns:repeat(3,1fr)">';return h.includes(k)?h.replace(k,card+k):h+card};
-function cnGrid(prefix,vals,cmp){return `<table class="cn-in"><thead><tr><th>Currency</th><th>Count</th><th>Value</th>${cmp?'<th>Expected</th>':''}</tr></thead><tbody>${DEN.map(d=>`<tr><td><b>${denL(d)}</b></td><td><input inputmode="numeric" data-${prefix}="${d}" value="${vals[d]||''}" placeholder="0" aria-label="Number of ${denL(d)}"></td><td id="${prefix}v${d}">${vals[d]?inr(d*vals[d]):'–'}</td>${cmp?`<td class="ex">${cmp[d]||0}</td>`:''}</tr>`).join('')}</tbody>
-  <tfoot><tr><td>Total</td><td id="${prefix}Cnt">${ncnt(vals)} pcs</td><td id="${prefix}Tot">${inr(nsum(vals))}</td>${cmp?`<td class="ex">${inr(nsum(cmp))}</td>`:''}</tr></tfoot></table>`}
+function cnGrid(prefix,vals,cmp){const coins=S.slipCoins||DEN.some(d=>d<10&&(vals[d]||(cmp&&cmp[d])));return `<table class="cn-in slip ${coins?'':'nocoin'}"><thead><tr><th>Notes</th><th></th><th>Pieces</th><th></th><th>Amount ₹</th>${cmp?'<th>Expected</th>':''}</tr></thead><tbody>${DEN.map(d=>`<tr class="${d<10?'coin':d<100?'mid':'big'}"><td><b>${d>=10?'₹ '+d:'₹ '+d+' coin'}</b></td><td class="op">×</td><td><div class="sl-st"><button type="button" data-act="slStep" data-p="${prefix}" data-v="${d}" data-d="-1" aria-label="One less">−</button><input inputmode="numeric" data-${prefix}="${d}" value="${vals[d]||''}" placeholder="0" aria-label="Number of ${denL(d)}"><button type="button" data-act="slStep" data-p="${prefix}" data-v="${d}" data-d="1" aria-label="One more">+</button></div></td><td class="op">=</td><td class="am" id="${prefix}v${d}">${vals[d]?(d*vals[d]).toLocaleString('en-IN'):''}</td>${cmp?`<td class="ex">${cmp[d]||0}</td>`:''}</tr>`).join('')}</tbody>
+  <tfoot><tr><td>Total</td><td></td><td id="${prefix}Cnt">${ncnt(vals)} pcs</td><td></td><td class="am" id="${prefix}Tot">${inr(nsum(vals))}</td>${cmp?`<td class="ex">${inr(nsum(cmp))}</td>`:''}</tr>
+  ${coins?'':`<tr class="cbtn"><td colspan="${cmp?6:5}"><button type="button" class="linkbtn" data-act="slCoins">+ Coins (₹5 · ₹2 · ₹1)</button></td></tr>`}<tr class="wd"><td colspan="${cmp?6:5}">Rupees in words: <b id="${prefix}Wds">${nsum(vals)?a5Words(nsum(vals))+' only':'—'}</b></td></tr></tfoot></table>`}
 function cnOpenSheet(){const b=B();const d=S.mDate||todayStr();const dr=cnDrawer(b.id,d)||{open:{}};S.cnEdit=S.cnEdit||{...dr.open};
   return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Opening notes"><div class="grab"></div><div class="sh-body">
     <h3>Opening notes · ${dayLabel(d)} · ${esc(b.name)}</h3><p class="hint" style="margin:0">Count the notes in the cash box at the start of the day.</p>${cnGrid('cno',S.cnEdit)}
@@ -4447,7 +4505,7 @@ const _cnClose=closeSheet;closeSheet=function(){const h=_cnClose();const b=B();c
   return h.replace('<div id="mcDiff"',`<details class="cn-count" ${Object.keys(S.cnCount).length?'open':''}><summary>Count by notes${dr?` · expected ${inr(nsum(dr.now))} in notes`:''}</summary>${cnGrid('cnc',S.cnCount,dr?dr.now:null)}<div id="fltLive">${fltSplitHTML(B(),S.cnCount,1)}</div></details><div id="mcDiff"`)};
 window.EXTRA_OV.mClose=closeSheet;
 document.addEventListener('input',e=>{const t=e.target;const p=t.dataset.cno!==undefined?'cno':t.dataset.cnc!==undefined?'cnc':t.dataset.flt!==undefined?'flt':null;if(!p)return;const obj=p==='cno'?(S.cnEdit=S.cnEdit||{}):p==='flt'?(S.fltEdit=S.fltEdit||{}):(S.cnCount=S.cnCount||{});const d=+t.dataset[p];const v=parseInt(t.value.replace(/[^0-9]/g,''))||0;if(v)obj[d]=v;else delete obj[d];
-  const e1=$(p+'v'+d);if(e1)e1.textContent=v?inr(d*v):'–';const tt=$(p+'Tot');if(tt)tt.textContent=inr(nsum(obj));const tc=$(p+'Cnt');if(tc)tc.textContent=ncnt(obj)+' pcs';if(p==='cnc'){const c=$('mcCount');if(c){c.value=String(nsum(obj));c.dispatchEvent(new Event('input',{bubbles:true}))}}});
+  const e1=$(p+'v'+d);if(e1)e1.textContent=v?(d*v).toLocaleString('en-IN'):'';const ew=$(p+'Wds');if(ew)ew.textContent=nsum(obj)?a5Words(nsum(obj))+' only':'—';const tt=$(p+'Tot');if(tt)tt.textContent=inr(nsum(obj));const tc=$(p+'Cnt');if(tc)tc.textContent=ncnt(obj)+' pcs';if(p==='cnc'){const c=$('mcCount');if(c){c.value=String(nsum(obj));c.dispatchEvent(new Event('input',{bubbles:true}))}}});
 window.addEventListener('submit',e=>{if(e.target.id!=='mCloseForm')return;const b=B();const d=S.mDate||todayStr();let notes=nz(S.cnCount||{});if(!ncnt(notes))return;
   const tk=$('fltTake');const r=tk&&tk.checked?fltSplit(b,notes):null;if(r&&nsum(r.out)>0){const amt=nsum(r.out);saveEntry(newEntry('cash_out',{amount:amt,mode:'Cash',cat:'Day-end take out',note:'Notes: '+DEN.filter(x=>r.out[x]).map(x=>`${r.out[x]}×${x}`).join(' + '),date:d}));
     notes=r.keep;const c=$('mcCount');if(c)c.value=String(nsum(r.keep));toast(`Take out ${inr(amt)} recorded`)}setTimeout(()=>{DB.A.set('dayclose',`${b.id}_${d}`,{notes},true);const cl=CACHE[`dc|${b.id}`];if(cl&&cl.data){const x=cl.data.find(y=>y.id===`${b.id}_${d}`);if(x)x.notes=notes}S.cnCount=null},60)},true);
@@ -4489,6 +4547,14 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="flt"
   if(k==='fltSave'){const notes=nz(S.fltEdit||fltOf(b).notes);b.float={notes,amount:nsum(notes),at:Date.now()};DB.saveBiz(b);S.fltEdit=null;render();toast(`${b.name}: standard cash box ${inr(nsum(notes))}`);return}},true);
 document.addEventListener('input',e=>{if(e.target.dataset.flt===undefined)return;const a=$('fltAmt');if(a)a.value=String(nsum(S.fltEdit||{})||'')});
 document.addEventListener('input',e=>{if(e.target.dataset.cnc===undefined)return;const l=$('fltLive');if(l){const was=$('fltTake');const on=was?was.checked:true;l.innerHTML=fltSplitHTML(B(),S.cnCount||{},1);const n=$('fltTake');if(n)n.checked=on}});
+
+document.addEventListener('input',e=>{if(e.target.dataset.tdi===undefined)return;const x=tdBill(S.td&&S.td.id);if(!x)return;const st=tdState(x);const d=+e.target.dataset.tdi;const v=parseInt(e.target.value.replace(/[^0-9]/g,''))||0;if(v)st.in[d]=v;else delete st.in[d];st.out=null;
+  const e1=$('tdiv'+d);if(e1)e1.textContent=v?(d*v).toLocaleString('en-IN'):'';const tt=$('tdiTot');if(tt)tt.textContent=inr(nsum(st.in));const tc=$('tdiCnt');if(tc)tc.textContent=ncnt(st.in)+' pcs';const ew=$('tdiWds');if(ew)ew.textContent=nsum(st.in)?a5Words(nsum(st.in))+' only':'—';
+  const l=$('tdLive');if(l)l.innerHTML=tdLive(x);const c=tdCalc(x);const b=$('tdDone');if(b)b.disabled=c.rec<c.cash||(c.ch>0&&nsum(c.out)!==c.ch)});
+
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="slStep"],[data-act="slCoins"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();
+  if(a.dataset.act==='slCoins'){S.slipCoins=true;const t=a.closest('table');if(t){t.classList.remove('nocoin');const r=a.closest('tr');if(r)r.remove()}return}
+  const inp=document.querySelector(`[data-${a.dataset.p}="${a.dataset.v}"]`);if(!inp)return;const v=Math.max(0,(parseInt(inp.value)||0)+(+a.dataset.d));inp.value=v?String(v):'';inp.dispatchEvent(new Event('input',{bubbles:true}))},true);
 
 /* ===== v1.28 · Product movement on the store dashboard: category · size · brand · colour · item, who sold it, what is not moving ===== */
 const _mvRecs=billRecs;billRecs=function(b){const rs=_mvRecs(b);const act=(b.lines||[]).filter(l=>!l.returned);rs.forEach((r,i)=>{const l=act[i];if(l&&r.color===undefined)r.color=l.color||''});return rs};
