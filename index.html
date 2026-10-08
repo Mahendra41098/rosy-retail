@@ -858,6 +858,11 @@ b.in,.in{color:var(--good)} b.out,.out{color:var(--bad)}
 .rx-ft{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-top:2px}
 .rx-sub{margin:10px 0 4px;font-size:12.5px;font-weight:700;opacity:.8}.rx-items{display:flex;flex-wrap:wrap;gap:6px}.rx-items small{opacity:.65}
 .rx-card form.search{gap:6px}.rx-today{margin:14px 0 4px}
+.lk-box{margin-top:10px;display:flex;flex-direction:column;gap:6px}.lk-h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+.lk-row{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:var(--surface-2,#f6f1f3);border:1px solid transparent;border-radius:12px;padding:8px 10px;color:inherit;font:inherit}
+button.lk-row{cursor:pointer}button.lk-row:hover{border-color:var(--brand,#a3325c)}.lk-row .grow{display:flex;flex-direction:column;min-width:0}.lk-row b{font-size:13px}.lk-row small{font-size:12px;opacity:.8}.lk-row em{font-style:normal;font-weight:700;font-size:12px;color:var(--brand,#a3325c);white-space:nowrap}
+.lk-ic{flex:none;width:30px;height:30px;border-radius:15px;display:grid;place-items:center;font-weight:800;font-size:13px}.lk-ic.in{background:#e5f5ea;color:#0b5d2e}.lk-ic.out{background:#fff1d6;color:#6b4500}.lk-ic.cash{background:#fde7e7;color:#8f1b1b}
+.rt-card{display:flex;flex-direction:column;gap:6px}
 .pay-sum{display:grid;grid-template-columns:repeat(3,auto 1fr);gap:4px 8px;align-items:baseline;margin:10px 0 6px;font-size:13px}.pay-sum b{font-size:15px}.pay-sum .due{color:#b3261e}
 .pay-fill{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}.pay-fill .chip{font-size:12px;padding:6px 10px}
 .pay-methods .chip.fcred.on{background:#b3261e;border-color:#b3261e;color:#fff}
@@ -894,7 +899,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.19.0';
+const APP_VERSION='1.20.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -3921,18 +3926,34 @@ const _rxEx=screens.exchange;screens.exchange=function(){let h=_rxEx();const b=B
     <button class="rx-o" data-act="rxDo" data-v="UPI" ${dis}><b>${ic('rupee')} Refund UPI</b><span>Send ${inr(val)} by UPI · drawer cash not touched</span></button></div></div>`;
   return h.replace(/<div class="btn-row"><button class="secondary" data-act="exRefund"[\s\S]*?<\/button><\/div>/,blk)};
 
-function rxApply(v){const x=S.ex&&S.ex.bill;if(!x)return;const b=B();const mode=v==='cn'?'Credit note':v==='ex'?'Exchange':v;const kind=v==='ex'?'exchange':v==='cn'?'credit':'refund';
-  const os=DB.A.set;let total=0;const names=[];
-  DB.A.set=function(c,id,d,m){if(d&&(c==='returns'||c==='skret')){d=Object.assign({},d,{mode});if(c==='skret'){if(d.kind==='credit')d.kind='refund';names.push((d.qty>1?d.qty+' × ':'')+d.name)}if(c==='returns')total=+d.amount||0}return os.call(this,c,id,d,m)};
+function rxDate(d){try{return parseYmd(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return d}}
+function rxApply(v){const x=S.ex&&S.ex.bill;if(!x)return;const b=B();const mode=v==='cn'?'Credit note':v==='ex'?'Exchange':v==='UPI'?'UPI refund':'Cash refund';const kind=v==='ex'?'exchange':v==='cn'?'credit':'refund';
+  const R=SK.ret&&SK.ret.bill===x.id?SK.ret:{rq:{}};const items=x.lines.map((l,i)=>S.ex.sel[i]&&!l.returned?`${Math.min(l.qty,R.rq[i]??l.qty)} × ${l.name}`:null).filter(Boolean);
+  const cnNo=v==='cn'?'CN'+String(Date.now()).slice(-6):'';const ref=`bill ${x.no} dated ${rxDate(x.date)}`;
+  const os=DB.A.set;let total=0;
+  DB.A.set=function(c,id,d,m){if(d&&(c==='returns'||c==='skret')){d=Object.assign({},d,{mode,billDate:x.date,cn:cnNo||undefined,note:`${mode} · ${ref}`+(c==='returns'?` · ${items.join(', ')}`:'')});if(c==='skret'&&d.kind==='credit')d.kind='refund';if(c==='returns')total=+d.amount||0}
+    if(d&&c==='bills'&&id===x.id&&Array.isArray(d.returns)&&d.returns.length){d=Object.assign({},d);d.returns=d.returns.slice();d.returns[d.returns.length-1]=Object.assign({},d.returns[d.returns.length-1],{mode,items,cn:cnNo||undefined})}
+    return os.call(this,c,id,d,m)};
   try{applyReturn(kind)}finally{DB.A.set=os}
-  if(v==='cn'){resetSale();const cu=x.customer||{};const no='CN'+String(Date.now()).slice(-6);
-    const cn={id:'cn_'+uid(),biz:b.id,no,amount:total,orig:total,status:'open',bill:x.no,billId:x.id,customer:{name:cu.name||'',mobile:cu.mobile||''},items:names,at:Date.now(),date:todayStr(),by:isAdmin()?'Owner':(DEVICE.name||'counter'),uses:[]};
-    DB.A.set('credits',cn.id,cn,false);if(CNS)CNS.push(cn);S.cnShow=cn;S.screen='exchange';S.overlay='cnShow';RX=null;render();toast(`Credit note ${no} · ${inr(total)}`);return}
-  RX=null;if(v==='Cash'||v==='UPI')toast(`Return saved · give back ${inr(total)} by ${v}`)}
+  rxPatchToday(x.id,mode,items,cnNo);
+  if(v==='cn'){resetSale();const cu=x.customer||{};
+    const cn={id:'cn_'+uid(),biz:b.id,no:cnNo,amount:total,orig:total,status:'open',bill:x.no,billId:x.id,billDate:x.date,customer:{name:cu.name||'',mobile:cu.mobile||''},items,at:Date.now(),date:todayStr(),by:isAdmin()?'Owner':(DEVICE.name||'counter'),uses:[]};
+    DB.A.set('credits',cn.id,cn,false);if(CNS)CNS.push(cn);S.cnShow=cn;S.screen='exchange';S.overlay='cnShow';RX=null;render();toast(`Credit note ${cnNo} · ${inr(total)}`);return}
+  if(v==='ex'){S.remark=`Exchange against ${ref} · returned ${items.join(', ')} · credit ${inr(total)}`;S.remarkPrint=true;S.exRef={billId:x.id,no:x.no,date:x.date,kind:'exchange',amount:total,items};RX=null;render();return}
+  RX=null;toast(`Return saved · give back ${inr(total)} by ${v} · ${ref}`)}
+/* the copy of the bill in memory gets the same details, so it shows at once */
+function rxPatchToday(id,mode,items,cn){[ST.today.find(y=>y.id===id),S.viewBill&&S.viewBill.id===id?S.viewBill:null].forEach(y=>{if(y&&y.returns&&y.returns.length){const r=y.returns[y.returns.length-1];if(!r.mode)Object.assign(r,{mode,items,cn:cn||undefined})}})}
 
+/* sales made from a return (exchange or credit note) remember the old bill, and the old bill links to the new one */
+const _rxReset=resetSale;resetSale=function(){S.exRef=null;return _rxReset.apply(this,arguments)};
+const _rxSB2=DB.saveBill;DB.saveBill=function(b,prev){if(b&&!prev&&S.exRef&&!b.ref)b.ref={billId:S.exRef.billId,no:S.exRef.no,date:S.exRef.date,kind:S.exRef.kind,cn:S.exRef.cn||'',amount:S.exRef.amount||0};return _rxSB2.apply(this,arguments)};
+const _rxSave2=saveSale;saveSale=function(){const ref=S.exRef?{...S.exRef}:null;const before=S.lastBill;const r=_rxSave2.apply(this,arguments);const nb=S.lastBill;
+  if(ref&&nb&&nb!==before&&!nb.editedNow){const link={id:nb.id,no:nb.no,date:nb.date,at:nb.at,kind:ref.kind,cn:ref.cn||'',amount:(nb.credit&&nb.credit.amount)||ref.amount||0};
+    Promise.resolve(getBill(ref.billId)).then(o=>{if(!o)return;const links=(o.links||[]).concat([link]);DB.A.set('bills',o.id,{links},true);o.links=links;const t=ST.today.find(y=>y.id===o.id);if(t)t.links=links;patchCache(o)}).catch(()=>{})}
+  return r};
 /* UPI refunds don't come out of the cash drawer */
 const _rxMoney=moneyDay;moneyDay=function(bizId,date){const o=_rxMoney(bizId,date);if(!o)return o;const r=returnsFor(date)||[];
-  const u=entries(r,bizId).filter(x=>x.kind==='refund'&&x.mode==='UPI').reduce((a,x)=>a+(+x.amount||0),0);if(u){o.refunds-=u;o.expected+=u;o.refundUpi=u}return o};
+  const u=entries(r,bizId).filter(x=>x.kind==='refund'&&/UPI/.test(x.mode||'')).reduce((a,x)=>a+(+x.amount||0),0);if(u){o.refunds-=u;o.expected+=u;o.refundUpi=u}return o};
 
 /* ---------- credit notes ---------- */
 function cnLoad(){const b=B();if(CNS&&CNS.biz===b.id)return CNS;CNS=null;DB.A.query('credits',[['biz','==',b.id]]).then(l=>{CNS=(l||[]).filter(c=>c.biz===b.id);CNS.biz=b.id;render()}).catch(()=>{CNS=[];CNS.biz=b.id});return null}
@@ -3998,8 +4019,8 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(
   if(k==='cnWa'){e.stopImmediatePropagation();const c=S.cnShow;const m=$('cnMob')?$('cnMob').value:c.customer.mobile;if(digits(m).length<10){toast("Type the customer's 10-digit mobile first");return}openWA(m,cnText(c,ST.biz.find(y=>y.id===c.biz)||b));return}
   if(k==='cnUse'){e.stopImmediatePropagation();S.cnQ='';cnLoad();S.overlay='cnUse';render();return}
   if(k==='cnApply'){e.stopImmediatePropagation();const c=(CNS||[]).find(x=>x.id===v);if(!c)return;S.credit={no:c.no,billId:c.billId,amount:c.amount,cnId:c.id,cnFull:c.amount};
-    if(c.customer&&c.customer.mobile&&!digits(S.customer.mobile))S.customer={name:c.customer.name||'',mobile:c.customer.mobile};S.overlay=null;render();toast(`Credit note ${c.no} added`);return}
-  if(k==='cnRemove'){e.stopImmediatePropagation();S.credit=null;render();return}
+    if(c.customer&&c.customer.mobile&&!digits(S.customer.mobile))S.customer={name:c.customer.name||'',mobile:c.customer.mobile};const rm=`Credit note ${c.no} used · issued on ${rxDate(c.date)} against bill ${c.bill}${c.billDate?' dated '+rxDate(c.billDate):''}`;S.remark=S.remark&&!S.remark.startsWith('Credit note')?S.remark+' · '+rm:rm;S.remarkPrint=true;S.exRef={billId:c.billId,no:c.bill,date:c.billDate||'',kind:'credit note',cn:c.no,amount:c.amount};S.overlay=null;render();toast(`Credit note ${c.no} added`);return}
+  if(k==='cnRemove'){e.stopImmediatePropagation();if(S.exRef&&S.exRef.kind==='credit note'){S.remark=String(S.remark||'').replace(/ ?·? ?Credit note CN\d+ used[^·]*·[^·]*$/,'').replace(/^Credit note CN\d+ used.*$/,'');S.exRef=null}S.credit=null;render();return}
   if(k==='lpEdit'){e.stopImmediatePropagation();S.lpEdit=+a.dataset.i;render();setTimeout(()=>{const n=$('lpPrice');if(n){n.focus();n.select()}},40);return}
   if(k==='lpX'){e.stopImmediatePropagation();S.lpEdit=null;render();return}
   if(k==='lpSet'){e.stopImmediatePropagation();const i=+a.dataset.i;const l=S.cart[i];if(!l)return;const p=Math.round(+($('lpPrice').value||0)),m=Math.round(+($('lpMrp').value||0));
@@ -4017,6 +4038,23 @@ document.addEventListener('keydown',e=>{if(S.screen!=='exchange'||S.ex||S.overla
 const _rxGo=go;go=function(s){if(s!=='exchange'){RX=null}return _rxGo.apply(this,arguments)};
 /* clearer name for the bulk tools on the stock screen */
 const _rxStock=screens.stock;screens.stock=function(){return _rxStock().replace(`${ic('check')} Select items</button>`,`${ic('check')} Select · edit / delete many</button>`)};
+
+/* bill detail: where this bill came from, and what happened to it later */
+function rxLinksHTML(x){const rows=[];
+  if(x.ref)rows.push(`<button class="lk-row" data-act="viewBill" data-v="${x.ref.billId}"><span class="lk-ic in">↩</span><span class="grow"><b>${x.ref.kind==='exchange'?'Exchange':'Credit note '+esc(x.ref.cn||'')} from bill ${esc(x.ref.no)}</b><small>${x.ref.date?'Bill dated '+rxDate(x.ref.date)+' · ':''}${inr(x.ref.amount||0)} credit</small></span><em>Open ›</em></button>`);
+  (x.returns||[]).forEach(r=>rows.push(`<div class="lk-row"><span class="lk-ic out">⇄</span><span class="grow"><b>${esc(r.mode||(r.kind==='exchange'?'Exchange':'Refund'))} · ${inr(r.amount||0)}${r.cn?' · '+esc(r.cn):''}</b><small>${dayLabel(ymd(new Date(r.at)))} ${timeLabel(r.at)}${r.by?' · '+esc(r.by):''}${r.items&&r.items.length?' · '+esc(r.items.join(', ')):''}</small></span></div>`));
+  (x.links||[]).forEach(l=>rows.push(`<button class="lk-row" data-act="viewBill" data-v="${l.id}"><span class="lk-ic in">→</span><span class="grow"><b>New bill ${esc(l.no)}</b><small>${rxDate(l.date)} ${timeLabel(l.at)} · ${l.kind==='exchange'?'exchange':'credit note '+esc(l.cn||'')} ${inr(l.amount||0)} used</small></span><em>Open ›</em></button>`));
+  return rows.length?`<div class="lk-box"><b class="lk-h">Returns & linked bills</b>${rows.join('')}</div>`:''}
+const _rxBD=billDetail;billDetail=function(x,c){const h=_rxBD(x,c);return x?h+rxLinksHTML(x):h};
+/* A5 bill shows the note (for example "Exchange against bill … dated …") */
+const _rxA5=a5HTML;a5HTML=function(x,bz){let h=_rxA5(x,bz);if(x&&x.remark&&x.remarkPrint)h=h.replace('<div class="pq">',`<div class="pq"><p class="rmk"><b>Note:</b> ${esc(x.remark)}</p>`);return h};
+(function(){const s=document.createElement('style');s.textContent='.a5f .rmk{flex-basis:100%;margin:0 0 1mm;font-size:6.8pt;border:1px dashed var(--g);border-radius:1.5mm;padding:1.2mm 2mm}';document.head.appendChild(s)})();
+/* cash book: list today's returns with their bill and how the money went back */
+const _rxMon=screens.money;screens.money=function(){let h=_rxMon();const b=B();const d=S.mDate||todayStr();const rets=returnsFor(d);if(!rets)return h;
+  const list=entries(rets,b.id).filter(r=>r.kind!=='supplier').sort((p,q)=>q.at-p.at);if(!list.length)return h;
+  const card=`<div class="card rt-card"><div class="card-h"><h3>Returns & refunds · ${list.length}</h3><span class="hint">${inr(list.reduce((a,r)=>a+(+r.amount||0),0))}</span></div>
+    ${list.map(r=>`<button class="lk-row" data-act="viewBill" data-v="${r.bill}"><span class="lk-ic ${r.kind==='refund'&&r.mode!=='UPI refund'&&r.mode!=='UPI'?'cash':'out'}">${r.kind==='exchange'?'⇄':r.kind==='credit'?'CN':'₹'}</span><span class="grow"><b>${esc(r.mode||(r.kind==='refund'?'Cash refund':r.kind==='exchange'?'Exchange':'Credit note'))} · ${inr(r.amount||0)}${r.cn?' · '+esc(r.cn):''}</b><small>${timeLabel(r.at)} · bill ${esc(r.no||'')}${r.billDate?' dated '+rxDate(r.billDate):''}${r.note&&r.note.split(' · ').length>2?' · '+esc(r.note.split(' · ').slice(2).join(' · ')):''}</small></span><em>${r.kind==='refund'&&!/UPI/.test(r.mode||'')?'from drawer':''}</em></button>`).join('')}</div>`;
+  const k='<div class="kgrid" style="grid-template-columns:repeat(3,1fr)">';return h.includes(k)?h.replace(k,card+k):h+card};
 
 /* ===== v1.15 · Payment: Cash · UPI · Card · Split (cash + UPI + card, rest due) · Full credit ===== */
 const PAY_OPTS=['Cash','UPI','Card','Split','Full credit'];
