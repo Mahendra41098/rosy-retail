@@ -866,6 +866,29 @@ button.lk-row{cursor:pointer}button.lk-row:hover{border-color:var(--brand,#a3325
 .pay-sum{display:grid;grid-template-columns:repeat(3,auto 1fr);gap:4px 8px;align-items:baseline;margin:10px 0 6px;font-size:13px}.pay-sum b{font-size:15px}.pay-sum .due{color:#b3261e}
 .pay-fill{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}.pay-fill .chip{font-size:12px;padding:6px 10px}
 .pay-methods .chip.fcred.on{background:#b3261e;border-color:#b3261e;color:#fff}
+.st-open{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px;border-radius:14px;border:1.5px dashed var(--brand,#a3325c);background:#fbeff4;color:inherit;font:inherit;cursor:pointer;margin:4px 0 10px}
+.st-open svg{width:20px;height:20px;flex:none}.st-open span{flex:1;display:flex;flex-direction:column}.st-open small{font-size:12px;opacity:.75}
+.st-card .card-h h3{display:flex;align-items:center;gap:6px}.st-card .card-h h3 svg{width:18px;height:18px}.st-card{margin-bottom:10px}
+.st-top{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 8px}.st-top b{font-size:20px}
+.st-quick{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.st-quick .chip{font-size:12.5px;padding:6px 10px}
+.st-res{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:13.5px;margin:6px 0 10px;padding:8px 10px;border-radius:10px;background:var(--surface-2,#f6f1f3)}.st-res .d{color:#b3261e}.st-res .f{font-size:17px}
+.st-note{margin-top:8px;font-size:12.5px;display:flex;gap:6px;align-items:center;padding:6px 10px;border-radius:10px;background:#fff1d6;color:#6b4500}.st-note svg{width:15px;height:15px;flex:none}
+.st-done{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:#e5f5ea;color:#0b5d2e;margin:4px 0 10px}.st-done svg{width:18px;height:18px;flex:none}.st-done span{flex:1;display:flex;flex-direction:column}.st-done small{font-size:12px;opacity:.85}
+.tm-link{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:13px}.tm-link svg{width:15px;height:15px}
+.tm-sh{margin-top:10px;padding:10px;border-radius:12px;background:var(--surface-2,#f6f1f3);display:flex;flex-direction:column;gap:6px}
+.tm-h{display:flex;justify-content:space-between;align-items:center}.tm-r{display:grid;grid-template-columns:1fr 70px auto 80px;gap:8px;align-items:center}.tm-r input{text-align:right;padding:8px 10px}.tm-r em{font-style:normal;font-weight:700}.tm-r small{text-align:right;font-weight:700;font-size:13px}
+.tm-sum{margin:2px 0 0;font-size:12.5px;font-weight:700}.tm-sum.ok{color:#0b7a3e}.tm-sum.bad{color:#b3261e}
+.tm-box{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:12.5px;padding:8px 10px;border-radius:10px;background:#eef3fb;color:#24456b}.tm-box>b{display:flex;align-items:center;gap:5px;flex-basis:100%}.tm-box svg{width:15px;height:15px}
+.cp-link{display:inline-flex;align-items:center;gap:5px;margin:8px 0 2px;font-size:13px}.cp-link svg{width:15px;height:15px}
+.cp-box{margin:10px 0 4px;padding:10px;border-radius:12px;background:var(--surface-2,#f6f1f3);display:flex;flex-direction:column;gap:6px}.cp-box.need{background:#fff1d6;border:1.5px solid #e2b35c}.cp-box p{margin:0;font-size:13px}
+.cp-in{display:grid;grid-template-columns:1fr auto;gap:8px}.cp-in input{font-family:var(--mono,monospace);letter-spacing:.06em;text-transform:uppercase}.cp-in .primary{width:auto;padding:0 18px;min-height:44px}
+.cp-msg{font-size:12.5px!important;font-weight:700;min-height:1em}.cp-msg.bad{color:#b3261e}.cp-msg.ok{color:#0b7a3e}
+.cp-on{display:flex;gap:10px;align-items:center;margin:10px 0 4px;padding:9px 12px;border-radius:12px;background:#e5f5ea;color:#0b5d2e}.cp-on.ok{background:#eef3fb;color:#24456b}.cp-on svg{width:18px;height:18px;flex:none}.cp-on span{flex:1;display:flex;flex-direction:column}.cp-on small{font-size:12px;opacity:.85}
+.cp-note{margin-top:8px;display:flex;gap:6px;align-items:center;font-size:12.5px;padding:6px 10px;border-radius:10px;background:#e5f5ea;color:#0b5d2e}.cp-note svg{width:15px;height:15px;flex:none}
+.cp-card .card-h h3{display:flex;align-items:center;gap:6px}.cp-card .card-h h3 svg{width:18px;height:18px}
+.cp-form{display:flex;flex-direction:column;gap:10px;padding:10px;border-radius:12px;background:var(--surface-2,#f6f1f3);margin-bottom:10px}.cp-val{display:grid;grid-template-columns:1fr 96px;gap:6px}
+.cp-row .grow span{display:block;font-size:12px}.cp-row.off{opacity:.55}.cp-acts{display:flex;gap:6px;align-items:center}.cp-acts .x.sure{width:auto;padding:0 8px;background:#b3261e;color:#fff;border-radius:8px;font-size:12px}
+.cp-in input.pin{-webkit-text-security:disc;letter-spacing:.3em}
 </style>
 </head>
 <body>
@@ -899,7 +922,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.20.0';
+const APP_VERSION='1.23.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -4091,6 +4114,179 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act="payPi
 const _pEdit=startEdit;startEdit=function(bill){const r=_pEdit.apply(this,arguments);const p=S.pay;if(p&&p.mode==='partial'){S.pay={mode:'split',method:p.method||'Cash',split:{Cash:'',UPI:'',Card:'',[p.method||'Cash']:String(+p.recv||0)},recv:''};render()}return r};
 /* customer mobile typed → refresh the payment message */
 document.addEventListener('input',e=>{if(e.target.id==='cuMob'&&(S.pay.mode==='credit'||S.pay.mode==='split')){const ps=$('payStatus');if(ps)ps.outerHTML=payStatus();const sb=$('saveBtn');if(sb)sb.disabled=!canSave()}});
+
+/* ===== v1.21 · Final amount after billing: customer pays a little less → enter what came in, the gap becomes discount ===== */
+function stState(x){if(!S.st||S.st.id!==x.id){const t=billTot(x);const cr=x.credit?+x.credit.amount||0:0;S.st={id:x.id,amt:'',method:'Cash',split:{Cash:'',UPI:'',Card:''},pay:Math.max(0,t.final-cr)}}return S.st}
+function stCalc(x){const st=stState(x);const t=billTot(x);const amt=st.method==='Split'?paySum({split:st.split}):(+st.amt||0);const less=st.pay-amt;
+  let err='';if(!amt&&st.amt!==''&&st.method!=='Split')err='Enter the amount received';else if(amt>st.pay)err=`More than the bill (${inr(st.pay)}). Use exactly what came in.`;
+  else if(amt&&!isAdmin()){const C=cfg();const tot=t.disc+less;if(!C.staffDisc&&less>0)err='Staff discounts are switched off. Ask the owner.';else if(tot>t.sub*C.maxDisc/100)err=`Staff can give up to ${C.maxDisc}% in total (${inr(Math.floor(t.sub*C.maxDisc/100))}). Ask the owner.`}
+  return {st,t,amt,less,err}}
+function stHTML(x){if(!x||x.deleted||(x.lines||[]).some(l=>l.returned))return '';const {st,t,amt,less,err}=stCalc(x);
+  if(!st.open&&x.settle)return `<div class="st-done">${ic('check')}<span><b>Final amount saved · ${inr(x.settle.recv)} by ${esc(x.settle.method)}</b><small>${inr(x.settle.less)} less at payment · final bill ${inr(billTot(x).final)} · ${timeLabel(x.settle.at)} · ${esc(x.settle.by)}</small></span><button class="linkbtn" data-act="stOpen" data-v="${x.id}">Change</button></div>`;
+  const show=st.open;
+  if(!show)return `<button class="st-open" data-act="stOpen" data-v="${x.id}">${ic('rupee')}<span><b>Customer paid a little less?</b><small>Enter the final amount received · the difference is added as discount</small></span>${ic('chev')}</button>`;
+  return `<div class="card st-card" id="stCard"><div class="card-h"><h3>${ic('rupee')} Final amount received</h3>${x.settle?`<span class="pill-state">${inr(x.settle.less)} less taken</span>`:''}</div>
+    ${x.settle?`<p class="hint" style="margin:0 0 6px">Already settled at ${timeLabel(x.settle.at)} by ${esc(x.settle.by)}: received ${esc(x.payText||'')}. You can change it again.</p>`:''}
+    <div class="st-top"><span>Bill amount</span><b>${inr(st.pay)}</b></div>
+    <div class="pay-methods">${['Cash','UPI','Card','Split'].map(m=>`<button class="chip ${st.method===m?'on':''}" data-act="stMethod" data-v="${m}">${m}</button>`).join('')}</div>
+    ${st.method==='Split'?['Cash','UPI','Card'].map(k=>`<div class="pay-row"><b>${k}</b><input class="money" data-stsplit="${k}" inputmode="numeric" value="${st.split[k]}" placeholder="0"></div>`).join('')
+      :`<div class="pay-row"><b>Received</b><input class="money" id="stAmt" inputmode="numeric" value="${st.amt}" placeholder="${st.pay}"></div>`}
+    <div class="st-quick">${[10,20,50,100,200].filter(v=>v<st.pay).map(v=>`<button class="chip" data-act="stLess" data-v="${v}">${inr(v)} less</button>`).join('')}</div>
+    <div id="stInfo">${stInfo(x)}</div>
+    <div class="btn-row"><button class="secondary" data-act="stCancel" data-v="${x.id}">Cancel</button><button class="primary" data-act="stSave" data-v="${x.id}" ${err||!amt||less<0?'disabled':''}>Save final amount</button></div></div>`}
+function stInfo(x){const {t,amt,less,err}=stCalc(x);if(err)return `<p class="pay-status bad">${err}</p>`;if(!amt)return `<p class="hint" style="margin:6px 0">Type what the customer finally gave, or tap ₹50 less etc.</p>`;
+  return `<div class="st-res"><span>Extra discount</span><b class="${less?'d':''}">${less?'− '+inr(less):'none'}</b><span>Total discount</span><b>${inr(t.disc+less)}</b><span>Final bill</span><b class="f">${inr(t.final-less)}</b></div>`}
+function stSave(x){const {st,t,amt,less,err}=stCalc(x);if(err||!amt||less<0)return;const prev=clone(x);const nb=clone(x);
+  nb.disc=(+x.disc||0)+less;nb.discType='rs';nb.discVal=String(nb.disc);
+  const paid={Cash:0,UPI:0,Card:0,refund:0};if(st.method==='Split')['Cash','UPI','Card'].forEach(k=>paid[k]=+st.split[k]||0);else paid[st.method]=amt;
+  nb.pay=st.method==='Split'?{mode:'split',method:'Cash',split:{Cash:String(paid.Cash||''),UPI:String(paid.UPI||''),Card:String(paid.Card||'')},recv:''}:{mode:'single',method:st.method,split:{Cash:'',UPI:'',Card:''},recv:''};
+  nb.paid=paid;nb.due=0;nb.payText=['Cash','UPI','Card'].filter(k=>paid[k]).map(k=>`${inr(paid[k])} ${k}`).join(' + ')+(less?` · ${inr(less)} less at payment`:'');
+  nb.settle={at:Date.now(),by:isAdmin()?'Owner':(DEVICE.name||'counter'),less:(x.settle?x.settle.less:0)+less,recv:amt,method:st.method,before:t.final};
+  DB.saveBill(nb,prev);if(prev.due&&prev.customer&&prev.customer.mobile)DB.incCustomer(prev.customer.mobile,null,0,-prev.due);afterBillChange(nb);
+  if(S.lastBill&&S.lastBill.id===nb.id)S.lastBill={...nb,editedNow:S.lastBill.editedNow};S.st=null;render();toast(less?`Saved · ${inr(less)} extra discount · final ${inr(t.final-less)}`:'Saved · payment updated')}
+const _stSaved=screens.saved;screens.saved=function(){const h=_stSaved();const x=S.lastBill;if(!x)return h;const k='<div class="f"><label for="sendMob">';const i=h.indexOf(k);return i<0?h:h.slice(0,i)+stHTML(x)+h.slice(i)};
+const _stBD=billDetail;billDetail=function(x,c){let h=_stBD(x,c);if(x&&x.settle)h+=`<div class="st-note">${ic('rupee')} Final amount: received ${inr(x.settle.recv)} by ${esc(x.settle.method)} · ${inr(x.settle.less)} less at payment · ${timeLabel(x.settle.at)} · ${esc(x.settle.by)}</div>`;return h};
+const _stSheet=billSheet;billSheet=function(){const h=_stSheet();const x=S.viewBill;if(!x||x.date!==todayStr()||!canEdit(x)||S.screen==='saved')return h;const k='<div class="btn-row"><button class="secondary" data-act="printBill"';const i=h.indexOf(k);return i<0?h:h.slice(0,i)+stHTML(x)+h.slice(i)};
+/* A5: show the after-billing discount on its own line */
+const _stA5=a5HTML;a5HTML=function(x,bz){let h=_stA5(x,bz);if(x&&x.settle&&x.settle.less)h=h.replace('<div class="tr2 big"><span>Total Amount</span>',`<div class="tr2"><span>incl. less at payment</span><span>- ₹ ${a5F(x.settle.less)}</span></div><div class="tr2 big"><span>Total Amount</span>`);return h};
+function stBill(id){return (S.lastBill&&S.lastBill.id===id&&S.lastBill)||(S.viewBill&&S.viewBill.id===id&&S.viewBill)||ST.today.find(y=>y.id===id)}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="st"]');if(!a||!/^st[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const k=a.dataset.act;const v=a.dataset.v;
+  const x=stBill(v)||stBill(S.st&&S.st.id);if(!x)return;const st=stState(x);
+  if(k==='stOpen'){st.open=true;render();setTimeout(()=>{const n=$('stAmt');if(n){n.focus();n.scrollIntoView({block:'center'})}},50);return}
+  if(k==='stCancel'){S.st=null;render();return}
+  if(k==='stMethod'){st.method=v;render();return}
+  if(k==='stLess'){if(st.method==='Split')st.method='Cash';st.amt=String(Math.max(0,st.pay-(+v)));render();return}
+  if(k==='stSave'){stSave(x);return}},true);
+document.addEventListener('input',e=>{const t=e.target;if(t.id!=='stAmt'&&!t.dataset.stsplit)return;const x=stBill(S.st&&S.st.id);if(!x)return;const st=stState(x);const v=t.value.replace(/[^0-9]/g,'');
+  if(t.id==='stAmt')st.amt=v;else st.split[t.dataset.stsplit]=v;const n=$('stInfo');if(n)n.innerHTML=stInfo(x);const b=document.querySelector('[data-act=stSave]');if(b){const c=stCalc(x);b.disabled=!!c.err||!c.amt||c.less<0}});
+
+/* ===== v1.22 · Combined sale: several staff on one bill, sales shared by % ===== */
+S.team=null;S.teamMode=false;
+function teamList(){return Array.isArray(S.team)?S.team:[]}
+function teamEqual(ids){const n=ids.length;const base=Math.floor(100/n);return ids.map((id,i)=>({id,share:base+(i===0?100-base*n:0)}))}
+function teamName(b,id){return id==='owner'?'Owner':staffName(b,id)||'Staff'}
+function teamOk(){const t=teamList();if(!S.teamMode||t.length<2)return true;const s=t.reduce((a,m)=>a+(+m.share||0),0);return s===100&&t.every(m=>+m.share>0)}
+/* Sold by: one name as before, or "Sold together" with shares */
+const _tmSold=soldBy;soldBy=function(){if(!S.teamMode)return _tmSold().replace(/<\/div><\/div>$/,`</div><button class="linkbtn tm-link" data-act="tmOn">${ic('users')} Sold together? Pick more names</button></div>`);
+  const b=B();const list=(b.staff||[]).filter(x=>x.active!==false);const t=teamList();const has=id=>t.find(m=>m.id===id);const sum=t.reduce((a,m)=>a+(+m.share||0),0);
+  const opts=list.map(x=>[x.id,x.name]).concat(isAdmin()?[['owner','Owner']]:[]);
+  return `<div class="soldby tm ${!t.length&&S.cart.length?'need':''}"><span class="lab">Sold together · tap every name</span>
+    <div class="chips">${opts.map(([id,n])=>`<button class="chip sp ${has(id)?'on':''}" data-act="tmTog" data-v="${id}"><i>${esc(n[0])}</i>${esc(n)}${has(id)?' ✓':''}</button>`).join('')}</div>
+    ${t.length>1?`<div class="tm-sh"><div class="tm-h"><b>Sharing</b><button class="linkbtn" data-act="tmEq">Equal</button></div>${t.map(m=>`<div class="tm-r"><span>${esc(teamName(b,m.id))}</span><input class="money" data-tmsh="${m.id}" inputmode="numeric" value="${m.share}" aria-label="Share of ${esc(teamName(b,m.id))}"><em>%</em><small id="tmAmt_${m.id}"></small></div>`).join('')}
+      <p class="tm-sum ${sum===100?'ok':'bad'}" id="tmSum">${sum===100?'Total 100% ✓':`Total ${sum}% · must be 100%`}</p></div>`:t.length===1?'<p class="hint" style="margin:6px 0 0">Tap one more name to share this sale.</p>':''}
+    <button class="linkbtn tm-link" data-act="tmOff">Only one person sold this</button></div>`};
+function tmAmts(){const t=teamList();if(t.length<2)return;const f=cartTotals().final;let left=f;t.forEach((m,i)=>{const v=i===t.length-1?left:Math.round(f*(+m.share||0)/100);left-=v;const e=$('tmAmt_'+m.id);if(e)e.textContent=inr(v)})}
+const _tmRender=render;render=function(){_tmRender();if(S.screen==='sale'&&S.teamMode)tmAmts()};
+const _tmCan=canSave;canSave=function(){return _tmCan()&&teamOk()};
+const _tmReset=resetSale;resetSale=function(){S.team=null;S.teamMode=false;return _tmReset.apply(this,arguments)};
+const _tmEdit=startEdit;startEdit=function(bill){const r=_tmEdit.apply(this,arguments);if(bill&&Array.isArray(bill.team)&&bill.team.length>1){S.team=bill.team.map(m=>({id:m.id,share:m.share}));S.teamMode=true;S.sp=S.team[0].id;render()}return r};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="tm"]');if(!a||!/^tm[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const k=a.dataset.act,v=a.dataset.v;
+  if(k==='tmOn'){S.teamMode=true;S.team=S.sp?[{id:S.sp,share:100}]:[];render();return}
+  if(k==='tmOff'){const first=teamList()[0];S.teamMode=false;S.team=null;S.sp=first?first.id:S.sp;render();return}
+  if(k==='tmTog'){let t=teamList().map(m=>m.id);t=t.includes(v)?t.filter(x=>x!==v):t.concat([v]);S.team=t.length?teamEqual(t):[];S.sp=t[0]||null;render();return}
+  if(k==='tmEq'){S.team=teamEqual(teamList().map(m=>m.id));render();return}},true);
+document.addEventListener('input',e=>{const id=e.target.dataset.tmsh;if(!id)return;const m=teamList().find(x=>x.id===id);if(!m)return;m.share=Math.max(0,Math.min(100,parseInt(e.target.value.replace(/[^0-9]/g,''))||0));
+  const s=teamList().reduce((a,x)=>a+(+x.share||0),0);const el=$('tmSum');if(el){el.className='tm-sum '+(s===100?'ok':'bad');el.textContent=s===100?'Total 100% ✓':`Total ${s}% · must be 100%`}tmAmts();const sb=$('saveBtn');if(sb)sb.disabled=!canSave()});
+/* saving: the bill keeps the team; books give each person their share */
+let TM_SAVING=false;const _tmSave=saveSale;saveSale=function(){TM_SAVING=true;try{return _tmSave.apply(this,arguments)}finally{TM_SAVING=false}};
+function tmCorr(A,b,k){if(!b||b.deleted||!Array.isArray(b.team)||b.team.length<2)return;const t=billTot(b);const p=b.staffId||'owner';let left=t.final;
+  b.team.forEach((m,i)=>{const v=i===b.team.length-1?left:Math.round(t.final*m.share/100);left-=v;const ds=k*(v-(m.id===p?t.final:0));const db=m.id===p?0:k*(t.items>0?1:0);if(!ds&&!db)return;
+    const body={staff:{[m.id]:{sales:A.inc(ds),bills:A.inc(db)}}};A.set('daily',`${b.biz}_${b.date}`,body,true);A.set('monthly',`${b.biz}_${b.month}`,body,true)})}
+const _tmSB=DB.saveBill;DB.saveBill=function(b,prev){if(TM_SAVING&&b){const bz=ST.biz.find(x=>x.id===b.biz)||B();const t=teamList();
+    if(S.teamMode&&t.length>1){b.team=t.map(m=>({id:m.id,name:teamName(bz,m.id),share:+m.share}));b.staffId=t[0].id;b.staff=b.team.map(m=>m.name).join(' + ')}else if(b.team)delete b.team}
+  const r=_tmSB.apply(this,arguments);try{tmCorr(this.A,prev,-1);tmCorr(this.A,b,1)}catch(e){}return r};
+/* reports: a shared bill counts for each person by their share */
+function tmSplit(rs){const out=[];(rs||[]).forEach(r=>{const tm=r.live&&r.live.team;if(r.__tm||!Array.isArray(tm)||tm.length<2){out.push(r);return}
+  tm.forEach(m=>{const f=(+m.share||0)/100;out.push({...r,__tm:1,staffId:m.id,staff:m.name,qty:r.qty*f,disc:r.disc*f,cost:r.cost*f})})});return out}
+const _tmSR=staffReport;staffReport=function(rs){return _tmSR(tmSplit(rs))};
+const _tmDet=screens.staffDetail;screens.staffDetail=function(){const op=periodRecs;periodRecs=function(){const r=op();return r?tmSplit(r):r};try{return _tmDet()}finally{periodRecs=op}};
+const _tmRecs=billRecs;billRecs=function(b){const rs=_tmRecs(b);if(b&&b.__share!=null){const f=b.__share/100;return rs.map(r=>({...r,qty:r.qty*f,disc:r.disc*f,cost:r.cost*f}))}return rs};
+function tmToday(id,share){const o=ST.today;ST.today=o.map(x=>{const m=Array.isArray(x.team)&&x.team.length>1&&x.team.find(t=>t.id===id);return m?{...x,staffId:id,__share:share?m.share:null}:x});return ()=>{ST.today=o}}
+const _tmMy=screens.mytarget;screens.mytarget=function(){if(!S.myStaff)return _tmMy();const undo=tmToday(S.myStaff,true);try{return _tmMy()}finally{undo()}};
+const _tmSales=screens.sales;screens.sales=function(){if(!S.salesStaff||S.salesStaff==='all')return _tmSales();const undo=tmToday(S.salesStaff,false);try{return _tmSales()}finally{undo()}};
+/* bill detail: show the sharing */
+const _tmBD=billDetail;billDetail=function(x,c){let h=_tmBD(x,c);if(x&&Array.isArray(x.team)&&x.team.length>1){const t=billTot(x);let left=t.final;
+  h+=`<div class="tm-box"><b>${ic('users')} Sold together</b>${x.team.map((m,i)=>{const v=i===x.team.length-1?left:Math.round(t.final*m.share/100);left-=v;return `<span>${esc(m.name)} · ${m.share}% · <b>${inr(v)}</b></span>`}).join('')}</div>`}return h};
+
+/* ===== v1.23 · Discount above the staff limit needs the owner PIN or a coupon. Owner creates coupons for all shops ===== */
+const CP={list:null,unsub:null};S.coupon=null;S.discOk=null;
+function cpStart(){if(CP.unsub||!DB.A||!DB.A.listen)return;CP.unsub=DB.A.listen('coupons',[],docs=>{CP.list=docs||[];if(S.screen==='settings'||S.screen==='sale')renderSoft()})}
+function cpFind(code){code=String(code||'').trim().toUpperCase();return code&&(CP.list||[]).find(c=>String(c.code||c.id).toUpperCase()===code)}
+function cpCheck(c,sub){const b=B();if(!c)return 'No coupon with this code';if(c.active===false)return 'This coupon is switched off';
+  if(c.shops&&c.shops!=='all'&&!(c.shops||[]).includes(b.id))return `Not valid in ${b.name}`;if(c.until&&todayStr()>c.until)return `Expired on ${dayLabel(c.until)}`;
+  if(+c.max>0&&(+c.used||0)>=+c.max)return `Already used ${c.used} of ${c.max} times`;if(+c.min>0&&sub<+c.min)return `Bill must be at least ${inr(c.min)}`;return ''}
+function cpAmt(c,sub){return c.type==='pct'?Math.round(sub*(+c.value||0)/100):Math.min(sub,Math.round(+c.value||0))}
+function cpLabel(c){return c.type==='pct'?`${c.value}% off`:`${inr(c.value)} off`}
+const STAFF_ERR=/^Staff /;
+const _cpCT=cartTotals;cartTotals=function(){const t=_cpCT();if(isAdmin())return t;
+  if(t.discErr&&STAFF_ERR.test(t.discErr)&&t.disc<=t.sub){
+    if(S.discOk){t.discErr=''}
+    else if(S.coupon){const c=cpFind(S.coupon.code);const lim=Math.max(c?cpAmt(c,t.sub):0,cfg().staffDisc?Math.floor(t.sub*cfg().maxDisc/100):0);if(c&&!cpCheck(c,t.sub)&&t.disc<=lim)t.discErr='';else if(c)t.discErr=`Coupon ${c.code} allows up to ${inr(lim)} on this bill`}
+    t.err=!!(t.lineErr||t.discErr)}
+  return t};
+function cpBox(){if(!S.cart.length)return '';const t=cartTotals();const staffErr=!isAdmin()&&t.discErr&&STAFF_ERR.test(t.discErr);
+  const c=S.coupon&&cpFind(S.coupon.code);
+  if(c)return `<div class="cp-on">${ic('tags')}<span><b>Coupon ${esc(c.code)} · ${cpLabel(c)}</b><small>${inr(cpAmt(c,t.sub))} on this bill${+c.max?` · used ${c.used||0} of ${c.max}`:''}</small></span><button class="linkbtn" data-act="cpRemove">Remove</button></div>`;
+  if(S.discOk)return `<div class="cp-on ok">${ic('lock')}<span><b>Extra discount approved by owner PIN</b><small>${timeLabel(S.discOk.at)}</small></span><button class="linkbtn" data-act="cpRemove">Remove</button></div>`;
+  if(staffErr||S.cpOpen)return `<div class="cp-box ${staffErr?'need':''}">${staffErr?`<p><b>More discount needs approval.</b> Ask the owner to type the PIN, or enter a coupon code.</p>`:''}
+    <div class="cp-in"><input id="cpCode" placeholder="Coupon code or owner PIN" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="primary" data-act="cpApply">Apply</button></div><p class="cp-msg" id="cpMsg"></p></div>`;
+  return `<button class="linkbtn cp-link" data-act="cpOpen">${ic('tags')} Have a coupon code?</button>`}
+const _cpPanel=billPanel;billPanel=function(){const h=_cpPanel();return h.includes('<div id="saleTotals">')?h.replace('<div id="saleTotals">',`<div id="cpWrap">${cpBox()}</div><div id="saleTotals">`):h};
+const _cpUB=updateBill;updateBill=function(){_cpUB();const w=$('cpWrap');if(w&&!(document.activeElement&&document.activeElement.id==='cpCode'))w.innerHTML=cpBox()};
+const _cpReset=resetSale;resetSale=function(){S.coupon=null;S.discOk=null;S.cpOpen=false;return _cpReset.apply(this,arguments)};
+function cpTry(){const v=String(($('cpCode')||{}).value||'').trim();const msg=$('cpMsg');const say=(m,ok)=>{if(msg){msg.textContent=m;msg.className='cp-msg '+(ok?'ok':'bad')}};if(!v)return say('Type a coupon code or the owner PIN');
+  const t=cartTotals();const c=cpFind(v);
+  if(c){const e=cpCheck(c,t.sub);if(e)return say(e);S.coupon={code:c.code};S.discOk=null;if(c.type==='pct')S.bd={val:String(c.value),type:'pct'};else S.bd={val:String(cpAmt(c,t.sub)),type:'rs'};S.cpOpen=false;render();toast(`Coupon ${c.code} applied · ${cpLabel(c)}`);return}
+  const pins=cfg().pins||{};if(pins.owner&&v===String(pins.owner)){S.discOk={at:Date.now()};S.coupon=null;S.cpOpen=false;render();toast('Approved by owner · type the discount');setTimeout(()=>{const d=$('billDisc');if(d)d.focus()},60);return}
+  say(/^\d+$/.test(v)?'Wrong PIN':'No coupon with this code')}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="cp"]');if(!a||!/^cp[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const k=a.dataset.act;
+  if(k==='cpOpen'){S.cpOpen=true;render();setTimeout(()=>{const n=$('cpCode');if(n)n.focus()},50);return}
+  if(k==='cpApply'){cpTry();return}
+  if(k==='cpRemove'){if(S.coupon)S.bd={val:'',type:'rs'};S.coupon=null;S.discOk=null;render();return}},true);
+document.addEventListener('keydown',e=>{if(e.target&&e.target.id==='cpCode'&&e.key==='Enter'){e.preventDefault();cpTry()}});
+/* on save: the bill remembers the coupon / approval; a coupon's use is counted (new bills only) */
+let CP_SAVING=false;const _cpSave=saveSale;saveSale=function(){CP_SAVING=true;try{return _cpSave.apply(this,arguments)}finally{CP_SAVING=false}};
+const _cpSB=DB.saveBill;DB.saveBill=function(b,prev){if(CP_SAVING&&b){const t=billTot(b);
+    if(S.coupon){const c=cpFind(S.coupon.code);if(c){b.coupon={code:c.code,label:cpLabel(c),amount:t.disc};if(!prev||!prev.coupon||prev.coupon.code!==c.code){this.A.set('coupons',c.id||c.code,{used:this.A.inc(1),last:Date.now(),lastBill:b.no,lastShop:b.biz},true);c.used=(+c.used||0)+1}}}
+    if(S.discOk&&!isAdmin())b.discAuth={by:'Owner PIN',at:S.discOk.at,amount:t.disc}}
+  return _cpSB.apply(this,arguments)};
+const _cpEdit=startEdit;startEdit=function(bill){const r=_cpEdit.apply(this,arguments);if(bill&&bill.coupon)S.coupon={code:bill.coupon.code};if(bill&&bill.discAuth)S.discOk={at:bill.discAuth.at};return r};
+const _cpBD=billDetail;billDetail=function(x,c){let h=_cpBD(x,c);if(x&&x.coupon)h+=`<div class="cp-note">${ic('tags')} Coupon <b>${esc(x.coupon.code)}</b> · ${esc(x.coupon.label||'')} · ${inr(x.coupon.amount||0)}</div>`;if(x&&x.discAuth)h+=`<div class="cp-note">${ic('lock')} Discount ${inr(x.discAuth.amount||0)} approved with owner PIN · ${timeLabel(x.discAuth.at)}</div>`;return h};
+
+/* ---------- owner: coupons for all shops (Settings) ---------- */
+function cpForm(){const f=S.cpForm;const shops=activeBiz();return `<form class="cp-form" id="cpForm">
+  <div class="two"><div class="f"><label for="cfCode">Code</label><input id="cfCode" class="mono" value="${esc(f.code)}" placeholder="DIWALI10" autocapitalize="characters" spellcheck="false"></div>
+    <div class="f"><span class="lab">Discount</span><div class="cp-val"><input id="cfVal" class="money" inputmode="numeric" value="${esc(f.value)}" placeholder="10"><div class="cmode"><button type="button" class="${f.type==='pct'?'on':''}" data-act="cfType" data-v="pct">%</button><button type="button" class="${f.type==='rs'?'on':''}" data-act="cfType" data-v="rs">₹</button></div></div></div></div>
+  <div class="two"><div class="f"><label for="cfMax">Use limit (times)</label><input id="cfMax" class="money" inputmode="numeric" value="${esc(f.max)}" placeholder="No limit"></div><div class="f"><label for="cfMin">Minimum bill ₹</label><input id="cfMin" class="money" inputmode="numeric" value="${esc(f.min)}" placeholder="Any"></div></div>
+  <div class="f"><label for="cfUntil">Valid till (optional)</label><input id="cfUntil" type="date" value="${esc(f.until)}"></div>
+  <div class="f"><span class="lab">Shops</span><div class="chips"><button type="button" class="chip ${f.shops==='all'?'on':''}" data-act="cfShop" data-v="all">All shops</button>${shops.map(b=>`<button type="button" class="chip ${f.shops!=='all'&&f.shops.includes(b.id)?'on':''}" data-act="cfShop" data-v="${b.id}">${esc(b.name)}</button>`).join('')}</div></div>
+  <div class="btn-row"><button type="button" class="secondary" data-act="cfCancel">Cancel</button><button class="primary" type="submit">${f.edit?'SAVE COUPON':'CREATE COUPON'}</button></div></form>`}
+function cpCard(){const l=(CP.list||[]).slice().sort((p,q)=>(q.at||0)-(p.at||0));
+  return `<div class="card cp-card" id="cpCard"><div class="card-h"><h3>${ic('tags')} Coupons · all shops</h3>${S.cpForm?'':'<button class="ghost-btn" data-act="cfNew">'+ic('plus')+'New coupon</button>'}</div>
+    ${S.cpForm?cpForm():''}
+    ${CP.list===null?'<p class="hint">Loading…</p>':l.length?`<div class="rows">${l.map(c=>{const sh=c.shops==='all'||!c.shops?'All shops':(c.shops||[]).map(id=>(ST.biz.find(b=>b.id===id)||{}).name||id).join(', ');const left=+c.max?Math.max(0,c.max-(c.used||0)):null;const dead=c.active===false||(c.until&&todayStr()>c.until)||left===0;
+      return `<div class="row cp-row ${dead?'off':''}"><div class="grow"><b class="mono">${esc(c.code)}</b><span>${cpLabel(c)} · ${esc(sh)}${+c.min?` · min ${inr(c.min)}`:''}${c.until?` · till ${dayLabel(c.until)}`:''}</span><span>Used ${c.used||0}${+c.max?` of ${c.max} · ${left} left`:' times'}${c.lastBill?` · last ${esc(c.lastBill)}`:''}</span></div>
+        <div class="cp-acts"><button class="chip ${c.active===false?'':'on'}" data-act="cfToggle" data-v="${esc(c.id)}">${c.active===false?'Off':'On'}</button><button class="pen" data-act="cfEdit" data-v="${esc(c.id)}" aria-label="Edit">${ic('pen')}</button><button class="x" data-act="cfDel" data-v="${esc(c.id)}" aria-label="Delete">×</button></div></div>`}).join('')}</div>`:'<p class="hint" style="margin:0">No coupons yet. Create one to give customers a fixed discount, or to let staff give more than their limit.</p>'}
+    <p class="hint" style="margin:8px 0 0">Staff discount limit: ${cfg().maxDisc}% (Settings below). Above it, staff need a coupon or your PIN.</p></div>`}
+const _cpSet=screens.settings;screens.settings=function(){cpStart();const h=_cpSet();const k='<div class="card"><div class="card-h"><h3>Shop details';const i=h.indexOf(k);return i<0?h+cpCard():h.slice(0,i)+cpCard()+h.slice(i)};
+function cfKeep(){const f=S.cpForm;if(!f)return;[['cfCode','code'],['cfVal','value'],['cfMax','max'],['cfMin','min'],['cfUntil','until']].forEach(([id,k])=>{const e=$(id);if(e)f[k]=e.value})}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="cf"]');if(!a||!/^cf[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const k=a.dataset.act,v=a.dataset.v;cfKeep();
+  if(k==='cfNew'){S.cpForm={code:'',type:'pct',value:'',max:'',min:'',until:'',shops:'all'};render();setTimeout(()=>{const n=$('cfCode');if(n)n.focus()},50);return}
+  if(k==='cfCancel'){S.cpForm=null;render();return}
+  if(k==='cfType'){S.cpForm.type=v;render();return}
+  if(k==='cfShop'){const f=S.cpForm;if(v==='all')f.shops='all';else{let s=f.shops==='all'?[]:f.shops.slice();s=s.includes(v)?s.filter(x=>x!==v):s.concat([v]);f.shops=s.length?s:'all'}render();return}
+  if(k==='cfEdit'){const c=(CP.list||[]).find(x=>x.id===v);if(c){S.cpForm={edit:c.id,code:c.code,type:c.type,value:String(c.value),max:c.max?String(c.max):'',min:c.min?String(c.min):'',until:c.until||'',shops:c.shops||'all'};render()}return}
+  if(k==='cfToggle'){const c=(CP.list||[]).find(x=>x.id===v);if(c){c.active=c.active===false;DB.A.set('coupons',c.id,{active:c.active},true);render()}return}
+  if(k==='cfDel'){if(a.dataset.sure!=='1'){a.dataset.sure='1';a.textContent='Delete?';a.classList.add('sure');setTimeout(()=>{a.dataset.sure='';a.textContent='×';a.classList.remove('sure')},3000);return}DB.A.del('coupons',v);CP.list=(CP.list||[]).filter(x=>x.id!==v);render();toast('Coupon deleted');return}},true);
+document.addEventListener('submit',e=>{if(e.target.id!=='cpForm')return;e.preventDefault();e.stopImmediatePropagation();cfKeep();const f=S.cpForm;const code=String(f.code||'').trim().toUpperCase().replace(/\s+/g,'');const val=+f.value||0;
+  if(!/^[A-Z0-9_-]{3,20}$/.test(code)){toast('Code: 3–20 letters or numbers');return}if(!(val>0)||(f.type==='pct'&&val>90)){toast(f.type==='pct'?'Discount % must be 1 to 90':'Type the ₹ discount');return}
+  if(!f.edit&&(CP.list||[]).some(c=>c.id===code)){toast('This code already exists');return}
+  const doc={code,type:f.type,value:val,max:+f.max||0,min:+f.min||0,until:f.until||'',shops:f.shops==='all'?'all':f.shops,active:true};
+  if(f.edit&&f.edit!==code){toast('The code itself can\'t be changed. Make a new coupon.');return}
+  if(!f.edit)Object.assign(doc,{used:0,at:Date.now(),by:'Owner'});DB.A.set('coupons',code,doc,!!f.edit);
+  const ex=(CP.list||[]).find(c=>c.id===code);if(ex)Object.assign(ex,doc);else (CP.list=CP.list||[]).push({id:code,...doc});S.cpForm=null;render();toast(`Coupon ${code} ${f.edit?'saved':'created'}`)},true);
+const _cpSale=screens.sale;screens.sale=function(){cpStart();return _cpSale()};
+document.addEventListener('input',e=>{if(e.target.id!=='cpCode')return;const v=e.target.value;e.target.classList.toggle('pin',/^\d+$/.test(v))});
 
 </script>
 </body>
