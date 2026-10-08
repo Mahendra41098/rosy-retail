@@ -889,6 +889,14 @@ button.lk-row{cursor:pointer}button.lk-row:hover{border-color:var(--brand,#a3325
 .cp-form{display:flex;flex-direction:column;gap:10px;padding:10px;border-radius:12px;background:var(--surface-2,#f6f1f3);margin-bottom:10px}.cp-val{display:grid;grid-template-columns:1fr 96px;gap:6px}
 .cp-row .grow span{display:block;font-size:12px}.cp-row.off{opacity:.55}.cp-acts{display:flex;gap:6px;align-items:center}.cp-acts .x.sure{width:auto;padding:0 8px;background:#b3261e;color:#fff;border-radius:8px;font-size:12px}
 .cp-in input.pin{-webkit-text-security:disc;letter-spacing:.3em}
+.dp-row{display:grid;grid-template-columns:1fr 1.3fr;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line,#eee)}.dp-row small{display:block;font-size:11.5px;opacity:.7}.dp-in{display:grid;grid-template-columns:1fr auto;gap:6px}.dp-in input{letter-spacing:.08em}.dp-card .card-h h3{display:flex;align-items:center;gap:6px}.dp-card .card-h h3 svg{width:18px;height:18px}
+.du-pill{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:7px;font-size:10.5px;font-weight:800;letter-spacing:.03em;font-family:var(--sans,inherit);vertical-align:1px}.du-pill.unpaid{background:#fde2e2;color:#a3122a}.du-pill.part{background:#fff1d6;color:#7a4a00}
+.chip.du.on{background:#a3122a;border-color:#a3122a;color:#fff}.chip.du-all{border-style:dashed}
+.du-k{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.du-k button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;padding:10px;border-radius:14px;border:1.5px solid var(--line,#e6dde1);background:var(--surface,#fff);cursor:pointer;color:inherit;font:inherit}
+.du-k button.on{border-color:#a3122a;background:#fff4f4}.du-k span{font-size:12px;opacity:.75}.du-k b{font-size:17px}.du-k em{font-style:normal;font-size:11px;opacity:.7}
+.du-row{background:var(--surface,#fff);border:1px solid var(--line,#e6dde1);border-radius:14px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}
+.du-main{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:0;cursor:pointer;color:inherit;font:inherit}.du-main .grow{display:flex;flex-direction:column;gap:1px;min-width:0}.du-main .grow span{font-size:12.5px;opacity:.8}.du-main .end{display:flex;flex-direction:column;align-items:flex-end;gap:3px}.du-main .end b{font-size:17px;color:#a3122a}
+.du-home{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:12px;border-radius:14px;border:1.5px solid #f3b3b3;background:#fff4f4;color:#7a1020;cursor:pointer;font:inherit;margin:4px 0 10px}.du-home svg{width:20px;height:20px;flex:none}.du-home span{flex:1;display:flex;flex-direction:column}.du-home small{font-size:12px;opacity:.8}
 </style>
 </head>
 <body>
@@ -922,7 +930,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.23.0';
+const APP_VERSION='1.25.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -4248,7 +4256,7 @@ document.addEventListener('keydown',e=>{if(e.target&&e.target.id==='cpCode'&&e.k
 let CP_SAVING=false;const _cpSave=saveSale;saveSale=function(){CP_SAVING=true;try{return _cpSave.apply(this,arguments)}finally{CP_SAVING=false}};
 const _cpSB=DB.saveBill;DB.saveBill=function(b,prev){if(CP_SAVING&&b){const t=billTot(b);
     if(S.coupon){const c=cpFind(S.coupon.code);if(c){b.coupon={code:c.code,label:cpLabel(c),amount:t.disc};if(!prev||!prev.coupon||prev.coupon.code!==c.code){this.A.set('coupons',c.id||c.code,{used:this.A.inc(1),last:Date.now(),lastBill:b.no,lastShop:b.biz},true);c.used=(+c.used||0)+1}}}
-    if(S.discOk&&!isAdmin())b.discAuth={by:'Owner PIN',at:S.discOk.at,amount:t.disc}}
+    if(S.discOk&&!isAdmin())b.discAuth={by:S.discOk.by||'Owner PIN',at:S.discOk.at,amount:t.disc}}
   return _cpSB.apply(this,arguments)};
 const _cpEdit=startEdit;startEdit=function(bill){const r=_cpEdit.apply(this,arguments);if(bill&&bill.coupon)S.coupon={code:bill.coupon.code};if(bill&&bill.discAuth)S.discOk={at:bill.discAuth.at};return r};
 const _cpBD=billDetail;billDetail=function(x,c){let h=_cpBD(x,c);if(x&&x.coupon)h+=`<div class="cp-note">${ic('tags')} Coupon <b>${esc(x.coupon.code)}</b> · ${esc(x.coupon.label||'')} · ${inr(x.coupon.amount||0)}</div>`;if(x&&x.discAuth)h+=`<div class="cp-note">${ic('lock')} Discount ${inr(x.discAuth.amount||0)} approved with owner PIN · ${timeLabel(x.discAuth.at)}</div>`;return h};
@@ -4287,6 +4295,71 @@ document.addEventListener('submit',e=>{if(e.target.id!=='cpForm')return;e.preven
   const ex=(CP.list||[]).find(c=>c.id===code);if(ex)Object.assign(ex,doc);else (CP.list=CP.list||[]).push({id:code,...doc});S.cpForm=null;render();toast(`Coupon ${code} ${f.edit?'saved':'created'}`)},true);
 const _cpSale=screens.sale;screens.sale=function(){cpStart();return _cpSale()};
 document.addEventListener('input',e=>{if(e.target.id!=='cpCode')return;const v=e.target.value;e.target.classList.toggle('pin',/^\d+$/.test(v))});
+
+/* v1.25 · Discount approval passwords per shop (and one for all shops), set by the owner */
+function dpPins(){return cfg().discPins||{}}
+function dpMatch(v){const b=B();const p=dpPins();const own=(cfg().pins||{}).owner;
+  if(own&&v===String(own))return 'Owner PIN';if(p[b.id]&&v===String(p[b.id]))return `${b.name} discount password`;if(p.all&&v===String(p.all))return 'All-shops discount password';return ''}
+/* replace the owner-PIN-only check in cpTry */
+const _dpTry=cpTry;cpTry=function(){const inp=$('cpCode');const v=String((inp||{}).value||'').trim();const by=v&&!cpFind(v)?dpMatch(v):'';
+  if(by){S.discOk={at:Date.now(),by};S.coupon=null;S.cpOpen=false;render();toast(`Approved (${by}) · type the discount`);setTimeout(()=>{const d=$('billDisc');if(d)d.focus()},60);return}
+  if(v&&!cpFind(v)){const msg=$('cpMsg');if(msg){msg.textContent='Wrong password or coupon code';msg.className='cp-msg bad'}return}
+  return _dpTry()};
+const _dpBox=cpBox;cpBox=function(){return _dpBox().replace('Extra discount approved by owner PIN',`Extra discount approved · ${esc((S.discOk&&S.discOk.by)||'owner PIN')}`).replace('Ask the owner to type the PIN, or enter a coupon code.','Ask the owner or manager to type the discount password, or enter a coupon code.').replace('placeholder="Coupon code or owner PIN"','placeholder="Coupon code or password"')};
+const _dpBD=billDetail;billDetail=function(x,c){let h=_dpBD(x,c);if(x&&x.discAuth&&x.discAuth.by)h=h.replace(' approved with owner PIN ·',` approved with ${esc(x.discAuth.by)} ·`);return h};
+document.addEventListener('input',e=>{if(e.target.id!=='cpCode')return;const v=e.target.value.trim().toUpperCase();e.target.classList.toggle('pin',!!v&&!(CP.list||[]).some(c=>String(c.code).startsWith(v)))});
+/* Settings card */
+function dpCard(){const p=dpPins();const shops=activeBiz();const row=(id,label,sub)=>`<div class="dp-row"><div><b>${label}</b><small>${sub}</small></div><div class="dp-in"><input type="password" data-dp="${id}" value="${esc(p[id]||'')}" placeholder="Not set" autocomplete="new-password" maxlength="12"><button type="button" class="ghost-btn" data-act="dpShow" data-v="${id}">Show</button></div></div>`;
+  return `<div class="card dp-card" id="dpCard"><div class="card-h"><h3>${ic('lock')} Discount approval passwords</h3></div>
+    <p class="hint" style="margin:0 0 8px">When staff go over ${cfg().maxDisc}% discount, one of these passwords (or your owner PIN, or a coupon) unlocks that bill.</p>
+    ${row('all','All shops','works in every shop')}${shops.map(b=>row(b.id,esc(b.name),'works only in '+esc(b.name))).join('')}
+    <div class="btn-row"><button class="secondary" data-act="dpClear">Clear all</button><button class="primary" data-act="dpSave">SAVE PASSWORDS</button></div></div>`}
+const _dpSet=screens.settings;screens.settings=function(){const h=_dpSet();const k='<div class="card cp-card"';const i=h.indexOf(k);return i<0?h+dpCard():h.slice(0,i)+dpCard()+h.slice(i)};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="dp"]');if(!a||!/^dp[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const k=a.dataset.act;
+  if(k==='dpShow'){const i=document.querySelector(`[data-dp="${a.dataset.v}"]`);if(i){i.type=i.type==='password'?'text':'password';a.textContent=i.type==='password'?'Show':'Hide'}return}
+  const vals={};document.querySelectorAll('[data-dp]').forEach(i=>vals[i.dataset.dp]=k==='dpClear'?'':String(i.value||'').trim());
+  const bad=Object.entries(vals).find(([id,v])=>v&&(v.length<4||!/^[A-Za-z0-9]+$/.test(v)));if(bad){toast('Passwords: 4–12 letters or numbers');return}
+  const own=String((cfg().pins||{}).owner||'');const shopPins=Object.values(cfg().pins||{}).map(String);
+  if(Object.values(vals).some(v=>v&&shopPins.includes(v)&&v!==own)){toast('Use a different password from the shop login PINs, or staff will already know it');return}
+  if(k==='dpClear'&&a.dataset.sure!=='1'){a.dataset.sure='1';a.textContent='Clear? Tap again';setTimeout(()=>{a.dataset.sure='';a.textContent='Clear all'},3000);return}
+  if(ST.cfg)ST.cfg.discPins=vals;DB.saveConfig({discPins:vals});render();toast(k==='dpClear'?'Passwords cleared':'Discount passwords saved')},true);
+
+/* ===== v1.24 · Unpaid and part-paid bills ===== */
+function duRecv(x){const m=billMoney(x)||{};return (+m.Cash||0)+(+m.UPI||0)+(+m.Card||0)}
+/* customer payments clear the oldest bills first, so a bill's open due = what is still owed on it */
+function duOpen(bills){const cust=(CACHE.dues&&CACHE.dues.data)||null;const by={};bills.filter(x=>!x.deleted&&+x.due>0&&x.customer&&x.customer.mobile).forEach(x=>(by[x.customer.mobile]=by[x.customer.mobile]||[]).push(x));
+  const open={};Object.entries(by).forEach(([m,l])=>{const c=cust?cust.find(y=>y.mobile===m):undefined;let rem=cust?(c?+c.due||0:0):Infinity;
+    l.sort((p,q)=>q.at-p.at).forEach(x=>{const o=Math.max(0,Math.min(+x.due,rem));open[x.id]=o;rem-=o})});return open}
+function duKind(x,open){const o=open[x.id]||0;if(!o)return '';return duRecv(x)===0&&o>=+x.due?'unpaid':'part'}
+function duLoadCust(){return need('dues',()=>DB.A.query('customers',[['due','>=',1]]))}
+/* bill cards show it */
+const _duCard=billCard;billCard=function(x,w){let h=_duCard(x,w);if(!x||!(+x.due>0))return h;const open=duOpen([x].concat(ST.today.filter(y=>y.customer&&x.customer&&y.customer.mobile===x.customer.mobile&&y.id!==x.id)));const k=duKind(x,open);if(!k)return h;
+  return h.replace('</b><span>',`<span class="du-pill ${k}">${k==='unpaid'?'UNPAID':'PART PAID'} ${inr(open[x.id])}</span></b><span>`)};
+/* Sales → Today: two more filters */
+const _duSales=screens.sales;screens.sales=function(){duLoadCust();const f=S.salesFilter;const mine=f==='unpaid'||f==='part';const b=B();
+  const base=todayOf(b.id).filter(x=>!S.salesStaff||S.salesStaff==='all'||x.staffId===S.salesStaff||(Array.isArray(x.team)&&x.team.some(m=>m.id===S.salesStaff)));const open=duOpen(base);
+  const nU=base.filter(x=>duKind(x,open)==='unpaid'),nP=base.filter(x=>duKind(x,open)==='part');
+  let h;if(mine&&S.salesMonth==='today'){const o=ST.today;const keep=new Set((f==='unpaid'?nU:nP).map(x=>x.id));ST.today=o.filter(x=>x.biz!==b.id||keep.has(x.id));S.salesFilter='all';try{h=_duSales()}finally{ST.today=o;S.salesFilter=f}
+    h=h.replace('class="chip on" data-act="salesFilter" data-v="all"','class="chip" data-act="salesFilter" data-v="all"')}else h=_duSales();
+  const chips=`<button class="chip du ${f==='unpaid'?'on':''}" data-act="salesFilter" data-v="unpaid">Unpaid (${nU.length})</button><button class="chip du ${f==='part'?'on':''}" data-act="salesFilter" data-v="part">Part paid (${nP.length})</button><button class="chip du-all" data-act="duGo">All dues ›</button>`;
+  return h.replace(/(data-act="salesFilter" data-v="remark">With remark \(\d+\)<\/button>)/,'$1'+chips)};
+/* a screen with every bill still owed (last 90 days) */
+screens.unpaid=function(){const b=B();const cust=duLoadCust();const from=addDays(todayStr(),-90);const all=billsBetween(from,todayStr());
+  const head=`${topbar('Unpaid bills','sales',bizPill())}<div class="pad" style="padding-top:4px">`;if(!all||!cust)return head+loading()+'</div>';
+  const bills=bizBills(all,b.id);const open=duOpen(bills);const list=bills.filter(x=>open[x.id]>0).sort((p,q)=>q.at-p.at);const U=list.filter(x=>duKind(x,open)==='unpaid'),P=list.filter(x=>duKind(x,open)==='part');
+  const tab=S.duTab||'all';const show=tab==='unpaid'?U:tab==='part'?P:list;const sum=l=>l.reduce((a,x)=>a+open[x.id],0);
+  const custTot=cust.reduce((a,c)=>a+(+c.due||0),0);const older=Math.max(0,custTot-sum(list));
+  return `${head}<div class="du-k"><button class="${tab==='all'?'on':''}" data-act="duTab" data-v="all"><span>All owed</span><b>${inr(sum(list))}</b><em>${list.length} bills</em></button><button class="${tab==='unpaid'?'on':''}" data-act="duTab" data-v="unpaid"><span>Unpaid</span><b>${inr(sum(U))}</b><em>${U.length} bills · nothing received</em></button><button class="${tab==='part'?'on':''}" data-act="duTab" data-v="part"><span>Part paid</span><b>${inr(sum(P))}</b><em>${P.length} bills · some received</em></button></div>
+    ${show.map(x=>{const cu=x.customer||{};const t=billTot(x);const k=duKind(x,open);const recv=duRecv(x)+((+x.due)-open[x.id]);
+      return `<div class="du-row"><button class="du-main" data-act="viewBill" data-v="${x.id}"><div class="grow"><b class="mono">${esc(x.no)}</b><span>${dayLabel(x.date)} ${timeLabel(x.at)} · ${esc(cu.name||'')} ${esc(cu.mobile||'')}</span>
+        <span>Bill ${inr(t.final)} · received ${inr(recv)}${(+x.due)>open[x.id]?' (incl. due paid later)':''}</span></div><div class="end"><span class="du-pill ${k}">${k==='unpaid'?'UNPAID':'PART PAID'}</span><b>${inr(open[x.id])}</b></div></button>
+        <div class="btn-row"><button class="secondary" data-act="m_remind" data-v="${esc(cu.mobile)}">${ic('share')} Remind</button><button class="primary" data-act="m_recvDue" data-v="${esc(cu.mobile)}">Received</button></div></div>`}).join('')||'<div class="empty">Nothing owed here. 🎉</div>'}
+    ${older?`<p class="hint">Plus ${inr(older)} owed on bills older than 90 days or in other shops. See More → Dues for every customer.</p>`:'<p class="hint">Customers pay off their oldest bills first. When a due is received, the bill leaves this list.</p>'}</div>`};
+NAV_OF.unpaid='sales';
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="duGo"],[data-act="duTab"]');if(!a)return;e.stopImmediatePropagation();if(a.dataset.act==='duGo'){delete CACHE.dues;go('unpaid')}else{S.duTab=a.dataset.v;render()}},true);
+/* owner home: one line with what is owed */
+const _duHome=adminHome;adminHome=function(){const h=_duHome();const c=duLoadCust();if(!c)return h;const tot=c.reduce((a,x)=>a+(+x.due||0),0);if(!tot)return h;
+  const line=`<button class="du-home" data-act="duGo">${ic('rupee')}<span><b>${inr(tot)} owed by ${c.length} customer${c.length>1?'s':''}</b><small>Unpaid and part-paid bills</small></span>${ic('chev')}</button>`;const k='<h3 class="sec">Quick actions</h3>';return h.includes(k)?h.replace(k,line+k):h+line};
 
 </script>
 </body>
