@@ -852,6 +852,12 @@ b.in,.in{color:var(--good)} b.out,.out{color:var(--bad)}
 .cn-big{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px dashed #333;padding:8px;margin:4px 0;font-weight:700;letter-spacing:.08em}.cn-big b{font-size:16px;letter-spacing:.04em}.cn-big em{font-style:normal;font-size:22px}
 .lp-btn{flex:none;width:30px;height:30px;border-radius:9px;border:1px solid var(--line,#e6dde1);background:var(--surface-2,#f6f1f3);display:grid;place-items:center;cursor:pointer;padding:0;margin-right:4px}.lp-btn svg{width:15px;height:15px}
 .lp-ed{background:#fbeff4;border-radius:12px;padding:10px;margin:4px 0 8px;display:flex;flex-direction:column;gap:8px}.lp-ed p{margin:0;font-size:13px}.lp-ed .ck{display:flex;gap:8px;align-items:center;font-size:13px}
+.rx-bill.full{cursor:default;gap:4px}.rx-line{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:var(--surface-2,#f7f2f4);border:1px solid transparent;border-radius:10px;padding:7px 9px;cursor:pointer;color:inherit;font:inherit}
+.rx-line:hover{border-color:var(--brand,#a3325c)}.rx-line .grow{display:flex;flex-direction:column;gap:1px;min-width:0}.rx-line .grow>b{font-size:13.5px}.rx-line span{font-size:12px;opacity:.85}.rx-line .pd{color:#0b7a3e}
+.rx-line em{font-style:normal;font-weight:800;font-size:12.5px;color:var(--brand,#a3325c);white-space:nowrap}.rx-line.done{opacity:.5;cursor:not-allowed}.rx-line.done em{color:inherit}
+.rx-ft{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-top:2px}
+.rx-sub{margin:10px 0 4px;font-size:12.5px;font-weight:700;opacity:.8}.rx-items{display:flex;flex-wrap:wrap;gap:6px}.rx-items small{opacity:.65}
+.rx-card form.search{gap:6px}.rx-today{margin:14px 0 4px}
 .pay-sum{display:grid;grid-template-columns:repeat(3,auto 1fr);gap:4px 8px;align-items:baseline;margin:10px 0 6px;font-size:13px}.pay-sum b{font-size:15px}.pay-sum .due{color:#b3261e}
 .pay-fill{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}.pay-fill .chip{font-size:12px;padding:6px 10px}
 .pay-methods .chip.fcred.on{background:#b3261e;border-color:#b3261e;color:#fff}
@@ -888,7 +894,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.18.0';
+const APP_VERSION='1.19.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -3857,31 +3863,51 @@ const _rxSaveBill=DB.saveBill;DB.saveBill=function(b,prev){try{if(b&&b.lines){co
 
 function rxHit(l){if(!RX)return false;return (RX.key&&l.sk===RX.key)||(RX.bc&&String(l.bc||'').toUpperCase()===RX.bc)||(!RX.key&&l.dno&&String(l.dno)===RX.code)}
 function rxRange(days){const k=B().id+'|'+days+'|'+todayStr();if(!RXC[k])RXC[k]=DB.billsRange(addDays(todayStr(),-days),addDays(todayStr(),-1)).catch(()=>[]);return RXC[k]}
-async function rxFind(code,older){const b=B();code=String(code||'').trim();if(!code)return;const f=skFind(b.id,code);
-  RX={code:code.toUpperCase(),bc:String(f?(f.it.bc||code):code).toUpperCase(),key:f?f.key:null,name:f?f.it.n:'',res:null,older:!!older};render();
-  const pool=new Map();const add=list=>(list||[]).forEach(x=>{if(x&&x.biz===b.id&&!x.deleted&&(x.lines||[]).some(rxHit))pool.set(x.id,x)});
-  add(todayOf(b.id));try{add(await DB.A.query('bills',[['bcs','array-contains',RX.bc]]))}catch(e){}
-  add(await rxRange(older?180:30));if(!RX||RX.code!==code.toUpperCase())return;
-  RX.res=[...pool.values()].sort((p,q)=>q.at-p.at);render();if(navigator.vibrate)navigator.vibrate(30)}
+/* one search box: item (barcode / D.no / name) · bill number · customer mobile · customer name */
+async function rxFind(code,older,itemKey){const b=B();code=String(code||'').trim();if(!code)return;const Q=code.toUpperCase();const stock=skHas(b.id);
+  const f=itemKey?{key:itemKey,it:skItems(b.id)[itemKey]}:(stock?skFind(b.id,code):null);const dg=digits(code);const plain=code.replace(/\s/g,'');
+  const mode=f?'item':(dg.length===10&&dg===plain)?'mobile':(code.includes('/')||/^\d{1,6}$/.test(plain))?'bill':'name';
+  RX={code:itemKey&&f?String(f.it.bc||code).toUpperCase():Q,q:code,mode,bc:f?String(f.it.bc||code).toUpperCase():'',key:f?f.key:null,name:f?f.it.n:'',res:null,items:[],older:!!older};render();
+  const my=RX;const pool=new Map();const ok=x=>x&&x.biz===b.id&&!x.deleted;const put=(list,test)=>(list||[]).forEach(x=>{if(ok(x)&&test(x))pool.set(x.id,x)});
+  if(mode==='item'){const t=x=>(x.lines||[]).some(rxHit);put(todayOf(b.id),t);try{put(await DB.A.query('bills',[['bcs','array-contains',my.bc]]),t)}catch(e){}put(await rxRange(older?180:30),t)}
+  else if(mode==='mobile'){const t=x=>(x.customer&&x.customer.mobile)===dg;put(todayOf(b.id),t);try{put(await DB.billsByMobile(dg),t)}catch(e){}}
+  else if(mode==='bill'){const nos=new Set();if(code.includes('/'))nos.add(Q);else{const n=+dg;[fyNow(),fyOf(addDays(todayStr(),-365))].forEach(fy=>{try{nos.add(billNoFor(b,fy,n))}catch(e){}});nos.add(`${b.prefix}/${String(n).padStart(6,'0')}`)}
+    const t=x=>nos.has(String(x.no).toUpperCase());put(todayOf(b.id),t);for(const no of nos){try{put(await DB.billsByNo(no),t)}catch(e){}}}
+  else{my.items=stock?skSearch(b.id,code,8):[];const t=x=>String(x.customer&&x.customer.name||'').toUpperCase().includes(Q);put(todayOf(b.id),t);put(await rxRange(older?180:30),t);
+    if(!pool.size&&my.items.length===1&&RX===my)return rxFind(code,older,my.items[0].key)}
+  if(RX!==my)return;my.res=[...pool.values()].sort((p,q)=>q.at-p.at).slice(0,40);render();if(navigator.vibrate)navigator.vibrate(30)}
 function rxPer(x,l){const all=(x.lines||[]).reduce((a,y)=>a+lineAmt(y),0)||1;const amt=lineAmt(l);const sh=Math.round((x.disc||0)*amt/all);const q=+l.qty||1;
   return {mrp:+l.mrp||+l.price,price:+l.price,disc:Math.round(sh/q),net:Math.round((amt-sh)/q)}}
-function rxCard(){const b=B();if(!skHas(b.id))return '';
-  let res='';if(RX){if(RX.res===null)res=`<p class="hint" style="margin:8px 0 0">Looking for "${esc(RX.code)}" in ${esc(b.name)}'s bills…</p>`;
-    else if(!RX.res.length)res=`<div class="rx-none"><b>No bill found with ${esc(RX.name||RX.code)}</b><span>Checked today and the last ${RX.older?'6 months':'30 days'}.</span>${RX.older?'':`<button class="secondary" data-act="rxOlder">Look in older bills (6 months)</button>`}</div>`;
-    else res=`<p class="rx-h">${esc(RX.name||RX.code)} · sold in ${RX.res.length} bill${RX.res.length>1?'s':''}</p>`+RX.res.map(x=>{const cu=x.customer||{};
+function rxLineBtn(x,l,i){const p=rxPer(x,l);return `<button class="rx-line ${l.returned?'done':''}" data-act="rxPick" data-v="${x.id}" data-i="${i}" ${l.returned?'disabled':''}><div class="grow"><b>${l.qty} × ${esc(l.name)}</b>
+  <span>${l.bc||l.dno?`${esc(l.bc||'')}${l.dno?' · D.'+esc(l.dno):''} · `:''}${p.mrp!==p.price?`MRP ${inr(p.mrp)} · `:''}sold ${inr(p.price)}${p.disc?` · disc − ${inr(p.disc)}`:''} · <b class="pd">paid ${inr(p.net)}${l.qty>1?' each':''}</b></span></div><em>${l.returned?'returned':'Return ›'}</em></button>`}
+function rxBillFull(x){const cu=x.customer||{};return `<div class="rx-bill full"><div class="rx-top"><b class="mono">${esc(x.no)}</b><em>${dayLabel(x.date)} · ${timeLabel(x.at)}</em></div>
+  <span>${esc(x.staff||'')}${cu.name||cu.mobile?' · '+esc(cu.name||'')+' '+esc(cu.mobile||''):''}</span>
+  ${(x.lines||[]).map((l,i)=>rxLineBtn(x,l,i)).join('')}
+  <div class="rx-ft"><span>Bill total <b>${inr(billTot(x).final)}</b>${x.due?` · due ${inr(x.due)}`:''}</span><button class="linkbtn" data-act="rxOpen" data-v="${x.id}">Open whole bill</button></div></div>`}
+function rxCard(){const b=B();const stock=skHas(b.id);
+  let res='';if(RX){const lab={item:esc(RX.name||RX.code),mobile:'Bills of '+esc(RX.q),bill:'Bill '+esc(RX.q),name:'Customer “'+esc(RX.q)+'”'}[RX.mode];
+    const itemsHTML=RX.mode==='name'&&RX.items.length?`<p class="rx-sub">Items matching “${esc(RX.q)}” · tap to see their bills</p><div class="rx-items">${RX.items.map(({key,it})=>`<button class="chip" data-act="rxItem" data-k="${esc(key)}">${esc(it.n)}${it.dn?` <small>D.${esc(it.dn)}</small>`:''}</button>`).join('')}</div>`:'';
+    const more=(RX.mode==='item'||RX.mode==='name')&&!RX.older?`<button class="linkbtn" data-act="rxOlder" style="margin-top:6px">Not here? Look in older bills (6 months)</button>`:'';
+    if(RX.res===null)res=`<p class="hint" style="margin:8px 0 0">Looking for "${esc(RX.q)}"…</p>`;
+    else if(!RX.res.length&&RX.mode==='name'&&RX.items.length)res=itemsHTML+`<p class="hint" style="margin:8px 0 0">No customer named “${esc(RX.q)}” in the last ${RX.older?'6 months':'30 days'}.</p>`;
+    else if(!RX.res.length)res=itemsHTML+`<div class="rx-none"><b>No bill found for ${lab}</b><span>${RX.mode==='item'||RX.mode==='name'?`Checked today and the last ${RX.older?'6 months':'30 days'}.`:'Check the number and try again.'}</span>${more}</div>`;
+    else if(RX.mode==='item')res=`<p class="rx-h">${lab} · sold in ${RX.res.length} bill${RX.res.length>1?'s':''}</p>`+RX.res.map(x=>{const cu=x.customer||{};
       return (x.lines||[]).map((l,i)=>({l,i})).filter(({l})=>rxHit(l)).map(({l,i})=>{const p=rxPer(x,l);
         return `<button class="rx-bill ${l.returned?'done':''}" data-act="rxPick" data-v="${x.id}" data-i="${i}" ${l.returned?'disabled':''}><div class="rx-top"><b class="mono">${esc(x.no)}</b><em>${dayLabel(x.date)} · ${timeLabel(x.at)}</em></div>
           <span>${esc(x.staff||'')}${cu.name||cu.mobile?' · '+esc(cu.name||'')+' '+esc(cu.mobile||''):''}</span>
           <div class="rx-pr"><span>MRP <b>${inr(p.mrp)}</b></span><span>Sold <b>${inr(p.price)}</b></span>${p.disc?`<span>Discount <b>− ${inr(p.disc)}</b></span>`:''}<span class="net">Paid <b>${inr(p.net)}</b>${l.qty>1?' each':''}</span></div>
-          <span class="rx-q">${l.qty} pc${l.qty>1?'s':''} on this bill${l.returned?' · already returned':''} · bill total ${inr(billTot(x).final)}</span></button>`}).join('')}).join('')+(RX.older?'':`<button class="linkbtn" data-act="rxOlder" style="margin-top:4px">Not here? Look in older bills (6 months)</button>`)}
-  return `<div class="card rx-card"><div class="card-h"><h3>${ic('scan')} Scan the item coming back</h3>${RX?'<button class="ghost-btn" data-act="rxClear">Clear</button>':''}</div>
-    <form class="search" id="rxForm"><div class="inp">${ic('scan')}<input id="rxScan" placeholder="Scan barcode · or type D.no" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="search" value="${RX?esc(RX.code):''}" aria-label="Scan item"></div><button class="scan-btn" type="button" data-act="rxCam" aria-label="Scan with camera">${ic('camera')}</button></form>
+          <span class="rx-q">${l.qty} pc${l.qty>1?'s':''} on this bill${l.returned?' · already returned':''} · bill total ${inr(billTot(x).final)}</span></button>`}).join('')}).join('')+more;
+    else res=itemsHTML+`<p class="rx-h">${lab} · ${RX.res.length} bill${RX.res.length>1?'s':''}</p>`+RX.res.map(rxBillFull).join('')+more}
+  return `<div class="card rx-card"><div class="card-h"><h3>${ic('search')} Find the bill</h3>${RX?'<button class="ghost-btn" data-act="rxClear">Clear</button>':''}</div>
+    <form class="search" id="rxForm"><div class="inp">${ic(stock?'scan':'search')}<input id="rxScan" placeholder="${stock?'Scan item · bill no. · customer name / mobile':'Bill no. · customer name / mobile'}" autocomplete="off" spellcheck="false" enterkeyhint="search" value="${RX?esc(RX.q):''}" aria-label="Find bill"></div>${stock?`<button class="scan-btn" type="button" data-act="rxCam" aria-label="Scan with camera">${ic('camera')}</button>`:''}<button class="scan-btn" type="submit" aria-label="Search">${ic('search')}</button></form>
+    ${RX?'':`<p class="hint" style="margin:6px 0 0">${stock?'Scan the tag or type the barcode / D.no / item name, ':'Type '}the bill number (just <b>12</b> works), the customer's mobile or their name.</p>`}
     ${res}</div>`}
 
 /* the exchange screen: scan card on top, per-piece prices, refund cash / UPI / credit note / exchange */
 const _rxEx=screens.exchange;screens.exchange=function(){let h=_rxEx();const b=B();
-  if(!S.ex){const i=h.indexOf('<form class="search" id="exForm">');const cn=cnListHTML();
-    return i<0?h:h.slice(0,i)+rxCard()+`<p class="rx-or">or find the bill by number / mobile</p>`+h.slice(i).replace(/(<\/div>\s*)$/,cn+'$1')}
+  if(!S.ex){const i=h.indexOf('<form class="search" id="exForm">');const cn=cnListHTML();if(i<0)return h;
+    const rest=h.slice(i).replace(/<form class="search" id="exForm">[\s\S]*?<\/form>\s*<p class="hint"[\s\S]*?<\/p>/,`<h3 class="sec rx-today">Today's bills</h3>`);
+    return h.slice(0,i)+rxCard()+rest.replace(/(<\/div>\s*)$/,cn+'$1')}
   const x=S.ex.bill;
   h=h.replace(/data-exline="(\d+)"([\s\S]*?)<\/span><\/div><\/label>/g,(m,i,rest)=>{const l=x.lines[+i];if(!l)return m;const p=rxPer(x,l);
     return `data-exline="${i}"${rest}</span><small class="rxpp">${l.mrp&&+l.mrp!==+l.price?`MRP ${inr(p.mrp)} · `:''}sold ${inr(p.price)}${p.disc?` · discount − ${inr(p.disc)}`:''} · <b>paid ${inr(p.net)}${l.qty>1?' each':''}</b></small></div></label>`});
@@ -3960,7 +3986,9 @@ const _rxSave=saveSale;saveSale=function(){const c=S.credit&&S.credit.cnId?{...S
 /* actions */
 document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;const k=a.dataset.act;const v=a.dataset.v;const b=B();
   if(k==='rxPick'){e.stopImmediatePropagation();const x=(RX&&RX.res||[]).find(y=>y.id===v);if(!x)return;const i=+a.dataset.i;S.ex={bill:x,sel:{[i]:true}};SK.ret={bill:x.id,rq:{[i]:1},reason:'',cond:'good'};render();scrollTo(0,0);return}
-  if(k==='rxOlder'){e.stopImmediatePropagation();if(RX)rxFind(RX.code,true);return}
+  if(k==='rxOlder'){e.stopImmediatePropagation();if(RX)rxFind(RX.mode==='item'?RX.code:RX.q,true,RX.mode==='item'?RX.key:null);return}
+  if(k==='rxItem'){e.stopImmediatePropagation();rxFind(RX?RX.q:'',RX&&RX.older,a.dataset.k);return}
+  if(k==='rxOpen'){e.stopImmediatePropagation();const x=(RX&&RX.res||[]).find(y=>y.id===v);if(x){S.ex={bill:x,sel:{}};render();scrollTo(0,0)}return}
   if(k==='rxClear'){e.stopImmediatePropagation();RX=null;render();setTimeout(()=>{const n=$('rxScan');if(n)n.focus()},30);return}
   if(k==='rxCam'){e.stopImmediatePropagation();skCamOpen(code=>rxFind(code));return}
   if(k==='rxDo'){e.stopImmediatePropagation();rxApply(v);return}
