@@ -1,5 +1,5 @@
 // Keeps the app working without internet: the app files are stored on the phone.
-const CACHE='rosy-retail-v1-23-0';
+const CACHE='rosy-retail-v1-25-0';
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js',
