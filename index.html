@@ -938,6 +938,10 @@ button.lk-row{cursor:pointer}button.lk-row:hover{border-color:var(--brand,#a3325
 .mv-row .st{grid-area:st;font-size:11.5px;opacity:.75}.mv-row .st.low{color:#a86400;opacity:1;font-weight:700}.mv-row .st.out{color:#b3261e;opacity:1;font-weight:700}.mv-row.open{background:var(--surface-2,#f7f2f4);border-radius:10px}
 .mv-det{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 10px 10px 28px;font-size:12.5px}.mv-det div{display:flex;flex-direction:column;gap:3px}.mv-det b{font-size:11px;text-transform:uppercase;letter-spacing:.05em;opacity:.7}.mv-det i{font-style:normal;opacity:.7}
 .mv-slow{margin-top:10px;padding:8px 10px;border-radius:12px;background:#fff4f4}.mv-slow summary{display:flex;justify-content:space-between;gap:8px;cursor:pointer;font-size:13px;list-style:none}.mv-slow summary::-webkit-details-marker{display:none}.mv-slow summary span{font-size:12px;color:#8f1b1b}.mv-slow div{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;font-size:12.5px}.mv-slow i{font-style:normal;opacity:.7}
+.gl-card .card-h h3,.gl-home .card-h h3,.op-card .card-h h3{display:flex;align-items:center;gap:6px}.gl-card svg,.gl-home .card-h svg,.op-card .card-h svg{width:18px;height:18px}
+.gl-line{display:flex;gap:8px;align-items:center;font-size:12.5px;padding:8px 10px;border-radius:12px;background:#eef3fb;color:#24456b;margin-bottom:8px}.gl-line svg{width:16px;height:16px;flex:none}.gl-line span{flex:1}
+.op-card{border:2px solid #2e7d32;background:#f3f8ee}.op-amt{margin:0;font-size:28px;font-weight:800;color:#1d5a21}.op-notes{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0;font-size:14px}.op-notes b{font-size:16px}
+.gl-row{display:flex;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line,#eee)}.gl-row:first-of-type{border-top:0}.gl-row .dot{width:26px;height:26px;border-radius:13px;color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center;flex:none}.gl-row .grow{display:flex;flex-direction:column}.gl-row small{font-size:12px;opacity:.8}
 </style>
 </head>
 <body>
@@ -971,7 +975,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.32.0';
+const APP_VERSION='1.34.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -4611,6 +4615,69 @@ const _mvDef=dashDefault;dashDefault=function(b){const d=_mvDef(b);return d.incl
 const _mvScr=screens.dash;screens.dash=function(){const b=B();if(Array.isArray(b.dash)&&b.dash.length&&!b.dash.includes('move')&&!b.mvSeen){b.dash=[b.dash[0],'move',...b.dash.slice(1)];b.mvSeen=true}return _mvScr()};
 document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="mv"]');if(!a||!/^mv[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const k=a.dataset.act,v=a.dataset.v;
   if(k==='mvP'){S.mvP=v;S.mvOpen=null}else if(k==='mvD'){S.mvD=v;S.mvOpen=null;S.mvAll=false}else if(k==='mvM')S.mvM=v;else if(k==='mvOpen')S.mvOpen=S.mvOpen===v?null:v;else if(k==='mvAll')S.mvAll=!S.mvAll;render()},true);
+
+/* ===== v1.33 · New day: yesterday's cash goes to the Galla Cash Book, the counter starts from the notes left in the box (confirm the count), staff see today only ===== */
+/* ---------- Galla link (same Firebase project, galla_* collections) ---------- */
+const GL={shops:null};
+function glLoad(){if(GL.shops!==null||!DB.A||!DB.A.get)return GL.shops;GL.shops=undefined;DB.A.get('galla_settings','main').then(d=>{GL.shops=(d&&d.shops)||[];render()}).catch(()=>{GL.shops=[]});return null}
+function glMode(m){return m==='Cash'?'Cash':/upi/i.test(m||'')?'UPI':'Bank'}
+async function glPost(b,d){const g=b.galla||{};if(!g.shop)return {ok:false,why:'Not linked to a Galla shop (Settings → Galla Cash Book)'};
+  const m=moneyDay(b.id,d);if(!m)return {ok:false,why:'Cash book still loading'};const cl=m.close;const ym=d.slice(0,7);const id=`${g.shop}_${ym}`;
+  const upi=(m.UPI||0)+(m.Card||0);const dueUpi=Math.max(0,(m.dueInAll||0)-(m.dueIn||0));
+  const sale={total:Math.round(m.sales||0),ret:Math.round(m.refunds||0),cash:Math.round((m.Cash||0)-(m.refunds||0)),upi:Math.round(upi),unpaid:Math.round(m.dueGiven||0),duesCash:Math.round(m.dueIn||0),duesUpi:Math.round(dueUpi),
+    note:`From Rosy Retail · ${b.name} · ${m.bills||0} bills`,src:'rosy-retail',openBox:Math.round(m.opening||0),closeBox:cl?Math.round(+cl.counted+(m.cashOut||0)):null,cashAdj:cl?Math.round(+cl.counted-m.expected):0,deleted:false,at:Date.now()};
+  const txns={};(m.list||[]).filter(e=>['expense','salary','purchase'].includes(e.kind)).forEach(e=>{txns['rr_'+e.id]={type:e.kind==='purchase'?'party':e.kind,date:e.date||d,amount:+e.amount||0,name:e.kind==='salary'?(e.staffName||'Staff'):(e.cat||KINDS[e.kind].l),mode:glMode(e.mode),note:(e.note||'')+' · Rosy Retail',src:'rosy-retail',deleted:false,at:Date.now()}});
+  await DB.A.set('galla_books',id,{shop:g.shop,month:ym,sales:{[d]:sale},txns},true);
+  await DB.A.set('dayclose',`${b.id}_${d}`,{galla:{at:Date.now(),shop:g.shop,total:sale.total,cash:sale.cash}},true);
+  const c=CACHE[`dc|${b.id}`];if(c&&c.data){const x=c.data.find(y=>y.id===`${b.id}_${d}`);if(x)x.galla={at:Date.now(),shop:g.shop,total:sale.total,cash:sale.cash}}
+  return {ok:true,sale}}
+/* after Close day: post to Galla automatically when the shop is linked */
+window.addEventListener('submit',e=>{if(e.target.id!=='mCloseForm')return;const b=B();const d=S.mDate||todayStr();if(!(b.galla&&b.galla.shop&&b.galla.auto!==false))return;
+  setTimeout(()=>{glPost(b,d).then(r=>toast(r.ok?`Day sent to Galla Cash Book · ${inr(r.sale.total)} sales · cash ${inr(r.sale.cash)}`:'Galla: '+r.why)).catch(()=>toast('Could not send to Galla. Try again from the cash book.'))},400)},true);
+/* Settings: link each shop to its Galla shop */
+function glCard(){if(!isAdmin())return '';const b=B();const g=b.galla||{};const shops=glLoad();
+  return `<div class="card gl-card" id="glCard"><div class="card-h"><h3>${ic('book')} Galla Cash Book · ${esc(b.name)}</h3>${g.shop?'<span class="pill-state">Linked</span>':''}</div>
+    <p class="hint" style="margin:0 0 8px">At Close day the day's sales (cash, UPI, unpaid), refunds, dues received, box counts and expenses / salary / purchases are written into the Galla shop you pick here.</p>
+    ${shops==null?'<p class="hint">Loading Galla shops…</p>':shops.length?`<div class="chips">${shops.map(s=>`<button class="chip ${g.shop===s.id?'on':''}" data-act="glShop" data-v="${esc(s.id)}">${esc(s.name||s.id)}</button>`).join('')}<button class="chip ${!g.shop?'on':''}" data-act="glShop" data-v="">Not linked</button></div>
+      ${g.shop?`<label class="ck" style="margin-top:8px"><input type="checkbox" data-act="glAuto" ${g.auto!==false?'checked':''}> Send automatically at Close day</label>`:''}`:'<p class="hint">No shops found in the Galla Cash Book. Add shops there first (same Firebase project).</p>'}</div>`}
+const _glSet=screens.settings;screens.settings=function(){const h=_glSet();const k='<div class="card"><div class="card-h"><h3>Shop details';const i=h.indexOf(k);return i<0?h+glCard():h.slice(0,i)+glCard()+h.slice(i)};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="glShop"],[data-act="glAuto"],[data-act="glSend"]');if(!a)return;const b=B();
+  if(a.dataset.act==='glShop'){e.stopImmediatePropagation();b.galla={...(b.galla||{}),shop:a.dataset.v,auto:(b.galla||{}).auto!==false};DB.saveBiz(b);render();toast(a.dataset.v?`${b.name} linked to Galla`:'Galla link removed');return}
+  if(a.dataset.act==='glAuto'){b.galla={...(b.galla||{}),auto:a.checked};DB.saveBiz(b);return}
+  if(a.dataset.act==='glSend'){e.stopImmediatePropagation();const d=S.mDate||todayStr();a.disabled=true;glPost(b,d).then(r=>{toast(r.ok?`Sent to Galla · ${dayLabel(d)} · sales ${inr(r.sale.total)}`:'Galla: '+r.why);render()}).catch(()=>{toast('Could not send to Galla');a.disabled=false})}},true);
+/* cash book: Galla status line (owner) */
+const _glMoney=screens.money;screens.money=function(){if(!isAdmin())S.mDate=todayStr();let h=_glMoney();const b=B();const d=S.mDate||todayStr();const m=moneyDay(b.id,d);
+  if(isAdmin()&&b.galla&&b.galla.shop&&m){const g=m.close&&m.close.galla;const line=`<div class="gl-line">${ic('book')}<span>${g?`Sent to Galla ${timeLabel(g.at)} · sales ${inr(g.total)} · cash ${inr(g.cash)}`:m.close?'Day closed · not yet in Galla':'Sent to Galla when the day is closed'}</span>${m.close?`<button class="linkbtn" data-act="glSend">${g?'Send again':'Send now'}</button>`:''}</div>`;
+    const k='<section class="drawer">';h=h.includes(k)?h.replace(k,line+k):h}
+  return h};
+/* staff see today only */
+const _glNav=dateNav;dateNav=function(){if(isAdmin())return _glNav();return `<div class="datenav"><b>Today · ${dayLabel(todayStr())}</b></div>`};
+/* ---------- new day: confirm the opening count ---------- */
+function opState(b){const d=todayStr();const doc=cnDoc(b.id,d);const op=cnOpening(b.id,d);if(doc===null||!op)return null;return {doc,op,confirmed:!!(doc&&doc.confirm)}}
+function opCard(b){const s=opState(b);if(!s||s.confirmed||!nsum(s.op.notes))return '';const n=s.op.notes;
+  return `<section class="card op-card" id="opCard"><div class="card-h"><h3>${ic('cash')} Good morning · opening cash</h3></div>
+    <p class="op-amt">${inr(nsum(n))}</p><p class="hint" style="margin:0">From ${esc(s.op.src)}. Count the box and confirm.</p>
+    <div class="op-notes">${DEN.filter(d=>n[d]).map(d=>`<span><b>${n[d]}</b> × ₹${d}</span>`).join('')}</div>
+    <div class="btn-row"><button class="secondary" data-act="opWrong">Doesn't match</button><button class="primary" data-act="opOk">✓ Count matches</button></div></section>`}
+const _opCounter=counterHome;counterHome=function(){const h=_opCounter();const c=opCard(B());if(!c)return h;const k='<button class="primary big-sale"';const i=h.indexOf(k);return i<0?c+h:h.slice(0,i)+c+h.slice(i)};
+const _opMoney=screens.money;screens.money=function(){const h=_opMoney();const c=(S.mDate||todayStr())===todayStr()?opCard(B()):'';if(!c)return h;const k='<section class="drawer">';return h.includes(k)?h.replace(k,c+k):h};
+const _opDash=screens.dash;screens.dash=function(){const h=_opDash();const c=opCard(B());if(!c)return h;const k='<div class="qa">';return h.includes(k)?h.replace(k,c+k):h};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="opOk"],[data-act="opWrong"]');if(!a)return;e.stopImmediatePropagation();const b=B();const d=todayStr();
+  if(a.dataset.act==='opOk'){const s=opState(b);const confirm={at:Date.now(),by:isAdmin()?'Owner':(DEVICE.name||'counter'),amount:s?nsum(s.op.notes):0};
+    DB.A.set('cashnotes',`${b.id}_${d}`,{biz:b.id,date:d,confirm},true);const k=`cn|${b.id}|${d}`;CACHE[k]={data:{...((CACHE[k]||{}).data||{}),confirm}};render();toast('Opening cash confirmed');return}
+  S.cnEdit=null;S.cnOpenOk=false;S.overlay='cnOpen';render()},true);
+/* changing the opening (with the owner password) also confirms it */
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="cnOpenSave"]');if(!a)return;const b=B();const d=S.mDate||todayStr();if(d!==todayStr())return;
+  setTimeout(()=>{const confirm={at:Date.now(),by:(isAdmin()?'Owner':(DEVICE.name||'counter'))+' (changed)',amount:nsum(nz(S.cnEdit||{}))};DB.A.set('cashnotes',`${b.id}_${d}`,{confirm},true);const k=`cn|${b.id}|${d}`;if(CACHE[k]&&CACHE[k].data)CACHE[k].data.confirm=confirm;render()},50)},true);
+/* owner home: one line per shop with the last close and Galla */
+const _glHome=adminHome;adminHome=function(){const h=_glHome();const rows=activeBiz().map(b=>{const cl=closesFor(b.id);if(!cl)return '';const last=cl.slice().sort((p,q)=>q.date>p.date?1:-1)[0];if(!last)return '';
+    return `<div class="gl-row"><span class="dot" style="background:${b.color}">${esc(b.short)}</span><span class="grow"><b>${esc(b.name)}</b><small>Closed ${dayLabel(last.date)} · counted ${inr(last.counted)}${last.galla?` · in Galla ${inr(last.galla.cash)} cash`:b.galla&&b.galla.shop?' · not in Galla yet':''}</small></span></div>`}).join('');
+  if(!rows)return h;const card=`<section class="card gl-home"><div class="card-h"><h3>${ic('book')} Day close · all shops</h3></div>${rows}</section>`;const k='<h3 class="sec">Quick actions</h3>';return h.includes(k)?h.replace(k,card+k):h+card};
+/* cash book opening: when there is no earlier close, use the opening notes (confirmed count, or the standard cash box) */
+/* cash book opening = the notes kept in the box (opening notes / last close's kept notes / standard cash box). Yesterday's full balance is not carried: it went to Galla / the owner */
+const _opMD=moneyDay;moneyDay=function(bizId,date){const o=_opMD(bizId,date);if(!o)return o;const op=cnOpening(bizId,date);if(op===null)return null;
+  const v=nsum(op.notes||{});const delta=v-(o.opening||0);o.opening=v;o.expected+=delta;o.openSrc=v?op.src:'not counted yet';o.prevClose=o.openFrom;o.openFrom=null;return o};
+const _opMoney2=screens.money;screens.money=function(){let h=_opMoney2();const b=B();const m=moneyDay(b.id,S.mDate||todayStr());if(m)h=h.replace('<small>no earlier day close</small>',`<small>${esc(m.openSrc||'')}${isAdmin()&&m.prevClose?` · yesterday's full count is in Galla / with owner`:''}</small>`);return h};
 
 </script>
 </body>
