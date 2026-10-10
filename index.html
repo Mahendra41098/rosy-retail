@@ -1033,7 +1033,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.43.0';
+const APP_VERSION='1.44.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -4737,29 +4737,30 @@ const _opMD=moneyDay;moneyDay=function(bizId,date){const o=_opMD(bizId,date);if(
   const v=nsum(op.notes||{});const delta=v-(o.opening||0);o.opening=v;o.expected+=delta;o.openSrc=v?op.src:'not counted yet';o.prevClose=o.openFrom;o.openFrom=null;return o};
 const _opMoney2=screens.money;screens.money=function(){let h=_opMoney2();const b=B();const m=moneyDay(b.id,S.mDate||todayStr());if(m)h=h.replace('<small>no earlier day close</small>',`<small>${esc(m.openSrc||'')}${isAdmin()&&m.prevClose?` · yesterday's full count is in Galla / with owner`:''}</small>`);return h};
 
-/* ===== v1.35 · Owner auto log-out after 10 minutes without use (asks at 9 minutes: stay signed in?) ===== */
-const IDLE={limit:10*60e3,warn:9*60e3,key:'rr.ownerAct',last:Date.now(),box:null,saved:0};
+/* ===== v1.44 · Owner account stays open 10 minutes, then asks: keep logged in or log out (1 minute to answer; no answer = log out) ===== */
+const IDLE={limit:10*60e3,grace:60e3,key:'rr.ownerStart',start:0,box:null};
 function idleOwner(){return S.login==='owner'}
-function idleTouch(){if(IDLE.box)return;IDLE.last=Date.now();if(IDLE.last-IDLE.saved>15e3){IDLE.saved=IDLE.last;try{localStorage.setItem(IDLE.key,String(IDLE.last))}catch(e){}}}
-function idleLogout(why){idleHide();try{localStorage.removeItem(IDLE.key)}catch(e){}if(!idleOwner())return;logout();toast(why||'Logged out after 10 minutes without use')}
-function idleShow(){if(IDLE.box&&IDLE.box.isConnected)return;if(IDLE.box)IDLE.box=null;const el=document.createElement('div');el.id='idleBox';el.innerHTML=`<div class="idle-bg"></div><div class="idle-card" role="alertdialog" aria-label="Stay signed in?">
-  <b>Still there?</b><p>The owner account logs out in <span id="idleSec">60</span> seconds.</p>
-  <div class="btn-row"><button class="secondary" id="idleNo">No, log out</button><button class="primary" id="idleYes">Yes, keep me signed in</button></div></div>`;
-  document.documentElement.appendChild(el);IDLE.box=el;el.querySelector('#idleYes').onclick=()=>{idleHide();IDLE.last=0;idleTouch()};el.querySelector('#idleNo').onclick=()=>idleLogout('Logged out')}
+function idleSetStart(t){IDLE.start=t;try{localStorage.setItem(IDLE.key,String(t))}catch(e){}}
+function idleGetStart(){if(IDLE.start)return IDLE.start;let t=0;try{t=+localStorage.getItem(IDLE.key)||0}catch(e){}if(!t){t=Date.now();idleSetStart(t)}IDLE.start=t;return t}
+function idleLogout(why){idleHide();IDLE.start=0;try{localStorage.removeItem(IDLE.key)}catch(e){}if(!idleOwner())return;logout();toast(why||'Owner logged out · no answer in 1 minute')}
+function idleShow(){if(IDLE.box&&IDLE.box.isConnected)return;IDLE.box=null;const el=document.createElement('div');el.id='idleBox';el.innerHTML=`<div class="idle-bg"></div><div class="idle-card" role="alertdialog" aria-label="Keep the owner account logged in?">
+  <b>10 minutes are up</b><p>Keep the owner account logged in for 10 more minutes?</p><p class="idle-c">Logging out in <span id="idleSec">60</span> s</p>
+  <div class="btn-row"><button class="secondary" id="idleNo">Log out</button><button class="primary" id="idleYes">Keep logged in</button></div></div>`;
+  document.documentElement.appendChild(el);IDLE.box=el;
+  el.querySelector('#idleYes').onclick=()=>{idleHide();idleSetStart(Date.now());toast('Owner account open for 10 more minutes')};
+  el.querySelector('#idleNo').onclick=()=>idleLogout('Logged out')}
 function idleHide(){if(IDLE.box){IDLE.box.remove();IDLE.box=null}}
-function idleTick(){if(!idleOwner()){idleHide();return}const gone=Date.now()-IDLE.last;
-  if(gone>=IDLE.limit){idleLogout();return}
-  if(gone>=IDLE.warn){idleShow();const s=document.getElementById('idleSec');if(s)s.textContent=String(Math.max(0,Math.ceil((IDLE.limit-gone)/1000)))}else idleHide()}
-['pointerdown','keydown','touchstart','wheel'].forEach(ev=>document.addEventListener(ev,idleTouch,{capture:true,passive:true}));
+function idleTick(){if(!idleOwner()){idleHide();IDLE.start=0;return}const gone=Date.now()-idleGetStart();
+  if(gone>=IDLE.limit+IDLE.grace){idleLogout();return}
+  if(gone>=IDLE.limit){idleShow();const s=document.getElementById('idleSec');if(s)s.textContent=String(Math.max(0,Math.ceil((IDLE.limit+IDLE.grace-gone)/1000)))}else idleHide()}
 setInterval(idleTick,1000);
-/* reopening the app / coming back to the tab after more than 10 minutes */
-function idleCheckStored(){if(!idleOwner())return;let t=0;try{t=+localStorage.getItem(IDLE.key)||0}catch(e){}if(t&&Date.now()-t>=IDLE.limit&&Date.now()-IDLE.last>=IDLE.limit-15e3){idleLogout()}else if(t)IDLE.last=Math.max(IDLE.last,t)}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')idleCheckStored()});
-setTimeout(idleCheckStored,1500);
-/* a fresh owner login starts a fresh 10 minutes */
-const _idleApply=applyLogin;applyLogin=function(){const r=_idleApply.apply(this,arguments);IDLE.last=Date.now();IDLE.saved=0;idleTouch();return r};
+/* phone screen off / app in background: check the moment it comes back */
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')idleTick()});
+/* every owner login starts a fresh 10 minutes */
+const _idleApply=applyLogin;applyLogin=function(k,quiet){const r=_idleApply.apply(this,arguments);if(idleOwner()&&!quiet)idleSetStart(Date.now());return r};
+const _idleOut=logout;logout=function(){IDLE.start=0;try{localStorage.removeItem(IDLE.key)}catch(e){}idleHide();return _idleOut.apply(this,arguments)};
 (function(){const s=document.createElement('style');s.textContent=`#idleBox{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;font-family:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink,#222)}#idleBox b{font-family:"Bricolage Grotesque",Manrope,system-ui,sans-serif}#idleBox button{font-family:inherit}.idle-bg{position:absolute;inset:0;background:rgba(20,10,15,.55)}
-.idle-card{position:relative;width:min(92vw,380px);background:var(--surface,#fff);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 40px rgba(0,0,0,.3)}.idle-card b{font-size:18px}.idle-card p{margin:0}.idle-card #idleSec{font-weight:800;color:#b3261e;font-size:18px}`;document.head.appendChild(s)})();
+.idle-card{position:relative;width:min(92vw,380px);background:var(--surface,#fff);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 40px rgba(0,0,0,.3)}.idle-card b{font-size:18px}.idle-card p{margin:0}.idle-c{opacity:.85}.idle-card #idleSec{font-weight:800;color:#b3261e;font-size:18px}`;document.head.appendChild(s)})();
 
 /* ===== v1.36 · Payment is taken AFTER the bill: New sale has no payment step; Sale saved asks Cash · UPI · Card · Split · Full credit ===== */
 /* New sale: no payment choice (editing an old bill keeps it) */
