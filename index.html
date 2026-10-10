@@ -942,6 +942,16 @@ button.lk-row{cursor:pointer}button.lk-row:hover{border-color:var(--brand,#a3325
 .gl-line{display:flex;gap:8px;align-items:center;font-size:12.5px;padding:8px 10px;border-radius:12px;background:#eef3fb;color:#24456b;margin-bottom:8px}.gl-line svg{width:16px;height:16px;flex:none}.gl-line span{flex:1}
 .op-card{border:2px solid #2e7d32;background:#f3f8ee}.op-amt{margin:0;font-size:28px;font-weight:800;color:#1d5a21}.op-notes{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0;font-size:14px}.op-notes b{font-size:16px}
 .gl-row{display:flex;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line,#eee)}.gl-row:first-of-type{border-top:0}.gl-row .dot{width:26px;height:26px;border-radius:13px;color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center;flex:none}.gl-row .grow{display:flex;flex-direction:column}.gl-row small{font-size:12px;opacity:.8}
+.pm-later{display:flex;flex-direction:column;gap:3px;background:var(--surface-2,#f6f1f3);border:1.5px dashed var(--line,#e6dde1)}.pm-later span{font-size:13px;opacity:.8}
+.pm-m{margin-bottom:8px}.pm-rest{margin:6px 0;max-width:300px}
+.bx-card .card-h h3{display:flex;align-items:center;gap:6px}.bx-card .card-h svg{width:18px;height:18px}
+.bx-steps{margin:0 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13px}.bx-steps li{padding-left:2px}.bx-steps b{display:block}.bx-steps span{opacity:.8;font-size:12.5px}
+.bx-card label.primary{display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}.bx-card label.primary svg,.bx-card .secondary svg{width:16px;height:16px}
+.bx-warn{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:4px}.bx-warn li{padding:6px 10px;border-radius:10px;background:#fff8ea;font-size:12.5px}.bx-warn li.bad{background:#fde7e7;color:#8f1b1b}.bx-warn li.ok{background:#e5f5ea;color:#0b5d2e}.bx-warn small{display:block;opacity:.8}
+.bx-tw{overflow-x:auto;margin:6px 0;border:1px solid var(--line,#eee);border-radius:10px}.bx-t{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}.bx-t th{text-align:left;font-size:10.5px;text-transform:uppercase;opacity:.65;padding:5px 6px;background:var(--surface-2,#f6f1f3)}.bx-t td{padding:5px 6px;border-top:1px solid var(--line,#eee)}
+.bx-t td small{display:block;opacity:.7}.bx-t .bad{color:#b3261e;font-weight:700}.bx-t .warn{color:#a86400}.bx-s{font-size:10px;font-weight:800;padding:1px 6px;border-radius:6px}.bx-s.new{background:#e5f5ea;color:#0b5d2e}.bx-s.up{background:#eef3fb;color:#24456b}
+.bx-lab{margin:6px 0 8px;font-size:13px}
+.bx-t td,.bx-t th{text-align:left!important}
 </style>
 </head>
 <body>
@@ -975,7 +985,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.34.0';
+const APP_VERSION='1.37.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -4678,6 +4688,107 @@ const _glHome=adminHome;adminHome=function(){const h=_glHome();const rows=active
 const _opMD=moneyDay;moneyDay=function(bizId,date){const o=_opMD(bizId,date);if(!o)return o;const op=cnOpening(bizId,date);if(op===null)return null;
   const v=nsum(op.notes||{});const delta=v-(o.opening||0);o.opening=v;o.expected+=delta;o.openSrc=v?op.src:'not counted yet';o.prevClose=o.openFrom;o.openFrom=null;return o};
 const _opMoney2=screens.money;screens.money=function(){let h=_opMoney2();const b=B();const m=moneyDay(b.id,S.mDate||todayStr());if(m)h=h.replace('<small>no earlier day close</small>',`<small>${esc(m.openSrc||'')}${isAdmin()&&m.prevClose?` · yesterday's full count is in Galla / with owner`:''}</small>`);return h};
+
+/* ===== v1.35 · Owner auto log-out after 10 minutes without use (asks at 9 minutes: stay signed in?) ===== */
+const IDLE={limit:10*60e3,warn:9*60e3,key:'rr.ownerAct',last:Date.now(),box:null,saved:0};
+function idleOwner(){return S.login==='owner'}
+function idleTouch(){if(IDLE.box)return;IDLE.last=Date.now();if(IDLE.last-IDLE.saved>15e3){IDLE.saved=IDLE.last;try{localStorage.setItem(IDLE.key,String(IDLE.last))}catch(e){}}}
+function idleLogout(why){idleHide();try{localStorage.removeItem(IDLE.key)}catch(e){}if(!idleOwner())return;logout();toast(why||'Logged out after 10 minutes without use')}
+function idleShow(){if(IDLE.box&&IDLE.box.isConnected)return;if(IDLE.box)IDLE.box=null;const el=document.createElement('div');el.id='idleBox';el.innerHTML=`<div class="idle-bg"></div><div class="idle-card" role="alertdialog" aria-label="Stay signed in?">
+  <b>Still there?</b><p>The owner account logs out in <span id="idleSec">60</span> seconds.</p>
+  <div class="btn-row"><button class="secondary" id="idleNo">No, log out</button><button class="primary" id="idleYes">Yes, keep me signed in</button></div></div>`;
+  document.documentElement.appendChild(el);IDLE.box=el;el.querySelector('#idleYes').onclick=()=>{idleHide();IDLE.last=0;idleTouch()};el.querySelector('#idleNo').onclick=()=>idleLogout('Logged out')}
+function idleHide(){if(IDLE.box){IDLE.box.remove();IDLE.box=null}}
+function idleTick(){if(!idleOwner()){idleHide();return}const gone=Date.now()-IDLE.last;
+  if(gone>=IDLE.limit){idleLogout();return}
+  if(gone>=IDLE.warn){idleShow();const s=document.getElementById('idleSec');if(s)s.textContent=String(Math.max(0,Math.ceil((IDLE.limit-gone)/1000)))}else idleHide()}
+['pointerdown','keydown','touchstart','wheel'].forEach(ev=>document.addEventListener(ev,idleTouch,{capture:true,passive:true}));
+setInterval(idleTick,1000);
+/* reopening the app / coming back to the tab after more than 10 minutes */
+function idleCheckStored(){if(!idleOwner())return;let t=0;try{t=+localStorage.getItem(IDLE.key)||0}catch(e){}if(t&&Date.now()-t>=IDLE.limit&&Date.now()-IDLE.last>=IDLE.limit-15e3){idleLogout()}else if(t)IDLE.last=Math.max(IDLE.last,t)}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')idleCheckStored()});
+setTimeout(idleCheckStored,1500);
+/* a fresh owner login starts a fresh 10 minutes */
+const _idleApply=applyLogin;applyLogin=function(){const r=_idleApply.apply(this,arguments);IDLE.last=Date.now();IDLE.saved=0;idleTouch();return r};
+(function(){const s=document.createElement('style');s.textContent=`#idleBox{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;font-family:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink,#222)}#idleBox b{font-family:"Bricolage Grotesque",Manrope,system-ui,sans-serif}#idleBox button{font-family:inherit}.idle-bg{position:absolute;inset:0;background:rgba(20,10,15,.55)}
+.idle-card{position:relative;width:min(92vw,380px);background:var(--surface,#fff);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 40px rgba(0,0,0,.3)}.idle-card b{font-size:18px}.idle-card p{margin:0}.idle-card #idleSec{font-weight:800;color:#b3261e;font-size:18px}`;document.head.appendChild(s)})();
+
+/* ===== v1.36 · Payment is taken AFTER the bill: New sale has no payment step; Sale saved asks Cash · UPI · Card · Split · Full credit ===== */
+/* New sale: no payment choice (editing an old bill keeps it) */
+const _pmPayHTML=payHTML;payHTML=function(){if(S.editing)return _pmPayHTML();return `<div class="card pm-later"><b>Payment</b><span>Save and print the bill first. You choose Cash / UPI / Card / Split / Credit after printing.</span></div>`};
+S.pay=S.pay||{mode:'single',method:'Cash',split:{Cash:'',UPI:'',Card:''},recv:''};
+const _pmReset=resetSale;resetSale=function(){const r=_pmReset.apply(this,arguments);S.pay={mode:'single',method:'Cash',split:{Cash:'',UPI:'',Card:''},recv:''};return r};
+let PM_SAVING=false;const _pmSave=saveSale;saveSale=function(){if(!S.editing)S.pay={mode:'single',method:'Cash',split:{Cash:'',UPI:'',Card:''},recv:''};PM_SAVING=true;try{return _pmSave.apply(this,arguments)}finally{PM_SAVING=false}};
+const _pmSB=DB.saveBill;DB.saveBill=function(b,prev){if(PM_SAVING&&b&&!prev){const t=billTot(b);const cr=b.credit?+b.credit.amount||0:0;if(t.final-cr>0)b.payPending=true}return _pmSB.apply(this,arguments)};
+/* Sale saved: payment card */
+function pmState(x){const t=billTot(x);const cr=x.credit?+x.credit.amount||0:0;const pay=Math.max(0,t.final-cr);
+  if(!S.pm||S.pm.id!==x.id)S.pm={id:x.id,method:'Cash',amt:String(pay),split:{Cash:'',UPI:'',Card:''},rest:'due',mob:(x.customer&&x.customer.mobile)||'',pay};return S.pm}
+function pmCalc(x){const p=pmState(x);const t=billTot(x);const mob=digits(p.mob||'');let paid={Cash:0,UPI:0,Card:0},less=0,due=0,err='';
+  if(p.method==='Credit'){due=p.pay;if(mob.length<10)err='Type the customer mobile to give credit'}
+  else if(p.method==='Split'){['Cash','UPI','Card'].forEach(k=>paid[k]=+p.split[k]||0);const s=paid.Cash+paid.UPI+paid.Card;const rem=p.pay-s;if(s>p.pay)err=`${inr(s-p.pay)} more than the bill`;else if(!s)err='Type the amounts received';else if(rem>0){if(p.rest==='due'){due=rem;if(mob.length<10)err='Type the customer mobile for the due'}else less=rem}}
+  else{const a=+p.amt||0;if(a>p.pay)err=`More than the bill (${inr(p.pay)})`;else if(!a)err='Type the amount received';else{paid[p.method]=a;less=p.pay-a}}
+  if(!err&&less>0&&!isAdmin()){const C=cfg();const tot=t.disc+less;if(!C.staffDisc)err='Staff discounts are switched off. Ask the owner.';else if(tot>t.sub*C.maxDisc/100)err=`Staff can give up to ${C.maxDisc}% in total. Ask the owner.`}
+  return {p,t,paid,less,due,err,mob}}
+function pmInfo(x){const {p,t,paid,less,due,err}=pmCalc(x);if(err)return `<p class="pay-status bad">${err}</p>`;const got=paid.Cash+paid.UPI+paid.Card;
+  return `<div class="st-res"><span>Received</span><b>${inr(got)}</b>${less?`<span>Less (discount)</span><b class="d">− ${inr(less)}</b>`:''}${due?`<span>Due (customer pays later)</span><b class="d">${inr(due)}</b>`:''}<span>Final bill</span><b class="f">${inr(t.final-less)}</b></div>`}
+function pmHTML(x){const {p,err}=pmCalc(x);const m=p.method;
+  return `<div class="card st-card" id="stCard"><div class="card-h"><h3>${ic('rupee')} Payment received</h3><span class="hint">Bill ${inr(p.pay)}</span></div>
+    <div class="pay-methods pm-m">${[['Cash','Cash'],['UPI','UPI'],['Card','Card'],['Split','Split'],['Credit','Full credit']].map(([k,l])=>`<button class="chip ${m===k?'on':''} ${k==='Credit'?'fcred':''}" data-act="pmM" data-v="${k}">${l}</button>`).join('')}</div>
+    ${m==='Split'?['Cash','UPI','Card'].map(k=>`<div class="pay-row"><b>${k}</b><input class="money" data-pmsplit="${k}" inputmode="numeric" value="${p.split[k]}" placeholder="0"></div>`).join('')+`<div class="cmode pm-rest"><button class="${p.rest==='due'?'on':''}" data-act="pmRest" data-v="due">Rest is due</button><button class="${p.rest==='disc'?'on':''}" data-act="pmRest" data-v="disc">Rest is discount</button></div>`
+      :m==='Credit'?'<p class="hint" style="margin:6px 0">Nothing received now. The full bill goes on the customer\'s due.</p>'
+      :`<div class="pay-row"><b>Received</b><input class="money" id="pmAmt" inputmode="numeric" value="${p.amt}"></div><div class="st-quick">${[10,20,50,100,200].filter(v=>v<p.pay).map(v=>`<button class="chip" data-act="pmLess" data-v="${v}">${inr(v)} less</button>`).join('')}</div>`}
+    ${m==='Credit'||(m==='Split'&&p.rest==='due')?`<div class="pay-row"><b>Mobile</b><input id="pmMob" inputmode="tel" value="${esc(p.mob)}" placeholder="10 digits"></div>`:''}
+    <div id="pmInfo">${pmInfo(x)}</div>
+    <div class="btn-row"><button class="primary" data-act="pmSave" data-v="${x.id}" ${err?'disabled':''} style="grid-column:1/-1">Save payment</button></div></div>`}
+function pmSave(x){const {p,t,paid,less,due,err,mob}=pmCalc(x);if(err)return;const prev=clone(x);const nb=clone(x);
+  if(less){nb.disc=(+x.disc||0)+less;nb.discType='rs';nb.discVal=String(nb.disc);nb.settle={at:Date.now(),by:isAdmin()?'Owner':(DEVICE.name||'counter'),less,recv:paid.Cash+paid.UPI+paid.Card,method:p.method,before:t.final}}
+  nb.paid={...paid,refund:0};nb.due=due;nb.payPending=false;
+  nb.pay=p.method==='Split'?{mode:'split',method:'Cash',split:{Cash:String(paid.Cash||''),UPI:String(paid.UPI||''),Card:String(paid.Card||'')},recv:''}:p.method==='Credit'?{mode:'credit',method:'Cash',split:{Cash:'',UPI:'',Card:''},recv:''}:{mode:'single',method:p.method,split:{Cash:'',UPI:'',Card:''},recv:''};
+  nb.payText=p.method==='Credit'?`Full ${inr(due)} on credit`:['Cash','UPI','Card'].filter(k=>paid[k]).map(k=>`${inr(paid[k])} ${k}`).join(' + ')+(due?` · ${inr(due)} due`:'')+(less?` · ${inr(less)} less`:'');
+  const oldMob=(x.customer&&x.customer.mobile)||'';if(mob.length===10&&mob!==oldMob){nb.customer={...(x.customer||{}),mobile:mob}}
+  DB.saveBill(nb,prev);const m=(nb.customer&&nb.customer.mobile)||'';const dd=due-(+x.due||0);if(m&&dd)DB.incCustomer(m,null,m!==oldMob?1:0,dd);if(dd)delete CACHE.dues;
+  afterBillChange(nb);if(S.lastBill&&S.lastBill.id===nb.id)S.lastBill={...nb,editedNow:S.lastBill.editedNow};S.pm=null;render();toast(`Payment saved · ${nb.payText}`)}
+/* show it instead of "paid a little less" until the payment is saved */
+const _pmSt=stHTML;stHTML=function(x){return x&&x.payPending&&!x.deleted?pmHTML(x):_pmSt(x)};
+const _pmTd=tdHTML;tdHTML=function(x){return x&&x.payPending?'':_pmTd(x)};
+const _pmSaved=screens.saved;screens.saved=function(){let h=_pmSaved();const x=S.lastBill;if(x&&x.payPending)h=h.replace(/<button class="td-later"[\s\S]*?<\/button>/,'');return h};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="pm"]');if(!a||!/^pm[A-Z]/.test(a.dataset.act))return;e.stopImmediatePropagation();const x=stBill(S.pm&&S.pm.id)||stBill(a.dataset.v)||S.lastBill;if(!x)return;const p=pmState(x);const k=a.dataset.act,v=a.dataset.v;
+  if(k==='pmM'){p.method=v;if(v!=='Split'&&v!=='Credit'&&!(+p.amt))p.amt=String(p.pay);render();return}
+  if(k==='pmLess'){p.amt=String(Math.max(0,p.pay-(+v)));render();return}
+  if(k==='pmRest'){p.rest=v;render();return}
+  if(k==='pmSave'){pmSave(x);return}},true);
+document.addEventListener('input',e=>{const t=e.target;if(t.id!=='pmAmt'&&t.id!=='pmMob'&&!t.dataset.pmsplit)return;const x=stBill(S.pm&&S.pm.id);if(!x)return;const p=pmState(x);
+  if(t.id==='pmAmt')p.amt=t.value.replace(/[^0-9]/g,'');else if(t.id==='pmMob')p.mob=t.value;else p.split[t.dataset.pmsplit]=t.value.replace(/[^0-9]/g,'');
+  const n=$('pmInfo');if(n)n.innerHTML=pmInfo(x);const b=document.querySelector('[data-act=pmSave]');if(b)b.disabled=!!pmCalc(x).err});
+/* bills list: mark bills whose payment is not saved yet */
+const _pmCard=billCard;billCard=function(x,w){const h=_pmCard(x,w);return x&&x.payPending?h.replace('</b><span>','<span class="du-pill part">PAYMENT?</span></b><span>'):h};
+
+/* ===== v1.37 · Bulk add items from Excel: clear entry, row preview with checks, labels for the new pieces ===== */
+function bxCard(){return `<section class="card bx-card"><div class="card-h"><h3>${ic('upload')} Bulk add items · Excel</h3></div>
+  <ol class="bx-steps"><li><b>Download the format</b><span>One row per article-colour-size, e.g. 303081-WINE-L. Leave barcode and D.no empty and the app makes them.</span></li><li><b>Fill it in Excel</b><span>Category, MRP, cost or Code (PARTY-BRAND-RATE), pieces.</span></li><li><b>Upload it here</b><span>Check the preview, choose how to treat the quantities, import, then print labels.</span></li></ol>
+  <div class="two"><button class="secondary" data-act="skTpl">${ic('download')} Download format</button><label class="primary" for="skFile">${ic('upload')} Upload Excel</label></div></section>`}
+const _bxStock=screens.stock;screens.stock=function(){let h=_bxStock();const b=B();if(!isAdmin())return h;
+  const hasInput=h.includes('id="skFile"');const card=bxCard()+(hasInput?'':'<input type="file" id="skFile" accept=".xlsx,.xls,.csv" class="visually-hidden">');
+  const k=skHas(b.id)?'<div class="sklist">':'';if(k&&h.includes(k))return h.replace(k,card+k);const i=h.indexOf('<div class="pad"');if(i<0)return h+card;const j=h.indexOf('>',i)+1;return h.slice(0,j)+card+h.slice(j)};
+/* preview + checks in the import sheet */
+function bxChecks(m){const b=B();const its=Object.entries(m.items);const names={};its.forEach(([k,it])=>{names[it.n]=(names[it.n]||0)+1});
+  const W={noPrice:[],noCost:[],dup:[],noCat:[]};its.forEach(([k,it])=>{if(!(+it.m>0))W.noPrice.push(it.n);if(!(+it.co>0))W.noCost.push(it.n);if(names[it.n]>1&&!W.dup.includes(it.n))W.dup.push(it.n);if(!it.c||it.c==='Other')W.noCat.push(it.n)});return W}
+const _bxSheet=skImpSheet;skImpSheet=function(){let h=_bxSheet();const b=B();const m=S.skImp;if(!m)return h;const W=bxChecks(m);const its=Object.entries(m.items);const lim=S.bxAll?its.length:12;
+  const warn=(arr,t,cls)=>arr.length?`<li class="${cls}"><b>${arr.length}</b> ${arr.length===1?t.replace(/^rows/,'row').replace(/^names/,'name'):t}<small>${arr.slice(0,5).map(esc).join(', ')}${arr.length>5?'…':''}</small></li>`:'';
+  const list=`<ul class="bx-warn">${warn(W.noPrice,'rows without MRP / price · they import at ₹0','bad')}${warn(W.dup,'names repeated in the file · each row becomes its own item','bad')}${warn(W.noCost,'rows without cost or Code · profit will show full price','')}${warn(W.noCat,'rows without a category · filed under "Other"','')}${!W.noPrice.length&&!W.dup.length&&!W.noCost.length&&!W.noCat.length?'<li class="ok">All rows look fine ✓</li>':''}</ul>`;
+  const tbl=`<div class="bx-tw"><table class="bx-t"><thead><tr><th></th><th>Item</th><th>Barcode</th><th>D.no</th><th>MRP</th>${isAdmin()?'<th>Cost</th>':''}<th>Pcs</th></tr></thead><tbody>${its.slice(0,lim).map(([k,it])=>{const was=skItems(b.id)[k];return `<tr><td><span class="bx-s ${was?'up':'new'}">${was?'Update':'New'}</span></td><td><b>${esc(it.n)}</b><small>${esc(it.c||'')}${it.br?' · '+esc(it.br):''}</small></td><td class="mono">${esc(it.bc)}</td><td>${esc(it.dn||'')}</td><td class="${+it.m>0?'':'bad'}">${+it.m>0?inr(it.m):'—'}</td>${isAdmin()?`<td class="${+it.co>0?'':'warn'}">${+it.co>0?inr(it.co):'—'}</td>`:''}<td>${it.q}</td></tr>`}).join('')}</tbody></table></div>
+    ${its.length>12?`<button class="linkbtn" data-act="bxAll">${S.bxAll?'Show first 12':`Show all ${its.length} rows`}</button>`:''}`;
+  const lab=`<label class="ck bx-lab"><input type="checkbox" id="bxLabels" ${S.bxLabels!==false?'checked':''}> After import, open barcode labels for the new items (one per piece)</label>`;
+  return h.replace('<div class="f"><span class="lab">Quantities in the file</span>',list+tbl+'<div class="f"><span class="lab">Quantities in the file</span>').replace('<button class="primary" data-act="skImpGo">',lab+'<button class="primary" data-act="skImpGo">')};
+const _bxGo=skImpGo;skImpGo=async function(){const b=B();const m=S.skImp;if(!m)return _bxGo();const cb=$('bxLabels');const want=cb?cb.checked:S.bxLabels!==false;S.bxLabels=want;
+  const fresh=Object.keys(m.items).filter(k=>!skItems(b.id)[k]&&m.items[k].q>0).map(k=>[k,m.items[k].q]);await _bxGo();
+  if(want&&fresh.length){fresh.forEach(([k,q])=>SK.labelQ[k]=Math.max(SK.labelQ[k]||0,q));S.overlay='skLabels';render();toast(`${fresh.length} new items · ${skLabelTotal()} labels ready`)}};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="bxAll"]');if(!a)return;e.stopImmediatePropagation();S.bxAll=!S.bxAll;render()},true);
+document.addEventListener('change',e=>{if(e.target.id==='bxLabels')S.bxLabels=e.target.checked});
+window.EXTRA_OV.skImp=skImpSheet;
+/* items already in stock keep their D.no (the import only gives new numbers to new items) */
+const _bxImp=skImport;skImport=async function(f){const b=B();const r=await _bxImp(f);const m=S.skImp;if(m&&m.items){const st=skItems(b.id);let next=null;
+  Object.keys(m.items).forEach(k=>{const was=st[k];if(was&&was.dn&&m.items[k].dn!==was.dn)m.items[k].dn=was.dn});render()}return r};
 
 </script>
 </body>
