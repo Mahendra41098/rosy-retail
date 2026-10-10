@@ -952,6 +952,11 @@ button.lk-row{cursor:pointer}button.lk-row:hover{border-color:var(--brand,#a3325
 .bx-t td small{display:block;opacity:.7}.bx-t .bad{color:#b3261e;font-weight:700}.bx-t .warn{color:#a86400}.bx-s{font-size:10px;font-weight:800;padding:1px 6px;border-radius:6px}.bx-s.new{background:#e5f5ea;color:#0b5d2e}.bx-s.up{background:#eef3fb;color:#24456b}
 .bx-lab{margin:6px 0 8px;font-size:13px}
 .bx-t td,.bx-t th{text-align:left!important}
+.pb-ban{border:1px solid var(--line,#e5e0d8);border-radius:12px;padding:10px 12px;margin:6px 0 10px;background:var(--soft,#faf7f2)}
+.pb-top{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}.pb-top b{font-size:15px}.pb-top span{font-size:13px;opacity:.8}
+.pb-sub{font-size:12.5px;opacity:.75;margin-top:3px}
+.pb-dup{margin-top:8px;padding:8px 10px;border-radius:8px;background:#fff1e6;color:#9a3d00;font-size:13px;font-weight:600}
+.bx-card .linkbtn{margin-top:6px}
 </style>
 </head>
 <body>
@@ -985,7 +990,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.37.0';
+const APP_VERSION='1.38.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -4789,6 +4794,116 @@ window.EXTRA_OV.skImp=skImpSheet;
 /* items already in stock keep their D.no (the import only gives new numbers to new items) */
 const _bxImp=skImport;skImport=async function(f){const b=B();const r=await _bxImp(f);const m=S.skImp;if(m&&m.items){const st=skItems(b.id);let next=null;
   Object.keys(m.items).forEach(k=>{const was=st[k];if(was&&was.dn&&m.items[k].dn!==was.dn)m.items[k].dn=was.dn});render()}return r};
+
+/* ===== v1.38 · Purchase-bill Excel (om ji format) for stock upload: Purchase Bill / Tag Sheet / Data Transfer sheets ===== */
+const PB_COLS=['#','D.no','Variant Code','Barcode','SKU','Brand','Article','Colour','Size','Category','Qty','Purchase Price (Rs)','MRP (Rs)','Total (Rs)'];
+const pbNum=v=>{if(typeof v==='number')return v;const n=parseFloat(String(v||'').replace(/[,₹\s]|rs\.?/gi,''));return isFinite(n)?n:0};
+const pbStr=v=>String(v==null?'':v).trim();
+function pbDate(v){if(typeof v==='number'&&v>20000){const d=new Date(Math.round((v-25569)*864e5));return d.toISOString().slice(0,10)}const s=pbStr(v);
+  let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return `${m[1]}-${pad2(+m[2])}-${pad2(+m[3])}`;m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/);if(m)return `${m[3].length===2?'20'+m[3]:m[3]}-${pad2(+m[2])}-${pad2(+m[1])}`;return s}
+const pbNice=d=>{const m=String(d||'').match(/^(\d{4})-(\d\d)-(\d\d)$/);return m?new Date(+m[1],+m[2]-1,+m[3]).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):(d||'')};
+/* find the header row (has SKU / Item Name and MRP) in the first 25 rows of a sheet */
+function pbHead(rows){for(let i=0;i<Math.min(rows.length,25);i++){const H=rows[i].map(h=>pbStr(h).toLowerCase().replace(/\s+/g,' '));
+  if(H.some(h=>/^sku$|^item ?name/.test(h))&&H.some(h=>/^mrp/.test(h)))return {i,H}}return null}
+function pbPick(wb){const order=[/purchase ?bill/i,/data ?transfer/i,/tag ?sheet/i];const names=wb.SheetNames;
+  const named=order.map(re=>names.find(n=>re.test(n))).filter(Boolean);const isPB=named.length>0;
+  const cand=[...named,...names.filter(n=>!named.includes(n))];
+  for(const n of cand){const rows=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,defval:''});const h=pbHead(rows);
+    if(h&&(isPB||h.H.includes('sku')))return {name:n,rows,...h}}return null}
+function pbInfo(rows,upto){const info={};const keys={party:/^party ?(name)?:?$/i,inv:/^(invoice|bill) ?(no|number)\.?:?$/i,date:/^(invoice |bill )?date:?$/i,pcode:/^party ?code:?$/i,mob:/^mobile:?$/i,gst:/^gst/i};
+  for(let i=0;i<upto;i++){const r=rows[i]||[];r.forEach((c,j)=>{const t=pbStr(c);for(const k in keys){if(keys[k].test(t)&&info[k]==null){let v='';for(let x=j+1;x<r.length;x++){if(pbStr(r[x])){if(!/:\s*$/.test(pbStr(r[x])))v=r[x];break}}info[k]=k==='date'?pbDate(v):pbStr(v)}}})}
+  return info}
+
+const _pbImp=skImport;skImport=async function(file){const b=B();if(!isAdmin())return;
+  try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load the Excel reader. Check the internet.');return}
+  let wb;try{wb=XLSX.read(new Uint8Array(await file.arrayBuffer()),{type:'array'})}catch(e){toast('That file could not be read as Excel');return}
+  const P=pbPick(wb);if(!P)return _pbImp(file);
+  toast('Reading purchase bill…');
+  const H=P.H;const col=re=>H.findIndex(h=>re.test(h));
+  const C={n:col(/^sku$|^item ?name|^name$|^product ?name/),dn:col(/^d\.? ?no/),cd:col(/^variant ?code|^code/),bc:col(/^barcode|^item ?code/),br:col(/^brand/),ar:col(/^article/),cl:col(/^colou?r/),sz:col(/^size/),
+    c:col(/^categor/),q:col(/^qty|quantity|current ?stock|^stock$/),co:col(/^purchase ?price|^cost/),m:col(/^mrp/),sp:col(/^sales? ?price|selling/),lo:col(/low ?stock/)};
+  const g=(r,k)=>C[k]>=0?r[C[k]]:'';
+  const info=pbInfo(P.rows,P.i);const st=skItems(b.id);const cats={};Object.values(st).forEach(i=>{if(i.c)cats[i.c.toLowerCase()]=i.c});
+  const items={};const usedBc=new Set();let dnoNext=+skNextDno(b.id);const merged=[];const W={nameClash:[],dnClash:[]};
+  for(let i=P.i+1;i<P.rows.length;i++){const r=P.rows[i];let name=pbStr(g(r,'n')).toUpperCase();
+    if(!name){const parts=[g(r,'ar'),g(r,'cl'),g(r,'sz')].map(pbStr).filter(Boolean);if(parts.length>=2)name=parts.join('-').toUpperCase()}
+    if(!name||/^(total|grand|sub ?total|example|how to)/i.test(name))continue;
+    const q=Math.round(pbNum(g(r,'q')));let bc=pbStr(g(r,'bc')).replace(/\.0$/,'');const cd=pbStr(g(r,'cd'));const pc=skParseCode(cd);
+    let ex=bc&&ST.skIdx[b.id]?ST.skIdx[b.id].bc.get(bc.toUpperCase()):null;
+    if(!bc&&ST.skIdx[b.id]){ex=ST.skIdx[b.id].name.get(name)||null;if(ex)bc=st[ex].bc||''}
+    if(bc&&!ex&&ST.skIdx[b.id]&&ST.skIdx[b.id].name.get(name))W.nameClash.push(name);
+    if(!bc){do{bc=skNewBarcode(b.id)}while(usedBc.has(bc))}
+    const key=ex||skKey(bc);
+    if(items[key]){items[key].q+=q;merged.push(name);continue}usedBc.add(bc);
+    let dn=pbStr(g(r,'dn')).replace(/\.0$/,'');if(ex&&st[ex].dn)dn=st[ex].dn;else if(!dn)dn=String(dnoNext++);
+    else{const o=ST.skIdx[b.id]&&ST.skIdx[b.id].dno.get(dn.toUpperCase());if(o&&o!==key)W.dnClash.push(dn)}
+    const m=pbNum(g(r,'m'))||pbNum(g(r,'sp')),sp=pbNum(g(r,'sp'))||m;const co=pbNum(g(r,'co'))||(pc.rate?Math.round(pc.rate*25*100)/100:0);
+    const cRaw=pbStr(g(r,'c'));const c=cRaw?(cats[cRaw.toLowerCase()]||cRaw):'Other';if(cRaw)cats[cRaw.toLowerCase()]=c;
+    items[key]={n:name,c,bc,dn,cd,pt:pc.party,br:(pbStr(g(r,'br'))||pc.brand).toUpperCase(),m,sp,co,lo:Math.max(1,Math.round(pbNum(g(r,'lo'))||1)),q,del:false,at:Date.now(),
+      ...(info.party?{pn:info.party}:{}),...(info.inv?{pi:info.inv}:{})}}
+  const its=Object.values(items);if(!its.length){toast('No item rows found under the header row');return}
+  const isBill=!!(info.party||info.inv);
+  S.skImp={file:file.name,items,n:its.length,exist:Object.keys(items).filter(k=>st[k]).length,pcs:its.reduce((a,x)=>a+Math.max(0,x.q),0),cats:new Set(its.map(x=>x.c)).size,
+    mode:isBill?'add':(skHas(b.id)?'keep':'set'),pb:{...info,sheet:P.name,isBill,val:its.reduce((a,x)=>a+Math.max(0,x.q)*(+x.co||0),0),mrp:its.reduce((a,x)=>a+Math.max(0,x.q)*(+x.m||0),0),merged,W,dup:null}};
+  S.overlay='skImp';render();
+  if(isBill&&DB.A&&DB.A.get){DB.A.get('stocklog',pbLogId(b.id,info)).then(d=>{if(d&&S.skImp&&S.skImp.pb){S.skImp.pb.dup=d;render()}}).catch(()=>{})}};
+const pbLogId=(biz,info)=>'pb_'+biz+'_'+skKey(info.party||info.pcode||'party')+'_'+skKey(info.inv||info.date||'bill');
+
+/* bill banner + extra checks in the import sheet */
+const _pbSheet=skImpSheet;skImpSheet=function(){let h=_pbSheet();const m=S.skImp;if(!m||!m.pb)return h;const p=m.pb;
+  const ban=`<div class="pb-ban"><div class="pb-top"><b>${p.isBill?'Purchase bill':'Stock list'}${p.party?' · '+esc(p.party):''}</b>${p.inv?`<span>Inv ${esc(p.inv)}</span>`:''}${p.date?`<span>${esc(pbNice(p.date))}</span>`:''}</div>
+    <div class="pb-sub">Sheet “${esc(p.sheet)}” · ${m.pcs.toLocaleString('en-IN')} pcs${p.val?` · cost ${inr(Math.round(p.val))}`:''}${p.mrp?` · MRP ${inr(Math.round(p.mrp))}`:''}</div>
+    ${p.dup?`<div class="pb-dup">⚠ This bill was already imported on ${esc(pbNice(p.dup.date))}${p.dup.pcs?` (${p.dup.pcs} pcs)`:''}. Importing again with “Add to stock” adds the pieces twice.</div>`:''}</div>`;
+  const ex=[p.merged.length?`<li><b>${p.merged.length}</b> repeated ${p.merged.length===1?'row was':'rows were'} joined (pieces added together)<small>${p.merged.slice(0,5).map(esc).join(', ')}</small></li>`:'',
+    p.W.nameClash.length?`<li class="bad"><b>${p.W.nameClash.length}</b> ${p.W.nameClash.length===1?'name is':'names are'} already in stock with a different barcode · they come in as separate items<small>${p.W.nameClash.slice(0,5).map(esc).join(', ')}</small></li>`:'',
+    p.W.dnClash.length?`<li class="bad"><b>${p.W.dnClash.length}</b> D.no already used by another item<small>${p.W.dnClash.slice(0,5).map(esc).join(', ')}</small></li>`:''].join('');
+  h=h.replace(/<p class="hint">[^<]*<\/p>/,ban);if(ex)h=h.replace('<ul class="bx-warn">','<ul class="bx-warn">'+ex).replace('<li class="ok">All rows look fine ✓</li>','');return h};
+window.EXTRA_OV.skImp=skImpSheet;
+
+/* remember the bill after import (so the same bill is flagged next time) */
+const _pbGo=skImpGo;skImpGo=async function(){const b=B();const m=S.skImp;const p=m&&m.pb;const mode=m&&m.mode;const pcs=m?m.pcs:0;await _pbGo();
+  if(p&&p.isBill&&DB.A)DB.A.set('stocklog',pbLogId(b.id,p),{biz:b.id,at:Date.now(),date:todayStr(),by:'Owner',why:'purchase bill',party:p.party||'',inv:p.inv||'',billDate:p.date||'',pcode:p.pcode||'',pcs,val:Math.round(p.val||0),mode},false)};
+
+/* ---------- the format to download: same layout as the purchase bill ---------- */
+function pbWs(head,rows){const aoa=[['PURCHASE BILL'],['Party:',head.party||'','','','Invoice No:',head.inv||''],['Date:',head.date||'','','','Party Code:',head.pcode||''],['GST No:','','','','Mobile:',''],['Address:'],[],PB_COLS,
+  ...rows.map((r,i)=>[i+1,...r,(+r[10]||0)*(+r[9]||0)])];
+  const n=rows.length;if(n)aoa.push([],['','','','','','','','','TOTAL QTY',{t:'n',v:0,f:`SUM(K8:K${7+n})`},'',{t:'n',v:0,f:`SUM(N8:N${7+n})`}],['','','','','','','','','TOTAL MRP','','',{t:'n',v:0,f:`SUMPRODUCT(K8:K${7+n},M8:M${7+n})`}]);
+  const ws=XLSX.utils.aoa_to_sheet(aoa);for(let i=0;i<n;i++){const a='N'+(8+i);ws[a]={t:'n',f:`K${8+i}*L${8+i}`,v:(+rows[i][10]||0)*(+rows[i][9]||0)}}
+  ws['!cols']=[5,9,21,19,25,15,11,13,9,15,7,19,13,15].map(w=>({wch:w}));return ws}
+function pbHow(){return XLSX.utils.aoa_to_sheet([['How to fill the purchase bill format'],[''],
+  ['Party / Invoice No / Date','Top of the sheet. The app shows them on the import and warns if the same bill is uploaded twice.'],
+  ['D.no','Leave blank and the app gives the next number. Items already in stock keep their D.no.'],
+  ['Variant Code','PARTY-BRAND-RATE, e.g. 12-IMP-15.80. Cost = rate × 25 when Purchase Price is blank.'],
+  ['Barcode','The number printed on the tag. Leave blank and the app makes one (then print labels from the app).'],
+  ['SKU','ARTICLE-COLOUR-SIZE, e.g. 66666#-BLACK-5XL. If blank, the app joins Article, Colour and Size.'],
+  ['Brand / Article / Colour / Size','As on the tag. Brand blank = taken from the Variant Code.'],
+  ['Category','Shapewear, Nighty, Bra… Same spelling as the shop already uses (capital letters do not matter).'],
+  ['Qty','Pieces received. On import “Add to stock (new purchase)” is chosen for a purchase bill.'],
+  ['Purchase Price (Rs) / MRP (Rs)','Per piece. MRP is also the selling price.'],
+  ['Total (Rs)','Qty × Purchase Price. Not needed by the app; it is only for checking the bill.'],[''],
+  ['The app also reads the “Tag Sheet” and “Data Transfer” sheets of the same file, and the older myBillBook item list.'],
+  ['Delete the example rows before uploading. Upload: Stock → Bulk add items · Excel → Upload Excel.']])}
+skTemplate=async function(){const b=B();try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load Excel. Check the internet.');return}
+  const ex=[['1018','12-IMP-15.80','','66666#-BLACK-5XL','IMP','66666#','BLACK','5XL','Shapewear',2,395,999],['','12-IMP-15.80','','66666#-BLACK-6XL','IMP','66666#','BLACK','6XL','Shapewear',2,395,999],
+    ['','13-HOTLIPS-39.64','','N8728-GREY-L','HOTLIPS','N8728','GREY','L','Nighty',1,991,1450]];
+  const ws=pbWs({party:'',inv:'',date:todayStr(),pcode:''},ex);const how=pbHow();how['!cols']=[{wch:30},{wch:95}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Purchase Bill');XLSX.utils.book_append_sheet(wb,how,'How to fill');XLSX.writeFile(wb,`${b.prefix||b.id}_Purchase_Bill_Format.xlsx`)};
+async function pbExport(){const b=B();try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load Excel. Check the internet.');return}
+  const its=Object.values(skItems(b.id)).filter(i=>!i.del).sort((a,c)=>(parseInt(a.dn)||1e9)-(parseInt(c.dn)||1e9)||String(a.n).localeCompare(c.n));
+  if(!its.length){toast('No stock yet');return}
+  const rows=its.map(i=>{const p=skParse(i.n);return [i.dn||'',i.cd||'',i.bc||'',i.n,i.br||'',p.article,p.color,p.size,i.c||'',skQty(i),+i.co||0,+i.m||skPrice(i)]});
+  const ws=pbWs({party:'',inv:'',date:todayStr()},rows);ws['A1'].v='STOCK LIST · '+b.name;
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Purchase Bill');const how=pbHow();how['!cols']=[{wch:30},{wch:95}];XLSX.utils.book_append_sheet(wb,how,'How to fill');
+  XLSX.writeFile(wb,`${b.prefix||b.id}_Stock_${todayStr()}.xlsx`);toast(`${its.length} items exported. Edit and upload back (choose “Keep current stock” to change only prices).`)}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="pbExport"]');if(!a)return;e.stopImmediatePropagation();pbExport()},true);
+
+/* Stock card text for the new format */
+bxCard=function(){return `<section class="card bx-card"><div class="card-h"><h3>${ic('upload')} Bulk add items · Excel</h3></div>
+  <ol class="bx-steps"><li><b>Download the format</b><span>Same as the party purchase bill: D.no, Variant Code, Barcode, SKU, Brand, Article, Colour, Size, Category, Qty, Purchase Price, MRP.</span></li>
+  <li><b>Fill one row per article-colour-size</b><span>Party, Invoice No and Date at the top. Leave Barcode or D.no blank and the app makes them.</span></li>
+  <li><b>Upload it here</b><span>The preview shows the bill, the pieces and any problems. A purchase bill is added to stock; then print labels.</span></li></ol>
+  <div class="two"><button class="secondary" data-act="skTpl">${ic('download')} Download format</button><label class="primary" for="skFile">${ic('upload')} Upload Excel</label></div>
+  <button class="linkbtn" data-act="pbExport">Download my current stock in this format</button></section>`};
 
 </script>
 </body>
