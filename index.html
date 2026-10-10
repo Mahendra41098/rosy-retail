@@ -1041,7 +1041,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.48.0';
+const APP_VERSION='1.49.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5309,6 +5309,47 @@ window.addEventListener('submit',e=>{if(!e.target||e.target.id!=='blForm')return
   DB.saveConfig({blank:v});if(ST.cfg)ST.cfg.blank=v;render();toast(v?`Blank letter ${v} saved · e.g. IPT${v} = 950`:'Blank letter switched off')},true);
 (function(){const s=document.createElement('style');s.textContent=`.bl-form{flex-wrap:wrap;align-items:center}.bl-form label{flex-basis:100%;font-size:12.5px;font-weight:700;opacity:.75}.bl-form input{max-width:80px;text-align:center}.bl-form button{padding:12px 18px}`;document.head.appendChild(s)})();
 
+
+/* ===== v1.49 · PC / iPad-landscape layout: side menu, wide pages, New sale with items on the left and the bill on the right ===== */
+const DK_MQ=window.matchMedia?matchMedia('(min-width: 960px)'):{matches:false,addEventListener(){}};
+function dkSplit(){if(!DK_MQ.matches)return;const scr=$('scr');if(!scr)return;const pad=[...scr.children].find(c=>c.classList&&c.classList.contains('pad'));if(!pad||pad.classList.contains('dk2'))return;
+  const s=S.screen;const kids=[...pad.children];let start=null;
+  if(s==='sale')start=kids.find(c=>c.matches('.billbar')||(c.querySelector&&c.querySelector('#saleTotals,.billbar,.bline')));
+  else if(s==='saved'){const i=kids.findIndex(c=>c.matches('.receipt,.a5saved,.a5wrap,.paper-wrap')||(c.querySelector&&c.querySelector(':scope>.receipt,:scope>.a5,.a5wrap')));if(i>=0)start=kids[i+1]}
+  if(!start)return;const L=document.createElement('div');L.className='dk-left';const R=document.createElement('div');R.className='dk-right';let right=false;
+  kids.forEach(c=>{if(c===start)right=true;if(c.id==='entryPanel'){L.appendChild(c);return}(right?R:L).appendChild(c)});pad.append(L,R);pad.classList.add('dk2','dk-'+s)}
+const _dkRender=render;render=function(){const r=_dkRender.apply(this,arguments);try{dkSplit()}catch(e){console.warn(e)}return r};
+try{DK_MQ.addEventListener('change',()=>render())}catch(e){}
+(function(){const s=document.createElement('style');s.textContent=`@media (min-width:960px){
+html,body{background:#ece5df}
+#app{max-width:1480px;display:grid;grid-template-columns:210px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100%}
+#app>.status{grid-column:1/-1;padding:10px 20px}
+#app>.scr{grid-column:2;grid-row:2;min-width:0}
+#app:has(>.nav[hidden])>.scr{grid-column:1/-1}
+#app>.nav{grid-column:1;grid-row:2;grid-auto-flow:row;grid-auto-rows:max-content;grid-auto-columns:auto;align-content:start;border-top:0;border-right:1px solid var(--line);padding:14px 10px;gap:4px;overflow-y:auto}
+#app>.nav button{flex-direction:row;justify-content:flex-start;gap:12px;font-size:14.5px;padding:11px 14px;width:100%;cursor:pointer}
+#app>.nav button:hover{background:var(--surface-2)}
+#app>.nav button.on{background:var(--accent-soft);color:var(--accent)}
+#app>.nav button.on svg{background:none;padding:3px 0;width:22px;height:28px}
+.scr>.topbar{max-width:1180px;margin-left:auto;margin-right:auto;padding-left:28px;padding-right:28px;box-sizing:border-box;width:100%}
+.scr>.pad{max-width:1180px;margin:0 auto;width:100%;box-sizing:border-box;padding:12px 28px 40px}
+.scr>.pad.dk2{max-width:1440px;display:grid;grid-template-columns:minmax(0,1fr) 460px;gap:22px;align-items:start}
+.scr>.pad.dk-saved{grid-template-columns:minmax(0,1fr) 480px}
+.dk-left,.dk-right{display:flex;flex-direction:column;gap:16px;min-width:0}
+.dk-right{position:sticky;top:6px;max-height:calc(100vh - 64px);overflow-y:auto;padding:0 4px 18px 0;scrollbar-width:thin}
+.dk-left .igrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.dk-right .billbar{position:static}
+.overlay{justify-content:center;align-items:center}
+.overlay>.sheet{width:min(680px,94%);border-radius:24px;max-height:90%}
+.toast{bottom:24px}
+button,label.primary,label.secondary,.chip{cursor:pointer}
+}
+@media (min-width:1400px){.scr>.pad.dk2{grid-template-columns:minmax(0,1fr) 500px}}`;document.head.appendChild(s)})();
+/* keyboard shortcuts for PC: F2 = scan box, F4 = item search, F9 = save the sale, Esc = close a popup */
+document.addEventListener('keydown',e=>{if(e.key==='F2'||e.key==='F4'){const el=$(e.key==='F2'?'skScan':'saleSearch');if(el){e.preventDefault();el.focus();el.select&&el.select()}return}
+  if(e.key==='F9'){if(S.screen==='sale'&&typeof canSave==='function'&&canSave()){e.preventDefault();const b=$('saveBtn');if(b)b.click()}return}
+  if(e.key==='Escape'&&S.overlay&&!document.getElementById('idleBox')&&!document.getElementById('pfBox')){S.overlay=null;render()}});
+const _dkSaleHint=screens.sale;screens.sale=function(){const h=_dkSaleHint();if(!DK_MQ.matches)return h;return h.replace('<p class="hint" id="saveHint"','<p class="hint dk-keys">Keys: <b>F2</b> scan · <b>F4</b> find item · <b>F9</b> save bill</p><p class="hint" id="saveHint"')};
 
 </script>
 </body>
