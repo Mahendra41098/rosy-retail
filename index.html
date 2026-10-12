@@ -1041,7 +1041,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.48.0';
+const APP_VERSION='1.50.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5251,6 +5251,9 @@ const _epPm=pmHTML;pmHTML=function(x){let h=_epPm(x);const r=x.repay;if(!r)retur
   return h.replace(/(<div class="pay-methods pm-m">)/,line+'$1')};
 const _epPmSave=pmSave;pmSave=function(x){const had=x.repay;_epPmSave(x);if(!had)return;const y=(S.lastBill&&S.lastBill.id===x.id)?S.lastBill:ST.today.find(z=>z.id===x.id);
   DB.A.set('bills',x.id,{repay:null,repaid:{...had,newFinal:epFinal(x),at:Date.now()}},true);[y,S.viewBill&&S.viewBill.id===x.id?S.viewBill:null].forEach(z=>{if(z){z.repay=null;z.repaid={...had,newFinal:epFinal(x)}}})};
+/* v1.49 fix: payment card kept the OLD bill amount when the bill was edited before its payment was saved */
+const _epState2=pmState;pmState=function(x){if(S.pm&&S.pm.id===x.id){const t=billTot(x);const cr=x.credit?+x.credit.amount||0:0;const pay=Math.max(0,t.final-cr);if(S.pm.pay!==pay)S.pm=null}return _epState2(x)};
+const _epStart=startEdit;startEdit=function(bill){if(S.pm&&bill&&S.pm.id===bill.id)S.pm=null;return _epStart.apply(this,arguments)};
 
 /* ===== v1.47 · Exchange terms & conditions: different for every shop, set by the owner in Settings, printed on bills ===== */
 const TC_SAMPLE={
