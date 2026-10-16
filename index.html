@@ -1041,7 +1041,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.50.0';
+const APP_VERSION='1.53.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5312,6 +5312,87 @@ window.addEventListener('submit',e=>{if(!e.target||e.target.id!=='blForm')return
   DB.saveConfig({blank:v});if(ST.cfg)ST.cfg.blank=v;render();toast(v?`Blank letter ${v} saved · e.g. IPT${v} = 950`:'Blank letter switched off')},true);
 (function(){const s=document.createElement('style');s.textContent=`.bl-form{flex-wrap:wrap;align-items:center}.bl-form label{flex-basis:100%;font-size:12.5px;font-weight:700;opacity:.75}.bl-form input{max-width:80px;text-align:center}.bl-form button{padding:12px 18px}`;document.head.appendChild(s)})();
 
+
+/* ===== v1.51 · Billing flow: Step 1 sales person → Step 2 scan (Rosy), no item search in Rosy; after the bill: payment → cash count → SAVE BILL → new bill ===== */
+const flStock=()=>{const b=B();return !!b&&(b.id==='rosy'||(typeof skHas==='function'&&skHas(b.id)))};
+const flSpDone=()=>!!(S.sp||(S.teamMode&&Array.isArray(S.team)&&S.team.length));
+const _flSale=screens.sale;screens.sale=function(){let h=_flSale();if(S.editing||!flStock())return h;const done=flSpDone();
+  h=h.replace(/<div class="search"><div class="inp">(?:(?!<\/div>)[\s\S])*?id="saleSearch"[^>]*><\/div><\/div>/,'');
+  h=h.replace(/<div class="soldby([^"]*)"><span class="lab">/,(m,c)=>`<div class="soldby${c} fl-step ${done?'fl-done':'fl-on'}"><span class="lab"><i class="fl-n">${done?'✓':'1'}</i>${done?'':'Step 1 · '}`);
+  h=h.replace('<div class="skbar" id="skBar">',`<div class="fl-h ${done?'fl-on':'fl-wait'}"><i class="fl-n">2</i>${done?'Step 2 · Scan the barcode (or type D.no)':'Step 2 · Scan barcode — choose the sales person first'}</div><div class="skbar fl-scan ${done?'fl-on':'fl-wait'}" id="skBar">`);
+  return h};
+/* after choosing the sales person, jump to the scan box */
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="pickSp"]');if(!a||!flStock()||S.screen!=='sale')return;setTimeout(()=>{const i=$('skScan');if(i&&flSpDone()){i.focus({preventScroll:false});i.scrollIntoView({block:"center",behavior:"smooth"})}},180)});
+
+/* Sale saved: "Save on bill" only lights up when a name or mobile is typed */
+function flCustReady(){const m=digits(($('sendMob')||{}).value||'');const n=String(($('apName')||{}).value||'').trim();return m.length===10||(!!n&&!m)}
+function flCustBtn(){const b=document.querySelector('[data-act="apSave"]');if(!b)return;const ok=flCustReady();b.disabled=!ok;b.className=ok?'primary':'secondary fl-off'}
+document.addEventListener('input',e=>{if(e.target&&(e.target.id==='sendMob'||e.target.id==='apName'))flCustBtn()});
+/* payment saved with cash → the cash count opens by itself */
+const _flPmSave=pmSave;pmSave=function(x){const r=_flPmSave(x);const y=(S.lastBill&&S.lastBill.id===x.id)?S.lastBill:x;if(!y.payPending&&+((y.paid||{}).Cash)>0&&!y.tender){S.tdShown=S.tdShown||{};S.tdShown[y.id]=true;render();setTimeout(()=>{const c=$('tdCard');if(c)c.scrollIntoView({block:'center',behavior:'smooth'})},80)}return r};
+/* bottom of Sale saved: SAVE BILL (finish, go to a new bill) · Edit bill · New bill */
+function flFinHTML(x){const pend=!!x.payPending;const cashOpen=!!$('tdCard')||(S.tdShown&&S.tdShown[x.id]&&+((x.paid||{}).Cash)>0&&!x.tender);
+  return `<div class="fl-fin"><button class="primary fl-save" data-act="flSave" data-v="${x.id}">${ic('check')} SAVE BILL · next customer</button>
+    <p class="hint fl-why">${pend?'Saves the payment above, then opens a new bill.':cashOpen?'Saves the cash count (if filled), then opens a new bill.':'Bill is saved. Opens a new bill.'}</p>
+    <div class="btn-row">${canEdit(x)?`<button class="secondary" data-act="editBill" data-v="${x.id}">${ic('pen')} Edit bill</button>`:'<span></span>'}<button class="secondary" data-act="newSale">+ New bill</button></div></div>`}
+const _flSaved=screens.saved;screens.saved=function(){let h=_flSaved();const x=S.lastBill;if(!x)return h;
+  h=h.replace(/<div class="btn-row">(?:<button class="secondary" data-act="editBill"[^>]*>[\s\S]*?<\/button>|<span><\/span>)<button class="secondary" data-act="newSale">\+ New sale<\/button><\/div>/,flFinHTML(x));
+  setTimeout(flCustBtn,0);return h};
+function flFinish(x){if(x.payPending){const c=pmCalc(x);if(c.err){toast(c.err);const k=$('stCard');if(k)k.scrollIntoView({block:'center',behavior:'smooth'});return}pmSave(x);x=(S.lastBill&&S.lastBill.id===x.id)?S.lastBill:x}
+  const card=$('tdCard');if(card&&!x.tender&&+((x.paid||{}).Cash)>0){const st=tdState(x);const cash=+(billMoney(x)||{}).Cash||0;const rec=nsum(st.in||{});
+    if(rec>0){if(rec<cash){toast(`Notes counted ${inr(rec)} · less than cash ${inr(cash)}. Fix the count or clear it.`);card.scrollIntoView({block:'center',behavior:'smooth'});return}
+      const d=document.querySelector('[data-act="tdSave"]');if(d&&!d.disabled)d.click();else{toast('Finish the change (notes to give back) first');return}}}
+  resetSale();S.saleQuery='';S.screen='sale';S.overlay=null;render();toast(`Bill ${x.no} saved · new bill`);setTimeout(()=>{const i=$('skScan');if(i&&flSpDone())i.focus()},80)}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="flSave"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const x=(S.lastBill&&S.lastBill.id===a.dataset.v)?S.lastBill:stBill(a.dataset.v);if(x)flFinish(x)},true);
+(function(){const s=document.createElement('style');s.textContent=`
+.fl-n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--accent,#a3325c);color:#fff;font-style:normal;font-size:11.5px;font-weight:800;margin-right:6px;vertical-align:middle}
+.fl-step{border-radius:14px;padding:10px 12px;transition:background .2s}.fl-step.fl-on{background:#fff1f5;border:2px solid var(--accent,#a3325c);box-shadow:0 0 0 4px rgba(163,50,92,.12);animation:flPulse 1.6s ease-in-out infinite}
+.fl-step.fl-on .lab{color:var(--accent,#a3325c)!important;font-weight:800}.fl-step.fl-done{border:1px solid #bfe3c8;background:#f3fbf5}.fl-step.fl-done .fl-n{background:#2e8b4e}
+@keyframes flPulse{0%,100%{box-shadow:0 0 0 3px rgba(163,50,92,.10)}50%{box-shadow:0 0 0 7px rgba(163,50,92,.18)}}
+@media (prefers-reduced-motion:reduce){.fl-step.fl-on{animation:none}}
+.fl-h{font-size:12.5px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;margin-bottom:-8px}.fl-h.fl-on{color:var(--accent,#a3325c)}.fl-h.fl-wait{opacity:.55}
+.fl-scan.fl-on .inp{border:2px solid var(--accent,#a3325c)!important;background:#fff8fa;box-shadow:0 0 0 4px rgba(163,50,92,.12)}.fl-scan.fl-wait{opacity:.6}
+.fl-off{opacity:.55}
+.fl-fin{display:grid;gap:8px}.fl-save{font-size:17px;padding:16px!important;display:flex;align-items:center;justify-content:center;gap:8px}.fl-save svg{width:20px;height:20px}.fl-why{margin:0;text-align:center}`;document.head.appendChild(s)})();
+/* ===== v1.52 · Sale saved in steps: 1 customer · 2 amount received · 3 count cash (opens by itself) · 4 SAVE BILL ===== */
+function flSteps(x){const c=x.customer||{};const cash=+((x.paid||{}).Cash)||0;
+  const s1=!!(c.name||c.mobile),s2=!x.payPending,s3=!s2?false:(!cash||!!x.tender);const cur=!s2?2:!s3?3:4;return {s1,s2,s3,cur,cash}}
+function flHead(n,t,done,cur,sub){return `<div class="fl-sh ${done?'fl-done':''} ${cur?'fl-cur':''}"><i class="fl-n">${done?'✓':n}</i><b>Step ${n} · ${t}</b>${sub?`<small>${sub}</small>`:''}</div>`}
+const _flSaved2=screens.saved;screens.saved=function(){const x0=S.lastBill;if(x0&&!x0.payPending&&+((x0.paid||{}).Cash)>0&&!x0.tender){S.tdShown=S.tdShown||{};S.tdShown[x0.id]=true}
+  let h=_flSaved2();const x=S.lastBill;if(!x||x.deleted)return h;const st=flSteps(x);
+  h=h.replace(/<div class="card ap-cust/,flHead(1,'Customer name & mobile',st.s1,false,'optional')+'<div class="card ap-cust');
+  h=h.replace(/(<div class="card st-card" id="stCard">|<div class="st-done">|<button class="st-open")/,m=>flHead(2,'Amount received',st.s2,st.cur===2,st.s2?esc(x.payText||''):'Cash · UPI · Card · Split · Credit')+m);
+  if(st.cash||!st.s2)h=h.replace(/(<div class="card td-card" id="tdCard">|<div class="td-done">)/,m=>flHead(3,'Count cash notes',st.s3,st.cur===3,st.s2?`Cash ${inr(st.cash)} · tap the notes the customer gave`:'')+m);
+  if(!st.s2)h=h.replace(/<div class="fl-fin">/,flHead(3,'Count cash notes',false,false,'Opens by itself after Step 2 if cash is received')+'<div class="fl-fin">');
+  h=h.replace(/<div class="fl-fin">/,flHead(st.s2&&!st.cash?3:4,'Save bill',false,st.cur===4,'')+'<div class="fl-fin">');
+  h=h.replace(/<div class="card st-card" id="stCard">/,`<div class="card st-card ${st.cur===2?'fl-hl':''}" id="stCard">`).replace(/<div class="card td-card" id="tdCard">/,`<div class="card td-card ${st.cur===3?'fl-hl':''}" id="tdCard">`);
+  return h};
+/* the payment button says what comes next */
+function flPmLabel(x){const c=pmCalc(x);return (+c.paid.Cash>0)?'Save · next: count cash ›':'Save payment'}
+const _flPmHTML=pmHTML;pmHTML=function(x){return _flPmHTML(x).replace(/(data-act="pmSave"[^>]*>)Save payment</,(m,a)=>a+flPmLabel(x)+'<')};
+document.addEventListener('input',e=>{const t=e.target;if(!t||!(t.id==='pmAmt'||t.dataset.pmsplit))return;setTimeout(()=>{const b=document.querySelector('[data-act="pmSave"]');const x=S.pm&&stBill(S.pm.id);if(b&&x)b.textContent=flPmLabel(x)},0)});
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="pmM"]');if(!a)return;setTimeout(()=>{const b=document.querySelector('[data-act="pmSave"]');const x=S.pm&&stBill(S.pm.id);if(b&&x)b.textContent=flPmLabel(x)},0)});
+(function(){const s=document.createElement('style');s.textContent=`.fl-sh{display:flex;align-items:center;flex-wrap:wrap;gap:3px 0;margin:6px 0 0;font-size:13px;line-height:1.3;opacity:.6;min-height:max-content;flex:none}.fl-sh b{font-weight:800;text-transform:uppercase;letter-spacing:.02em;font-size:12.5px}.fl-sh small{flex-basis:100%;padding-left:26px;font-size:12px;opacity:.85}
+.fl-sh.fl-done{opacity:.9}.fl-sh.fl-done .fl-n{background:#2e8b4e}.fl-sh.fl-cur{opacity:1;color:var(--accent,#a3325c)}
+.fl-hl{border:2px solid var(--accent,#a3325c)!important;box-shadow:0 0 0 4px rgba(163,50,92,.12)}`;document.head.appendChild(s)})();
+
+/* ===== v1.53 · Change to give back: orange blinking highlight + "(vapas dena hai)" ===== */
+const _gbLive=tdLive;tdLive=function(x){let h=_gbLive(x);const c=tdCalc(x);if(!(c.ch>0))return h;const out=c.out||{};
+  const list=DEN.filter(d=>out[d]).map(d=>`<span class="gb-note">${out[d]} × ₹${d}</span>`).join('<i>+</i>');
+  h=h.replace('<span>Give back</span>','<span>Give back <em class="gb-v">(vapas dena hai)</em></span>').replace('<b class="ch">','<b class="ch gb-blink">');
+  h=h.replace('<p><b>Give back these notes</b>',`<div class="gb-big gb-blink"><b>Give back ${inr(c.ch)} <em>(vapas dena hai)</em></b>${list?`<div class="gb-list">${list}</div>`:''}</div><p><b>Give back these notes <em class="gb-v">(vapas dena hai)</em></b>`);
+  return h.replace('<div class="td-out">','<div class="td-out gb-box">')};
+const _gbHTML=tdHTML;tdHTML=function(x){return _gbHTML(x).replace(' change given`',' change given (vapas diya)`').replace(/(\d+) change given/,'$1 change given (vapas diya)').replace(' · back ',' · vapas diya: ')};
+(function(){const s=document.createElement('style');s.textContent=`
+.gb-box{border:2px solid #f08a00;background:#fff4e5;border-radius:14px;padding:10px 12px}
+.gb-box .td-o.on{background:#ffe2b8;border-color:#f08a00;color:#8a4b00;animation:gbBlink 1s ease-in-out infinite}
+.gb-big{display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:#ff9800;color:#fff;margin-bottom:8px;text-align:center}.gb-big b{font-size:18px}.gb-big em,.gb-v{font-style:normal;font-weight:700}
+.gb-v{color:#c25e00}.gb-big em{color:#fff!important;opacity:.95}.gb-list{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;align-items:center}.gb-list i{font-style:normal;font-weight:800}
+.gb-note{background:#fff;color:#a85300;border-radius:999px;padding:4px 10px;font-weight:800;font-size:15px}
+b.ch.gb-blink{color:#e07800!important}
+.gb-blink{animation:gbBlink 1s ease-in-out infinite}
+@keyframes gbBlink{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,152,0,.0)}50%{opacity:.55;box-shadow:0 0 0 6px rgba(255,152,0,.35)}}
+@media (prefers-reduced-motion:reduce){.gb-blink,.gb-box .td-o.on{animation:none}}`;document.head.appendChild(s)})();
 
 </script>
 </body>
