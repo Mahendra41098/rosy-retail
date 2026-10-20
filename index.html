@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.54.0';
+const APP_VERSION='1.55.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5377,6 +5377,25 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act="pmM"]
 (function(){const s=document.createElement('style');s.textContent=`.fl-sh{display:flex;align-items:center;flex-wrap:wrap;gap:3px 0;margin:6px 0 0;font-size:13px;line-height:1.3;opacity:.6;min-height:max-content;flex:none}.fl-sh b{font-weight:800;text-transform:uppercase;letter-spacing:.02em;font-size:12.5px}.fl-sh small{flex-basis:100%;padding-left:26px;font-size:12px;opacity:.85}
 .fl-sh.fl-done{opacity:.9}.fl-sh.fl-done .fl-n{background:#2e8b4e}.fl-sh.fl-cur{opacity:1;color:var(--accent,#a3325c)}
 .fl-hl{border:2px solid var(--accent,#a3325c)!important;box-shadow:0 0 0 4px rgba(163,50,92,.12)}`;document.head.appendChild(s)})();
+/* ===== v1.55 · Note / remark after the amount is received (saved on the bill; can print on the bill) ===== */
+function rmHTML(x){const v=(S.rmDraft&&S.rmDraft.id===x.id)?S.rmDraft.v:(x.remark||'');const pr=(S.rmDraft&&S.rmDraft.id===x.id)?S.rmDraft.p:!!x.remarkPrint;
+  return `<div class="card rm-card" id="rmCard"><div class="card-h"><h3>${ic('pen')} Note / remark</h3><span class="hint">optional</span></div>
+    <textarea id="rmText" rows="2" placeholder="e.g. ₹100 balance on Saturday · alteration · UPI from husband's number">${esc(v)}</textarea>
+    <label class="ck rm-ck"><input type="checkbox" id="rmPrint" ${pr?'checked':''}> Print this note on the customer's bill</label>
+    <div class="rm-row"><span class="hint" id="rmState">${x.remark?'Saved on the bill':''}</span><button class="secondary" data-act="rmSave" data-v="${x.id}">Save note</button></div></div>`}
+function rmSave(x,quiet){const t=$('rmText');if(!t)return;const remark=t.value.trim();const remarkPrint=!!($('rmPrint')||{}).checked;if(remark===(x.remark||'')&&remarkPrint===!!x.remarkPrint){S.rmDraft=null;return}
+  DB.A.set('bills',x.id,{remark,remarkPrint},true);[x,ST.today.find(y=>y.id===x.id),S.lastBill&&S.lastBill.id===x.id?S.lastBill:null,S.viewBill&&S.viewBill.id===x.id?S.viewBill:null].forEach(y=>{if(y){y.remark=remark;y.remarkPrint=remarkPrint}});patchCache(x);S.rmDraft=null;
+  if(!quiet){render();toast(remark?'Note saved on the bill':'Note removed')}}
+const _rmSaved=screens.saved;screens.saved=function(){let h=_rmSaved();const x=S.lastBill;if(!x||x.deleted)return h;
+  const card=rmHTML(x);const re=/<div class="fl-sh[^"]*"><i class="fl-n">[^<]*<\/i><b>Step \d · (?:Count cash notes|Save bill)/;const m=h.match(re);
+  if(m)return h.replace(m[0],card+m[0]);const k='<div class="fl-fin">';return h.includes(k)?h.replace(k,card+k):h};
+document.addEventListener('input',e=>{const t=e.target;if(!t||(t.id!=='rmText'&&t.id!=='rmPrint'))return;const x=S.lastBill;if(!x)return;S.rmDraft={id:x.id,v:($('rmText')||{}).value||'',p:!!($('rmPrint')||{}).checked};const s=$('rmState');if(s)s.textContent='Not saved yet'});
+document.addEventListener('change',e=>{const t=e.target;if(!t||(t.id!=='rmText'&&t.id!=='rmPrint'))return;const x=S.lastBill;if(!x)return;rmSave(x,true);const s=$('rmState');if(s)s.textContent=x.remark?'Saved on the bill':''});
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="rmSave"],[data-act="flSave"],[data-act="pmSave"],[data-act="printBill"],[data-act="waBill"]');if(!a)return;const x=S.lastBill;if(!x||!$('rmText'))return;
+  if(a.dataset.act==='rmSave'){e.preventDefault();e.stopImmediatePropagation();rmSave(x);return}rmSave(x,true)},true);
+(function(){const s=document.createElement('style');s.textContent=`.rm-card{display:grid;gap:8px}.rm-card .card-h svg{width:18px;height:18px}.rm-card textarea{width:100%;box-sizing:border-box}.rm-ck{display:flex;gap:8px;align-items:center;font-size:13.5px}.rm-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.rm-row .secondary{width:auto;padding:10px 18px}`;document.head.appendChild(s)})();
+const _rmFin=flFinish;flFinish=function(x){if($('rmText'))rmSave(x,true);return _rmFin.apply(this,arguments)};
+const _rmPm=pmSave;pmSave=function(x){if($('rmText'))rmSave(x,true);return _rmPm.apply(this,arguments)};
 
 /* ===== v1.53 · Change to give back: orange blinking highlight + "(vapas dena hai)" ===== */
 const _gbLive=tdLive;tdLive=function(x){let h=_gbLive(x);const c=tdCalc(x);if(!(c.ch>0))return h;const out=c.out||{};
