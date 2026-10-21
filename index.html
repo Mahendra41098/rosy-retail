@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.55.0';
+const APP_VERSION='1.56.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5414,6 +5414,50 @@ b.ch.gb-blink{color:#e07800!important}
 .gb-blink{animation:gbBlink 1s ease-in-out infinite}
 @keyframes gbBlink{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,152,0,.0)}50%{opacity:.55;box-shadow:0 0 0 6px rgba(255,152,0,.35)}}
 @media (prefers-reduced-motion:reduce){.gb-blink,.gb-box .td-o.on{animation:none}}`;document.head.appendChild(s)})();
+
+/* ===== v1.56 · Manual credit note: for old bills not in the app — assign to a customer, then use it in billing ===== */
+function mcnSheet(){const f=S.mcn||(S.mcn={m:'',n:'',amt:'',bill:'',bdate:'',note:'',pw:''});const own=isAdmin();
+  return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Manual credit note"><div class="grab"></div><div class="sh-body">
+    <h3>${ic('note')} Manual credit note</h3><p class="hint" style="margin:0 0 6px">For a return or advance from an old bill that is not in this app. It works like any other credit note: the customer can use it on a new bill.</p>
+    <form id="mcnForm" class="mcn-f">
+      <div class="two"><div class="f"><label for="mcnM">Customer mobile *</label><input id="mcnM" inputmode="tel" maxlength="14" value="${esc(f.m)}" placeholder="10 digits"></div><div class="f"><label for="mcnN">Customer name</label><input id="mcnN" value="${esc(f.n)}" placeholder="Name"></div></div>
+      <div class="f"><label for="mcnA">Credit amount ₹ *</label><input id="mcnA" class="money" inputmode="numeric" value="${esc(f.amt)}" placeholder="e.g. 850" style="font-size:22px"></div>
+      <div class="two"><div class="f"><label for="mcnB">Old bill no. (if known)</label><input id="mcnB" value="${esc(f.bill)}" placeholder="e.g. 1452 / myBillBook"></div><div class="f"><label for="mcnD">Old bill date</label><input id="mcnD" type="date" value="${esc(f.bdate)}" max="${todayStr()}"></div></div>
+      <div class="f"><label for="mcnR">Reason / note</label><input id="mcnR" value="${esc(f.note)}" placeholder="e.g. returned 2 nighties · size issue"></div>
+      
+      <button class="primary" type="submit">Create credit note</button><button class="secondary" type="button" data-act="closeSheet">Cancel</button></form></div></div>`}
+window.EXTRA_OV.cnMan=mcnSheet;
+function mcnOpen(pre){if(!isAdmin()){toast('Only the owner can add a manual credit note');return}S.mcn=Object.assign({m:'',n:'',amt:'',bill:'',bdate:'',note:'',pw:''},pre||{});cnLoad();S.overlay='cnMan';render();setTimeout(()=>{const i=$(S.mcn.m?'mcnA':'mcnM');if(i)i.focus()},60)}
+document.addEventListener('input',e=>{const t=e.target;if(!t||!S.mcn)return;const k={mcnM:'m',mcnN:'n',mcnA:'amt',mcnB:'bill',mcnD:'bdate',mcnR:'note'}[t.id];if(k)S.mcn[k]=t.value});
+window.addEventListener('submit',async e=>{if(!e.target||e.target.id!=='mcnForm')return;e.preventDefault();e.stopImmediatePropagation();const b=B();const f=S.mcn||{};
+  const m=digits(f.m),amt=Math.round(+String(f.amt||'').replace(/[^0-9.]/g,'')||0);if(m.length!==10){toast('Type the customer 10-digit mobile');return}if(!(amt>0)){toast('Type the credit amount');return}
+  if(!isAdmin()){toast('Only the owner can add a manual credit note');return}const by='Owner';
+  const no='CN'+String(Date.now()).slice(-6);const name=String(f.n||'').trim();
+  const cn={id:'cn_'+uid(),biz:b.id,no,amount:amt,orig:amt,status:'open',manual:true,bill:String(f.bill||'').trim()||'old bill (manual)',billId:null,billDate:f.bdate||'',customer:{name,mobile:m},items:[],note:String(f.note||'').trim(),at:Date.now(),date:todayStr(),by,uses:[]};
+  DB.A.set('credits',cn.id,cn,false);if(CNS&&CNS.biz===b.id)CNS.push(cn);
+  DB.A.set('customers',m,{mobile:m,...(name?{name}:{})},true);if(CACHE.custAll)delete CACHE.custAll;
+  S.mcn=null;S.cnShow=cn;S.overlay='cnShow';render();toast(`Credit note ${no} · ${inr(amt)} for ${name||m}`)},true);
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="mcnNew"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();
+  const pre={};if(a.dataset.m){pre.m=a.dataset.m;pre.n=a.dataset.n||''}else if(S.screen==='sale'&&digits(S.customer&&S.customer.mobile||'').length===10){pre.m=digits(S.customer.mobile);pre.n=S.customer.name||''}mcnOpen(pre)},true);
+/* slip / WhatsApp show the reason and "manual" */
+const _mcnSlip=cnSlip;cnSlip=function(c,bz){let h=_mcnSlip(c,bz);if(!c.manual)return h;return h.replace(/Against bill: ([^<]*)/,(m,x)=>`Against ${esc(x)}${c.billDate?' · '+esc(rxDate(c.billDate)):''}`).replace('<p class="r-thanks">',(c.note?`<p class="r-remark">Note: ${esc(c.note)}</p>`:'')+'<p class="r-thanks">')};
+const _mcnTxt=cnText;cnText=function(c,bz){let t=_mcnTxt(c,bz);if(c.manual&&c.note)t=t.replace('Show this credit note',`Note: ${c.note}\n\nShow this credit note`);return t};
+/* where to start it: Exchange screen, the "Use a credit note" sheet, and the customer's page */
+const _mcnEx=screens.exchange;screens.exchange=function(){const h=_mcnEx();if(S.ex||!isAdmin())return h;cnLoad();const btn=`<button class="secondary mcn-btn" data-act="mcnNew">${ic('plus')} Manual credit note (old bill not in app)</button>`;
+  const k='<h3 class="sec rx-today">';return h.includes(k)?h.replace(k,btn+k):h};
+const _mcnUse=cnUseSheet;cnUseSheet=function(){const h=_mcnUse();if(!isAdmin())return h;return h.replace('<button class="secondary" data-act="closeSheet">Close</button>',`<button class="secondary" data-act="mcnNew">${ic('plus')} Add a manual credit note</button><button class="secondary" data-act="closeSheet">Close</button>`)};
+window.EXTRA_OV.cnUse=cnUseSheet;
+if(screens.cust1){const _mcnCust=screens.cust1;screens.cust1=function(){let h=_mcnCust();const m=S.ctCust;if(!m)return h;const l=cnLoad();const mine=(l||[]).filter(c=>(c.customer||{}).mobile===m&&c.status==='open'&&c.amount>0);
+  const c=((CACHE.custAll||{}).data||[]).find(x=>x.mobile===m)||{};
+  const box=`<section class="card mcn-cust"><div class="card-h"><h3>${ic('note')} Credit notes · ${esc(B().name)}</h3><b>${inr(mine.reduce((a,x)=>a+x.amount,0))}</b></div>
+    ${mine.map(x=>`<button class="row" data-act="cnView" data-v="${x.id}"><div class="grow"><b class="mono">${esc(x.no)}</b><span>${dayLabel(x.date)} · ${esc(x.bill)}${x.note?' · '+esc(x.note):''}</span></div><div class="end"><b>${inr(x.amount)}</b></div></button>`).join('')||'<p class="hint" style="margin:0">No open credit note.</p>'}
+    ${isAdmin()?`<button class="secondary" data-act="mcnNew" data-m="${esc(m)}" data-n="${esc(c.name||'')}">${ic('plus')} Add manual credit note</button>`:''}</section>`;
+  const k='<h3 class="sec">All bills';return h.includes(k)?h.replace(k,box+k):h+box}}
+(function(){const s=document.createElement('style');s.textContent=`.mcn-f{display:grid;gap:10px}.mcn-btn{width:100%}.mcn-cust{display:grid;gap:8px}.mcn-cust .card-h svg,.sh-body h3 svg{width:18px;height:18px}.mcn-cust .row{display:flex;width:100%;text-align:left;border:1px solid var(--line,#e5e0d8);border-radius:12px;background:var(--surface,#fff);padding:8px 10px;color:inherit}.mcn-cust .row .grow{display:grid;flex:1}.mcn-cust .row span{font-size:12.5px;opacity:.75}`;document.head.appendChild(s)})();
+/* as soon as the customer's mobile is typed on New sale: show their open credit note right there */
+const _mcnKnown=knownHTML;knownHTML=function(){const h=_mcnKnown();const m=digits(S.customer&&S.customer.mobile||'');if(m.length!==10||S.credit||S.editing)return h;const l=cnOpen();const mine=(l||[]).filter(c=>(c.customer||{}).mobile===m);if(!mine.length)return h;
+  const t=mine.reduce((a,c)=>a+c.amount,0);return h+`<div class="mcn-known">${mine.map(c=>`<button type="button" class="cn-hint" data-act="cnApply" data-v="${c.id}">${ic('note')}<span><b>Credit note ${esc(c.no)} · ${inr(c.amount)}</b><small>${c.manual?'Manual · ':''}from ${esc(c.bill)} · tap to use on this bill</small></span></button>`).join('')}${mine.length>1?`<p class="hint" style="margin:0">Total open: ${inr(t)}</p>`:''}</div>`};
+(function(){const s=document.createElement('style');s.textContent=`.mcn-known{display:grid;gap:6px;margin-top:8px}`;document.head.appendChild(s)})();
 
 </script>
 </body>
