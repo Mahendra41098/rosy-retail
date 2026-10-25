@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.69.0';
+const APP_VERSION='1.71.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5887,21 +5887,24 @@ const _cnxEx=screens.exchange;screens.exchange=function(){return _cnxEx().replac
 (function(){const s=document.createElement('style');s.textContent='.cnx-own{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cnx-ed{display:grid;gap:8px;padding:10px;border-radius:12px;background:var(--surface-2,#f6f1ec)}.cnx-grp{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:12px;background:#f6f1fb;border:1px solid #d9c6ee}.cnx-grp span{font-size:13.5px}.cnx-grp .secondary{width:auto;padding:8px 12px}.cn-hint.all{border-color:#6a3fa0!important;background:#f6f1fb!important}';document.head.appendChild(s)})();
 
 /* ===== v1.68 · New sale: item not in stock → add it to THIS bill only (barcode, item name, MRP, D.no, category); marked orange; owner creates the stock later ===== */
-/* v1.69 · category: pick from the list, or "Other · type it" */
+/* v1.70 · category: type it, suggestions show as you type (tap to fill) */
 function qkCats(b){const seen=new Map();const add=c=>{c=String(c||'').trim();if(c&&!seen.has(c.toLowerCase()))seen.set(c.toLowerCase(),c)};
   Object.values(skItems(b.id)).forEach(i=>{if(!i.del)add(i.c)});(b.cats||[]).forEach(g=>(g.items||[]).forEach(x=>add(x.name)));return [...seen.values()].sort((a,c)=>a.localeCompare(c))}
-function qkIsOth(cats,c){return !!c&&!cats.some(x=>x.toLowerCase()===String(c).toLowerCase())}
-function qkCatSel(cats,c){const oth=qkIsOth(cats,c);const cur=String(c||'').toLowerCase();
-  return `<select id="qkC"><option value="">Choose…</option>${cats.map(x=>`<option value="${esc(x)}"${!oth&&x.toLowerCase()===cur?' selected':''}>${esc(x)}</option>`).join('')}<option value="__oth"${oth?' selected':''}>Other · type it</option></select>`}
-document.addEventListener('change',e=>{const t=e.target;if(!t||t.id!=='qkC')return;const bx=$('qkOthBox');if(!bx)return;const on=t.value==='__oth';bx.hidden=!on;if(on){const i=$('qkCo');if(i)i.focus()}},true);
+function qkSugHTML(cats,t){t=String(t||'').trim().toLowerCase();if(cats.some(x=>x.toLowerCase()===t))return '';
+  const l=t?cats.filter(x=>x.toLowerCase().startsWith(t)).concat(cats.filter(x=>!x.toLowerCase().startsWith(t)&&x.toLowerCase().includes(t))):cats;
+  return l.slice(0,12).map(x=>`<button type="button" class="qk-chip" data-act="qkPick" data-v="${esc(x)}">${esc(x)}</button>`).join('')+(t&&!l.length?`<span class="qk-new">New category · “${esc(t)}”</span>`:'')}
+function qkSugUpd(){const i=$('qkC'),box=$('qkSug');if(!i||!box)return;box.innerHTML=qkSugHTML(qkCats(B()),i.value)}
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='qkC')qkSugUpd()},true);
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="qkPick"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const i=$('qkC');if(i){i.value=a.dataset.v;qkSugUpd();const q=$('qkQ');if(q)q.focus()}},true);
+(function(){const s=document.createElement('style');s.textContent='.qk-sug{display:flex;flex-wrap:wrap;gap:6px;margin-top:-4px}.qk-sug:empty{display:none}.qk-chip{border:1px solid var(--line,#e5d8dc);background:#fff;color:inherit;border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}.qk-chip:active{background:#f6e7ec}.qk-new{font-size:12.5px;color:#8a5200;font-weight:700;padding:4px 2px}';document.head.appendChild(s)})();
 function qkSheet(){const b=B();const f=S.qk||{};const cats=qkCats(b);
   return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Add item not in stock"><div class="grab"></div>
   <form class="sh-body qk-f" id="qkForm"><h3>${ic('plus')} Item not in stock · add to this bill only</h3>
     ${f.miss?`<p class="qk-miss">“${esc(f.miss)}” is not in ${esc(b.name)}'s stock list. Fill the boxes · it goes on this bill only (not saved in stock). The owner sees it in orange and adds it to stock later.</p>`:''}
     <div class="two"><div class="f"><label for="qkBc">Barcode</label><input id="qkBc" value="${esc(f.bc||'')}" placeholder="Scan or type · blank = new" autocomplete="off"></div><div class="f"><label for="qkDn">D.no</label><input id="qkDn" value="${esc(f.dn||skNextDno(b.id))}" inputmode="numeric"></div></div>
     <div class="f"><label for="qkN">Item name *</label><input id="qkN" value="${esc(f.n||'')}" placeholder="ARTICLE-COLOUR-SIZE e.g. 303081-WINE-L" autocapitalize="characters" autocomplete="off"></div>
-    <div class="two"><div class="f"><label for="qkM">MRP ₹ *</label><input id="qkM" class="money" inputmode="numeric" value="${esc(f.m||'')}" placeholder="0"></div><div class="f"><label for="qkC">Category</label>${qkCatSel(cats,f.c)}</div></div>
-    <div class="f qk-oth" id="qkOthBox"${qkIsOth(cats,f.c)?'':' hidden'}><label for="qkCo">Other category · type it</label><input id="qkCo" value="${esc(qkIsOth(cats,f.c)?f.c||'':'')}" placeholder="e.g. Saree petticoat" autocomplete="off"></div>
+    <div class="two"><div class="f"><label for="qkM">MRP ₹ *</label><input id="qkM" class="money" inputmode="numeric" value="${esc(f.m||'')}" placeholder="0"></div><div class="f"><label for="qkC">Category</label><input id="qkC" value="${esc(f.c||'')}" placeholder="Type · e.g. Nighty" autocomplete="off" autocapitalize="words"></div></div>
+    <div class="qk-sug" id="qkSug">${qkSugHTML(cats,f.c)}</div>
     <div class="two"><div class="f"><label for="qkQ">Pieces on this bill</label><input id="qkQ" inputmode="numeric" value="${esc(f.q||'1')}"></div><div></div></div>
     <button class="primary" type="submit">Add to this bill</button><button class="secondary" type="button" data-act="closeSheet">Cancel</button></form></div>`}
 window.EXTRA_OV.skQuick=qkSheet;
@@ -5910,7 +5913,7 @@ const _qkScan=skScan;skScan=function(code){const r=_qkScan.apply(this,arguments)
 window.addEventListener('submit',e=>{if(!e.target||e.target.id!=='qkForm')return;e.preventDefault();e.stopImmediatePropagation();const b=B();const v=id=>String(($(id)||{}).value||'').trim();
   const n=v('qkN').toUpperCase();const m=Math.round(+v('qkM').replace(/[^0-9.]/g,'')||0);const q=Math.max(1,parseInt(v('qkQ'))||1);if(!n){toast('Type the item name');return}if(!(m>0)){toast('Type the MRP');return}
   const bc=v('qkBc');const ex=bc&&skFind(b.id,bc);if(ex&&!ex.it.del){S.overlay=null;S.qk=null;skAddToCart(ex.key,q);return}
-  const dn=v('qkDn');let c=v('qkC');if(c==='__oth'){c=v('qkCo');if(!c){toast('Type the category name');const o=$('qkCo');if(o)o.focus();return}c=c.replace(/\s+/g,' ').replace(/\b\w/g,x=>x.toUpperCase())}c=c||'Other';
+  const dn=v('qkDn');let c=v('qkC').replace(/\s+/g,' ');const hit=qkCats(b).find(x=>x.toLowerCase()===c.toLowerCase());c=hit||c.replace(/\b\w/g,x=>x.toUpperCase());c=c||'Other';
   S.cart.push({itemId:null,cat:c,icon:'garment',name:n,qty:q,price:m,mode:'mrp',mrp:m,code:'',note:['Not in stock',dn?'D.no '+dn:'',bc?'BC '+bc:''].filter(Boolean).join(' · '),ns:{bc,dn,c}});
   S.overlay=null;S.qk=null;S.entry=null;render();toast(`${n} added to this bill only · not in stock`)},true);
 /* keep the "not in stock" mark on the saved bill line, and list it for the owner */
@@ -5944,6 +5947,55 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act="qkOpe
 const _qkSale=screens.sale;screens.sale=function(){const h=_qkSale();const b=B();if(!b||!skHas(b.id)||S.editing&&false)return h;
   return h.replace(/(a scanner gun works anywhere on this screen<\/p>)/,`$1<button type="button" class="linkbtn qk-link" data-act="qkOpen">${ic('plus')} Item not in stock? Add it here</button>`)};
 (function(){const s=document.createElement('style');s.textContent='.bline.qk-ns{background:#fff1e0;border-left:4px solid #f08a00;border-radius:8px;padding-left:6px}.bline.qk-ns b::after{content:" · NOT IN STOCK";color:#c25e00;font-size:10.5px;font-weight:800}.qk-pill{font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;background:#ffe2b8;color:#a85300;margin-left:6px}.qk-bd{display:flex;gap:10px;padding:10px 12px;border-radius:12px;background:#fff1e0;border:1px solid #f0b46a;margin-top:8px}.qk-bd svg{width:20px;height:20px;color:#c25e00;flex:none}.qk-bd span{display:grid;gap:2px}.qk-bd b{color:#a85300}.qk-bd small{font-size:12.5px}.qk-own{display:grid;gap:8px;border:2px solid #f08a00;background:#fffaf3}.qk-own .card-h svg{width:18px;height:18px;color:#c25e00}.qk-row{display:grid;gap:6px;padding:8px 0;border-top:1px dashed #f0c98a}.qk-row .grow{display:grid}.qk-row span{font-size:13px}.qk-row small{font-size:12px;opacity:.7}.qk-acts{display:flex;gap:8px;align-items:center}.qk-left{width:80px;padding:8px;border:1px solid #ddd;border-radius:10px;font:inherit}.qk-acts .primary{width:auto;padding:9px 14px}.qk-home{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid #f08a00;background:#fff4e5;color:inherit;border-radius:14px;padding:12px 14px;cursor:pointer}.qk-home>svg{width:22px;height:22px;color:#c25e00}.qk-home span{display:grid;flex:1}.qk-home b{color:#8a4b00}.qk-home small{font-size:12px;opacity:.75}.qk-home .chev{width:18px;height:18px}.qk-f{display:grid;gap:10px}.qk-f h3{display:flex;gap:8px;align-items:center}.qk-f h3 svg{width:20px;height:20px}.qk-miss{margin:0;padding:8px 10px;border-radius:10px;background:#fff6e5;border:1px solid #f0c98a;font-size:13.5px}.qk-link{display:flex;align-items:center;gap:6px;margin-top:-4px;font-size:13px}.qk-link svg{width:15px;height:15px}';document.head.appendChild(s)})();
+
+/* ===== v1.71 · Owner: delete a wrong / duplicate entry in Cash book → "Returns & refunds" ===== */
+if(!IC.trash)IC.trash='<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/><path d="M10 11v6M14 11v6"/>';
+/* soft delete (deleted:true) so every total that uses entries() drops it at once */
+const _rdSkRet=skRetData;skRetData=function(biz){const l=_rdSkRet(biz);return l?l.filter(r=>!r.deleted):l};
+function rdDups(list){const seen={},dup={};list.slice().sort((a,c)=>a.at-c.at).forEach(r=>{const k=[r.bill,r.kind,+r.amount||0,r.note||''].join('|');if(seen[k])dup[r.id]=seen[k];else seen[k]=r.id});return dup}
+function rdFind(id){const d=S.mDate||todayStr();const l=returnsFor(d)||[];return l.find(r=>r.id===id)}
+function rdLinked(r){const all=_rdSkRet(r.biz)||[];const k=r.kind==='credit'?'refund':r.kind;const sib=entries(returnsFor(r.date)||[],r.biz).filter(x=>x.bill===r.bill&&x.kind===r.kind);if(!sib.some(x=>x.id===r.id))sib.push(r);
+  return all.filter(s=>{if(s.deleted||s.bill!==r.bill||!(s.kind===k||s.kind===r.kind))return false;const d=Math.abs((+s.at||0)-(+r.at||0));if(d>15000)return false;return !sib.some(x=>x.id!==r.id&&Math.abs((+s.at||0)-(+x.at||0))<d)})}
+function rdCN(r){if(!r.cn)return null;const l=cnLoad()||[];return l.find(c=>c.no===r.cn)||null}
+function rdSheet(){const r=rdFind(S.rdId);if(!r)return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button><div class="sheet"><div class="grab"></div><div class="sh-body"><p class="hint">This entry is gone.</p><button class="secondary" data-act="closeSheet">Close</button></div></div>`;
+  const list=entries(returnsFor(S.mDate||todayStr())||[],r.biz);const dup=rdDups(list)[r.id];const sk=rdLinked(r);const pcs=sk.filter(s=>s.sk).reduce((a,s)=>a+(+s.qty||0),0);const cn=rdCN(r);
+  const cnUsed=cn&&(+cn.amount||0)<(+cn.orig||+cn.amount||0);
+  return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Delete return entry"><div class="grab"></div>
+  <div class="sh-body rd-f"><h3>${ic('trash')} Delete this return entry?</h3>
+    <div class="rd-box"><b>${esc(r.mode||(r.kind==='refund'?'Cash refund':r.kind==='exchange'?'Exchange':'Credit note'))} · ${inr(r.amount||0)}${r.cn?' · '+esc(r.cn):''}</b>
+      <span>${dayLabel(r.date)} ${timeLabel(r.at)} · bill ${esc(r.no||'')}</span>${r.note?`<small>${esc(r.note)}</small>`:''}</div>
+    ${dup?'<p class="rd-dup">Looks like a duplicate · the same return of this bill is already in the list.</p>':'<p class="rd-warn">This is the only return entry for this bill. Delete only if it was saved by mistake.</p>'}
+    <ul class="rd-what"><li>The ${inr(r.amount||0)} is removed from the cash book${r.kind==='refund'&&!/UPI/.test(r.mode||'')?' (drawer cash expected goes up again)':''}.</li>
+      ${sk.length?`<li>${sk.length} item line${sk.length>1?'s':''} removed from the Returns report.</li>`:''}
+      ${cn?`<li>Credit note ${esc(cn.no)} is cancelled${cnUsed?` · ${inr(cn.amount||0)} left on it (part was already used)`:''}.</li>`:''}
+      <li>The bill itself is not changed.</li></ul>
+    ${pcs?`<label class="ck rd-ck"><input type="checkbox" id="rdStock"${dup?' checked':''}> Also take ${pcs} pc${pcs>1?'s':''} back out of stock<small>Tick if stock went up twice because of this duplicate.</small></label>`:''}
+    <button class="danger" data-act="rdGo">Delete entry</button><button class="secondary" data-act="closeSheet">Cancel</button></div></div>`}
+window.EXTRA_OV.rdDel=rdSheet;
+async function rdGo(){const r=rdFind(S.rdId);if(!r||!isAdmin())return;const take=!!($('rdStock')||{}).checked;const sk=rdLinked(r);const cn=rdCN(r);const now=Date.now();
+  const mark={deleted:true,deletedAt:now,deletedBy:'Owner'};
+  DB.A.set('returns',r.id,mark,true);Object.assign(r,mark);
+  sk.forEach(s=>{DB.A.set('skret',s.id,mark,true);Object.assign(s,mark)});
+  if(take){const d={};sk.filter(s=>s.sk).forEach(s=>d[s.sk]=(d[s.sk]||0)-(+s.qty||0));if(Object.keys(d).length)skMove(r.biz,d,'return entry deleted')}
+  if(cn&&cn.status!=='void'){const p={status:'void',voidAmount:+cn.amount||0,amount:0,voided:{at:now,by:'Owner',why:'return entry deleted'}};if(typeof cnxPatch==='function')cnxPatch(cn,p);else{DB.A.set('credits',cn.id,p,true);Object.assign(cn,p)}}
+  try{const x=await getBill(r.bill);if(x&&Array.isArray(x.returns)){let bi=-1,bd=1e15;x.returns.forEach((e,i)=>{const dd=Math.abs((+e.at||0)-(+r.at||0));if(!e.deleted&&(+e.amount||0)===(+r.amount||0)&&dd<bd&&dd<15000){bd=dd;bi=i}});
+    if(bi>=0){const returns=x.returns.filter((_,i)=>i!==bi);DB.A.set('bills',x.id,{returns},true);x.returns=returns;const t=ST.today.find(y=>y.id===x.id);if(t)t.returns=returns;patchCache(x)}}}catch(e){console.warn(e)}
+  delete CACHE['r|'+r.date];delete CACHE['skret|'+r.biz];S.overlay=null;S.rdId=null;render();toast(`Return entry deleted · ${inr(r.amount||0)}`)}
+/* cash book card: × button on each row for the owner, and a "duplicate?" tag */
+const _rdMon=screens.money;screens.money=function(){let h=_rdMon();if(!isAdmin())return h;const b=B();const rets=returnsFor(S.mDate||todayStr());if(!rets)return h;
+  const list=entries(rets,b.id).filter(r=>r.kind!=='supplier').sort((p,q)=>q.at-p.at);if(!list.length)return h;const dup=rdDups(list);
+  const s=h.indexOf('<div class="card rt-card">');if(s<0)return h;
+  let seg=h.slice(s);let n=0;
+  seg=seg.replace(/<button class="lk-row" data-act="viewBill"[\s\S]*?<\/button>/g,m=>{const r=list[n++];if(!r)return m;
+    return `<div class="rd-row">${dup[r.id]?m.replace('</b>','</b><em class="rd-tag">Duplicate?</em>'):m}<button class="rd-x" data-act="rdAsk" data-v="${esc(r.id)}" aria-label="Delete this return entry">${ic('trash')}</button></div>`});
+  return h.slice(0,s)+seg};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="rdAsk"],[data-act="rdGo"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();if(!isAdmin()){toast('Only the owner can delete');return}
+  if(a.dataset.act==='rdAsk'){S.rdId=a.dataset.v;cnLoad();S.overlay='rdDel';render();return}rdGo()},true);
+(function(){const s=document.createElement('style');s.textContent=`.rd-row{display:flex;align-items:stretch;gap:6px}.rd-row>.lk-row{flex:1;min-width:0}.rd-x{flex:none;width:40px;border:1px solid #f2c9c4;background:#fdf1f0;color:#b3261e;border-radius:10px;display:grid;place-items:center;cursor:pointer}.rd-x svg{width:17px;height:17px}
+.rd-row .lk-row em.rd-tag,.rd-tag{font-style:normal;font-size:11px;font-weight:800;color:#fff!important;background:#d98a00;border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.rd-f{display:grid;gap:10px}.rd-f h3{display:flex;gap:8px;align-items:center;margin:0}.rd-f h3 svg{width:20px;height:20px;color:#b3261e}.rd-box{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface2,#f7f3f4);border:1px solid var(--line,#e5d8dc)}.rd-box span{font-size:13px}.rd-box small{font-size:12px;opacity:.75}
+.rd-dup{margin:0;padding:8px 12px;border-radius:10px;background:#fff4e0;border:1px solid #f0c98a;color:#8a5200;font-weight:700;font-size:13px}.rd-warn{margin:0;padding:8px 12px;border-radius:10px;background:#fdecec;border:1px solid #f2c9c4;color:#8c1d18;font-size:13px}
+.rd-what{margin:0;padding-left:18px;font-size:13px;display:grid;gap:3px}.rd-ck{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;align-items:center;font-size:13.5px;font-weight:600}.rd-ck small{grid-column:2;font-weight:400;font-size:12px;opacity:.75}`;document.head.appendChild(s)})();
 
 </script>
 </body>
