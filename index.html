@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.65.0';
+const APP_VERSION='1.66.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5841,6 +5841,50 @@ const _qhSheet=skImpSheet;skImpSheet=function(){const m=S.skImp;if(m&&m.pb&&m.pb
   return h.replace(/(<p class="hint">[^<]*(?:Every item|The quantity in the file|Only names)[^<]*<\/p>)/,box)};
 window.EXTRA_OV.skImp=skImpSheet;
 (function(){const s=document.createElement('style');s.textContent='.qh-box{display:grid;gap:4px;padding:10px 12px;border-radius:12px;background:#eef7f1;border:1px solid #bfe3c8;margin:4px 0 8px}.qh-box.warn{background:#fff6e5;border-color:#f0c98a}.qh-box p{margin:0;font-size:13.5px}.qh-box .lab{font-size:12px;font-weight:800;opacity:.75;text-transform:uppercase}.qh-dup{color:#8a5200;font-weight:700}';document.head.appendChild(s)})();
+
+/* ===== v1.66 · Credit / exchange notes: owner can edit or cancel; notes of one customer can be combined; "Use all" while billing ===== */
+const cnxOpen=c=>c&&c.status==='open'&&+c.amount>0;
+function cnxPatch(c,p){DB.A.set('credits',c.id,p,true);Object.assign(c,p);const l=CNS||[];const x=l.find(y=>y.id===c.id);if(x&&x!==c)Object.assign(x,p)}
+/* sheet: owner edit / cancel */
+const _cnxSheet=cnSheet;cnSheet=function(){let h=_cnxSheet();const c=S.cnShow;if(!c||!isAdmin())return h;const e=S.cnxEd&&S.cnxEd.id===c.id;const cu=c.customer||{};
+  const box=e?`<form class="cnx-ed" id="cnxForm"><b>Edit credit note ${esc(c.no)}</b>
+      <div class="two"><div class="f"><label for="cnxAmt">Balance ₹</label><input id="cnxAmt" class="money" inputmode="numeric" value="${+c.amount||0}"></div><div class="f"><label for="cnxM">Mobile</label><input id="cnxM" inputmode="tel" value="${esc(cu.mobile||'')}"></div></div>
+      <div class="two"><div class="f"><label for="cnxN">Customer name</label><input id="cnxN" value="${esc(cu.name||'')}"></div><div class="f"><label for="cnxB">Against bill</label><input id="cnxB" value="${esc(c.bill||'')}"></div></div>
+      <div class="f"><label for="cnxR">Note</label><input id="cnxR" value="${esc(c.note||'')}"></div>
+      <div class="two"><button type="button" class="secondary" data-act="cnxX">Cancel</button><button class="primary" type="submit">Save</button></div></form>`
+    :`<div class="cnx-own"><button class="secondary" data-act="cnxEdit">${ic('pen')} Edit</button>${c.status==='void'?'<span class="hint">Cancelled</span>':`<button class="danger" data-act="cnxDel">${S.cnxDel===c.id?'Tap again to cancel note':'Cancel / delete note'}</button>`}</div>`;
+  return h.replace('<button class="secondary" data-act="closeSheet">Done</button>',box+'<button class="secondary" data-act="closeSheet">Done</button>')};
+window.EXTRA_OV.cnShow=cnSheet;
+window.addEventListener('submit',e=>{if(!e.target||e.target.id!=='cnxForm')return;e.preventDefault();e.stopImmediatePropagation();const c=S.cnShow;if(!c||!isAdmin())return;
+  const amt=Math.max(0,Math.round(+String(($('cnxAmt')||{}).value||'').replace(/[^0-9.]/g,'')||0));const m=digits(($('cnxM')||{}).value||'');if(m&&m.length!==10){toast('Type a 10-digit mobile');return}
+  const p={amount:amt,orig:Math.max(+c.orig||0,amt),status:amt>0?'open':'used',customer:{name:String(($('cnxN')||{}).value||'').trim(),mobile:m},bill:String(($('cnxB')||{}).value||'').trim()||c.bill,note:String(($('cnxR')||{}).value||'').trim(),
+    edits:(c.edits||[]).concat([{at:Date.now(),by:'Owner',from:+c.amount||0,to:amt}])};cnxPatch(c,p);S.cnxEd=null;render();toast(`Credit note ${c.no} saved`)},true);
+/* combine several open notes into one */
+function cnxMerge(list){const b=B();if(list.length<2)return list[0]||null;const tot=list.reduce((a,c)=>a+(+c.amount||0),0);const cu=list.find(c=>(c.customer||{}).mobile)?.customer||list[0].customer||{};
+  const no='CN'+String(Date.now()).slice(-6);const items=[].concat(...list.map(c=>c.items||[]));
+  const cn={id:'cn_'+uid(),biz:b.id,no,amount:tot,orig:tot,status:'open',bill:list.map(c=>c.bill).filter(Boolean).join(' + '),billId:list[0].billId||null,billDate:list[0].billDate||'',customer:{name:cu.name||'',mobile:cu.mobile||''},items,note:'Combined from '+list.map(c=>`${c.no} (${inr(c.amount)})`).join(', '),from:list.map(c=>c.id),at:Date.now(),date:todayStr(),by:isAdmin()?'Owner':(DEVICE.name||'counter'),uses:[]};
+  DB.A.set('credits',cn.id,cn,false);if(CNS)CNS.push(cn);list.forEach(c=>cnxPatch(c,{status:'merged',amount:0,mergedInto:no,mergedAt:Date.now()}));return cn}
+function cnxGroups(){const l=cnOpen()||[];const g={};l.forEach(c=>{const m=(c.customer||{}).mobile;if(m)(g[m]=g[m]||[]).push(c)});return Object.values(g).filter(x=>x.length>1)}
+/* Credit notes screen: combine bar + owner edit, show cancelled / combined */
+const _cnxScr=screens.cnDue;screens.cnDue=function(){let h=_cnxScr();if((S.cdTab||'cn')!=='cn')return h;const gs=cnxGroups();
+  if(gs.length){const bar=gs.map(g=>{const cu=g[0].customer||{};return `<div class="cnx-grp"><span><b>${esc(cu.name||cu.mobile)}</b> has ${g.length} open notes · ${inr(g.reduce((a,c)=>a+c.amount,0))}</span><button class="secondary" data-act="cnxComb" data-m="${esc(cu.mobile)}">Combine into one</button></div>`}).join('');
+    h=h.replace('<div class="chips">',bar+'<div class="chips">')}
+  return h.split('<div class="cd-card').map((seg,n)=>{if(!n)return seg;const m=seg.match(/data-act="cnView" data-v="([^"]+)"/);const c=m&&(CNS||[]).find(x=>x.id===m[1]);if(!c)return seg;
+    const lab=c.status==='void'?'CANCELLED':c.status==='merged'?'COMBINED':'USED';return seg.replace('<em class="">USED</em>',`<em>${lab}</em>`)}).join('<div class="cd-card')};
+/* New sale: "Use all" when the customer has more than one note */
+const _cnxKnown=knownHTML;knownHTML=function(){let h=_cnxKnown();const m=digits(S.customer&&S.customer.mobile||'');if(m.length!==10||S.credit||S.editing)return h;const mine=(cnOpen()||[]).filter(c=>(c.customer||{}).mobile===m);if(mine.length<2)return h;
+  return h.replace('<div class="mcn-known">',`<div class="mcn-known"><button type="button" class="cn-hint all" data-act="cnxUseAll" data-m="${m}">${ic('note')}<span><b>Use all ${mine.length} credit notes · ${inr(mine.reduce((a,c)=>a+c.amount,0))}</b><small>They are combined into one note and taken off this bill</small></span></button>`)};
+function cnxApply(c){const t=document.createElement('button');t.dataset.act='cnApply';t.dataset.v=c.id;t.hidden=true;document.body.appendChild(t);t.click();t.remove()}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="cnxEdit"],[data-act="cnxX"],[data-act="cnxDel"],[data-act="cnxComb"],[data-act="cnxUseAll"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const k=a.dataset.act;const c=S.cnShow;
+  if(k==='cnxEdit'){if(!isAdmin())return;S.cnxEd={id:c.id};render();return}if(k==='cnxX'){S.cnxEd=null;render();return}
+  if(k==='cnxDel'){if(!isAdmin()||!c)return;if(S.cnxDel!==c.id){S.cnxDel=c.id;render();setTimeout(()=>{if(S.cnxDel===c.id){S.cnxDel=null;render()}},4000);return}
+    S.cnxDel=null;cnxPatch(c,{status:'void',voidAmount:+c.amount||0,amount:0,voided:{at:Date.now(),by:'Owner'}});render();toast(`Credit note ${c.no} cancelled`);return}
+  const m=a.dataset.m;const mine=(cnOpen()||[]).filter(x=>(x.customer||{}).mobile===m);if(mine.length<2)return;const n=cnxMerge(mine);
+  if(k==='cnxComb'){render();toast(`Combined into ${n.no} · ${inr(n.amount)}`);return}
+  cnxApply(n);toast(`${mine.length} credit notes combined · ${inr(n.amount)} taken off this bill`)},true);
+/* exchange screen: clearer words */
+const _cnxEx=screens.exchange;screens.exchange=function(){return _cnxEx().replace(`${ic('note')} Credit note</b><span>Customer uses`,`${ic('note')} Exchange / credit note</b><span>Select every item given back · customer uses`)};
+(function(){const s=document.createElement('style');s.textContent='.cnx-own{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cnx-ed{display:grid;gap:8px;padding:10px;border-radius:12px;background:var(--surface-2,#f6f1ec)}.cnx-grp{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:12px;background:#f6f1fb;border:1px solid #d9c6ee}.cnx-grp span{font-size:13.5px}.cnx-grp .secondary{width:auto;padding:8px 12px}.cn-hint.all{border-color:#6a3fa0!important;background:#f6f1fb!important}';document.head.appendChild(s)})();
 
 </script>
 </body>
