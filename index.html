@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.74.0';
+const APP_VERSION='1.75.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -6082,6 +6082,36 @@ const _waOpen=openWA;openWA=function(mobile,text){if(waIsPhone())return _waOpen.
 .wa-card{position:relative;width:min(92vw,400px);background:var(--surface,#fff);border-radius:18px;padding:16px;display:grid;gap:10px;box-shadow:0 10px 40px rgba(0,0,0,.3)}.wa-h{font-size:17px}
 .wa-o{display:grid;gap:2px;text-align:left;border:2px solid #d6e9dc;background:#fff;border-radius:14px;padding:12px 14px;cursor:pointer;position:relative;color:inherit}.wa-o b{font-size:15.5px;color:#1f7a4a}.wa-o small{font-size:12.5px;opacity:.75}.wa-o.on{border-color:#1f7a4a;background:#f1faf4}.wa-o em{position:absolute;right:12px;top:12px;font-style:normal;font-size:11px;font-weight:800;color:#fff;background:#1f7a4a;border-radius:6px;padding:1px 6px}.wa-o:focus-visible{outline:3px solid #9fd3b2}
 .wa-x{border:0;background:none;padding:8px;font-weight:700;cursor:pointer;color:inherit;opacity:.75}`;document.head.appendChild(s)})();
+
+/* ===== v1.75 · Dashboard: tap a size / brand / category to see what sold in it (table with pcs) ===== */
+const DD_CFG={
+  sizes:{key:r=>r.size,need:r=>r.size,val:x=>x.reduce((a,r)=>a+r.qty,0),fmt:v=>fmtPcs(v)+' pcs',lim:12,col:'var(--good)',g1:r=>r.brand||'No brand',g1n:'Brand',hint:'Tap a size to see which brand and product sold in it'},
+  brands:{key:r=>r.brand,need:r=>r.brand,val:x=>agg(x).sales,fmt:v=>dk(v),lim:10,g1:r=>r.cat||'Other',g1n:'Category',hint:'Tap a brand to see its categories and products sold'},
+  cats:{key:r=>r.cat,need:r=>r.cat,val:x=>agg(x).sales,fmt:v=>dk(v),lim:10,g1:r=>r.brand||'No brand',g1n:'Brand',hint:'Tap a category to see brands and products sold'}};
+function fmtPcs(v){return Math.round(v*10)/10}
+function ddTable(k,rs){const c=DD_CFG[k];const groups=Object.entries(groupBy(rs,c.g1)).map(([g,x])=>({g,q:x.reduce((a,r)=>a+r.qty,0),v:agg(x).sales,items:Object.values(groupBy(x,r=>r.item)).map(y=>({n:y[0].item,sz:[...new Set(y.map(r=>r.size).filter(Boolean))],cat:y[0].cat,q:y.reduce((a,r)=>a+r.qty,0),v:agg(y).sales})).sort((a,b)=>b.q-a.q||b.v-a.v)})).sort((a,b)=>b.q-a.q||b.v-a.v);
+  const tq=groups.reduce((a,g)=>a+g.q,0),tv=groups.reduce((a,g)=>a+g.v,0);
+  const sub=it=>k==='sizes'?esc(it.cat||''):k==='brands'?(it.sz.length?'Size '+esc(it.sz.join(', ')):''):(it.sz.length?'Size '+esc(it.sz.join(', ')):'');
+  return `<div class="dd-tbl"><table><thead><tr><th>${c.g1n} · product</th><th class="n">Pcs</th><th class="n">Sale</th></tr></thead><tbody>
+    ${groups.map(g=>`<tr class="dd-g"><td>${esc(g.g)}</td><td class="n">${fmtPcs(g.q)}</td><td class="n">${dk(g.v)}</td></tr>${g.items.map(it=>`<tr><td><span class="dd-n">${esc(it.n)}</span>${sub(it)?`<small>${sub(it)}</small>`:''}</td><td class="n">${fmtPcs(it.q)}</td><td class="n">${dk(it.v)}</td></tr>`).join('')}`).join('')}
+    </tbody><tfoot><tr><td>Total · ${groups.length} ${groups.length===1?c.g1n.toLowerCase():(c.g1n==='Category'?'categories':'brands')}</td><td class="n">${fmtPcs(tq)}</td><td class="n">${dk(tv)}</td></tr></tfoot></table></div>`}
+const _ddCard=dashCard;dashCard=function(k,b,recs,bl){const c=DD_CFG[k];if(!c||!recs)return _ddCard.apply(this,arguments);
+  const h=_ddCard.apply(this,arguments);if(!h||!/month-row/.test(h))return h;
+  const list=Object.entries(groupBy(recs.filter(c.need),c.key)).map(([l,x])=>({l,v:c.val(x),q:x.reduce((a,r)=>a+r.qty,0),x})).sort((a,b2)=>b2.v-a.v);
+  const sel=S.ddSel&&S.ddSel.k===k&&S.ddSel.b===b.id?S.ddSel.v:null;const mx=Math.max(1,...list.map(r=>r.v));const shown=list.slice(0,S.ddAll===k?999:c.lim);
+  const rows=shown.map(r=>{const on=r.l===sel;return `<button class="month-row dd-row${on?' on':''}" data-act="ddPick" data-k="${k}" data-v="${esc(r.l)}" aria-expanded="${on}"><span>${esc(r.l)}</span><div class="bar"><i style="width:${pct(r.v,mx)}%;background:${c.col||b.color}"></i></div><b>${c.fmt(r.v)}</b><em>${on?'▲':'▼'}</em></button>${on?ddTable(k,r.x):''}`}).join('');
+  const more=list.length>c.lim?`<button class="linkbtn dd-more" data-act="ddAll" data-k="${k}">${S.ddAll===k?'Show less':`Show all ${list.length}`}</button>`:'';
+  const i=h.indexOf('<div class="month-row">');const j=h.lastIndexOf('</section>');if(i<0||j<0)return h;
+  return h.slice(0,i)+`<p class="hint dd-hint">${c.hint}</p>`+rows+more+h.slice(j)};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="ddPick"],[data-act="ddAll"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const b=B();const k=a.dataset.k;
+  if(a.dataset.act==='ddAll'){S.ddAll=S.ddAll===k?null:k;render();return}
+  const v=a.dataset.v;S.ddSel=S.ddSel&&S.ddSel.k===k&&S.ddSel.v===v&&S.ddSel.b===b.id?null:{k,v,b:b.id};render();
+  setTimeout(()=>{const r=document.querySelector(`.dd-row.on[data-k="${k}"]`);if(r){const y=r.getBoundingClientRect().top+scrollY-90;scrollTo({top:Math.max(0,y),behavior:'smooth'})}},60)},true);
+(function(){const s=document.createElement('style');s.textContent=`.dd-hint{margin:-2px 0 4px;font-size:12px}.dd-row{width:100%;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:10px;padding:6px 6px;margin:0 -6px;width:calc(100% + 12px);grid-template-columns:minmax(90px,120px) 1fr auto 12px}
+.dd-row em{font-style:normal;font-size:10px;opacity:.5;margin-left:4px}.dd-row:hover{background:var(--surface2,#f7f3f4)}.dd-row.on{background:color-mix(in srgb,var(--accent,#a3325c) 12%,#fff);outline:2px solid var(--accent,#a3325c)}.dd-row.on span{font-weight:800}.dd-row.on em{opacity:1;color:var(--accent,#a3325c)}
+.dd-tbl{margin:4px 0 10px;border:1px solid var(--line,#e5d8dc);border-radius:12px;overflow:hidden;background:#fff}.dd-tbl table{width:100%;border-collapse:collapse;font-size:13px}.dd-tbl th{background:var(--surface2,#f7f3f4);text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;padding:7px 10px;opacity:.8}
+.dd-tbl td{padding:6px 10px;border-top:1px solid var(--line,#efe6e9);vertical-align:top}.dd-tbl .n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}.dd-tbl td small{display:block;font-size:11.5px;opacity:.65}.dd-n{word-break:break-word}
+.dd-tbl tr.dd-g td{background:color-mix(in srgb,var(--accent,#a3325c) 8%,#fff);font-weight:800}.dd-tbl tfoot td{font-weight:800;border-top:2px solid var(--line,#e5d8dc)}.dd-more{margin-top:4px}`;document.head.appendChild(s)})();
 
 </script>
 </body>
