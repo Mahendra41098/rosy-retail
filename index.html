@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.56.0';
+const APP_VERSION='1.59.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5458,6 +5458,115 @@ if(screens.cust1){const _mcnCust=screens.cust1;screens.cust1=function(){let h=_m
 const _mcnKnown=knownHTML;knownHTML=function(){const h=_mcnKnown();const m=digits(S.customer&&S.customer.mobile||'');if(m.length!==10||S.credit||S.editing)return h;const l=cnOpen();const mine=(l||[]).filter(c=>(c.customer||{}).mobile===m);if(!mine.length)return h;
   const t=mine.reduce((a,c)=>a+c.amount,0);return h+`<div class="mcn-known">${mine.map(c=>`<button type="button" class="cn-hint" data-act="cnApply" data-v="${c.id}">${ic('note')}<span><b>Credit note ${esc(c.no)} · ${inr(c.amount)}</b><small>${c.manual?'Manual · ':''}from ${esc(c.bill)} · tap to use on this bill</small></span></button>`).join('')}${mine.length>1?`<p class="hint" style="margin:0">Total open: ${inr(t)}</p>`:''}</div>`};
 (function(){const s=document.createElement('style');s.textContent=`.mcn-known{display:grid;gap:6px;margin-top:8px}`;document.head.appendChild(s)})();
+
+/* ===== v1.57 · End of day → Bills: "Download PDF" — every bill with barcodes (A4) or the A5 bills, made inside the app ===== */
+const EP_LIB={h2c:'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',pdf:'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'};
+let EP_LAST=null,EP_BUSY=false;
+function epLibs(){return Promise.all([skLoad(EP_LIB.h2c,()=>!!window.html2canvas),skLoad(EP_LIB.pdf,()=>!!(window.jspdf&&window.jspdf.jsPDF))])}
+/* the same page the "Open all bills" tab shows, as text */
+function epPageHTML(b,d,E){let out='';const ow=window.open;window.open=function(){return {document:{open(){},write(h){out+=h},close(){}}}};try{eodBillsTab(b,d,E)}finally{window.open=ow}return out}
+function epMsg(t){const m=$('epMsg');if(m)m.textContent=t;const o=window.EP_POP;try{const pm=o&&!o.closed&&o.document.getElementById('pdfMsg');if(pm)pm.textContent=t}catch(e){}}
+async function epMake(b,d,E,a5){if(EP_BUSY){toast('PDF is already being made…');return}EP_BUSY=true;epMsg('Making PDF…');toast('Making PDF… keep this screen open');
+  let fr=null;try{await epLibs();await (window.JsBarcode?Promise.resolve():eodLibs());
+    const html=epPageHTML(b,d,E);fr=document.createElement('iframe');fr.setAttribute('aria-hidden','true');fr.style.cssText='position:fixed;left:-20000px;top:0;width:1160px;height:900px;border:0;visibility:hidden';
+    document.body.appendChild(fr);await new Promise(r=>{fr.onload=r;fr.srcdoc=html});const doc=fr.contentDocument;
+    const st=doc.createElement('style');st.textContent=`body{background:#fff!important;margin:0}.bar{display:none!important}main.grid{width:1120px!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important;padding:6px!important}.bill{border-radius:0!important;box-shadow:none!important}#a5p{display:flex!important;padding:0!important;gap:20px!important}#a5p .a5{box-shadow:none!important;margin:0!important}`;doc.head.appendChild(st);
+    try{if(doc.fonts&&doc.fonts.ready)await Promise.race([doc.fonts.ready,new Promise(r=>setTimeout(r,2500))])}catch(e){}await new Promise(r=>setTimeout(r,300));
+    const {jsPDF}=window.jspdf;const nm=`${(b.prefix||b.id||'SHOP').replace(/[^A-Za-z0-9]+/g,'')}_Bills_${d}${a5?'_A5':''}.pdf`;
+    const shot=el=>html2canvas(el,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false,windowWidth:1160});
+    if(a5){const pages=[...doc.querySelectorAll('#a5p .a5')];if(!pages.length)throw new Error('no A5 bills');const pdf=new jsPDF({unit:'mm',format:'a5',orientation:'portrait'});
+      for(let i=0;i<pages.length;i++){epMsg(`Making PDF… bill ${i+1} of ${pages.length}`);const c=await shot(pages[i]);if(i)pdf.addPage('a5','portrait');const w=148,h=Math.min(210,c.height*w/c.width);pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',0,0,w,h)}
+      pdf.save(nm)}
+    else{const cards=[...doc.querySelectorAll('main.grid > *')];const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'landscape'});
+      const M=6,PW=297,PH=210,G=3,cols=4,cw=(PW-2*M-G*(cols-1))/cols,full=PW-2*M;let x=0,y=M,rowH=0,first=true;
+      const newPage=()=>{pdf.addPage('a4','landscape');y=M;x=0;rowH=0};
+      for(let i=0;i<cards.length;i++){epMsg(`Making PDF… ${i+1} of ${cards.length}`);const el=cards[i];const wide=el.classList.contains('scan');const c=await shot(el);const w=wide?full:cw;const h=c.height*w/c.width;
+        if(wide||x>=cols){if(rowH){y+=rowH+G}x=0;rowH=0}
+        if(wide){let off=0;const pxPerMm=c.width/w;while(off<h-0.5){if(y>M&&y+Math.min(h-off,PH-2*M)>PH-M)newPage();const part=Math.min(h-off,PH-M-y);const sc=document.createElement('canvas');sc.width=c.width;sc.height=Math.round(part*pxPerMm);sc.getContext('2d').drawImage(c,0,Math.round(off*pxPerMm),c.width,sc.height,0,0,c.width,sc.height);
+            pdf.addImage(sc.toDataURL('image/jpeg',0.92),'JPEG',M,y,w,part);off+=part;y+=part+G;if(off<h-0.5)newPage()}x=0;rowH=0;continue}
+        if(y+h>PH-M&&!(y===M&&x===0)){if(x>0){y+=rowH+G;x=0;rowH=0}if(y+h>PH-M)newPage()}
+        const hh=Math.min(h,PH-2*M);pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',M+x*(cw+G),y,cw,hh);rowH=Math.max(rowH,hh);x++;if(x>=cols){y+=rowH+G;x=0;rowH=0}}
+      pdf.save(nm)}
+    epMsg('PDF downloaded ✓');toast(`PDF downloaded · ${nm}`)}
+  catch(e){console.warn(e);epMsg('PDF failed');toast(/no A5/.test(e.message)?'No A5 bills for this day':'Could not make the PDF. Check the internet and try again.')}
+  finally{EP_BUSY=false;if(fr)fr.remove()}}
+window.EODPDF_RUN=a5=>{if(EP_LAST)epMake(EP_LAST.b,EP_LAST.d,EP_LAST.E,a5)};
+/* the "Open all bills" page gets the same buttons (they ask the app to make the PDF) */
+const _epTab=eodBillsTab;eodBillsTab=function(b,d,E){EP_LAST={b,d,E};const ow=window.open;
+  window.open=function(){const w=ow.apply(window,arguments);if(!w||!w.document)return w;window.EP_POP=w;return {document:{open(){w.document.open()},write(h){
+    const btn=`<button class="pdfb" onclick="opener&&opener.EODPDF_RUN&&opener.EODPDF_RUN(false)">⬇ Download PDF</button>${h.includes('id="a5p"')?'<button class="pdfb alt2" onclick="opener&&opener.EODPDF_RUN&&opener.EODPDF_RUN(true)">⬇ A5 bills PDF</button>':''}<span id="pdfMsg"></span>`;
+    h=h.replace('<button onclick="window.print()">Print all bills</button>',m=>m+btn).replace('</style>',()=>`.pdfb{background:#1f7a4a!important;color:#fff!important;border:0!important}.pdfb.alt2{background:#fff!important;color:#1f7a4a!important;border:2px solid #1f7a4a!important}#pdfMsg{font-size:12px;font-weight:700;color:#1f7a4a;align-self:center}</style>`);
+    w.document.write(h)},close(){w.document.close()}}}};
+  try{return _epTab.apply(this,arguments)}finally{window.open=ow}};
+/* in the app: buttons next to "Open all bills · print" */
+const _epScr=screens.skEod;screens.skEod=function(){const h=_epScr();if((S.eodTab||'items')!=='bills')return h;const a5=((B().paper||'80')==='a5')||typeof a5HTML==='function';
+  return h.replace(/(<button class="primary" data-act="eodBillsTab">[\s\S]*?<\/button>)/,`$1<div class="two eod-pdfs"><button class="secondary eod-pdf" data-act="eodPdf" data-v="a4">⬇ PDF · all bills + barcodes</button>${a5?'<button class="secondary eod-pdf" data-act="eodPdf" data-v="a5">⬇ PDF · A5 bills</button>':''}</div><p class="hint" id="epMsg" style="margin:0;text-align:center"></p>`)};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="eodPdf"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const b=B();const d=S.eodDate||todayStr();
+  const bl=bizBills(billsBetween(d,d),b.id),mv=skMvData(b.id),rt=skRetData(b.id);if(!bl||!mv||!rt){toast('Still loading…');return}const E=eodData(b,d,bl,mv,rt);
+  if(!E.bills||!E.bills.length){toast('No bills on this day');return}EP_LAST={b,d,E};const go=()=>epMake(b,d,E,a.dataset.v==='a5');if(window.JsBarcode&&window.qrcode)go();else eodLibs().then(go)},true);
+(function(){const s=document.createElement('style');s.textContent='.eod-pdf{border-color:#1f7a4a!important;color:#1f7a4a!important;font-weight:800}.eod-pdfs{margin-top:8px}';document.head.appendChild(s)})();
+/* v1.58 · Rosy counter login: one tap to today's bills (print · PDF) from Home and Bills */
+function epShortcut(){const b=B();if(!b||!(typeof skHas==='function'&&skHas(b.id)))return '';
+  return `<button class="ep-short" data-act="epToday">${ic('print')}<span><b>Today's bills · print / PDF</b><small>All bills with barcodes · A5 bills · download PDF</small></span>${ic('chev','chev')}</button>`}
+const _epHome=counterHome;counterHome=function(){const h=_epHome.apply(this,arguments);const s=epShortcut();if(!s)return h;const m=h.match(/<button class="primary big-sale"[^>]*>[\s\S]*?<\/button>/);if(m)return h.replace(m[0],m[0]+s);const i=h.indexOf('<div class="pad"');if(i<0)return h+s;const j=h.indexOf('>',i)+1;return h.slice(0,j)+s+h.slice(j)};
+const _epSales=screens.sales;screens.sales=function(){const h=_epSales();if(isAdmin())return h;const s=epShortcut();if(!s)return h;const i=h.indexOf('<div class="pad"');if(i<0)return h;const j=h.indexOf('>',i)+1;return h.slice(0,j)+s+h.slice(j)};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="epToday"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();S.eodDate=todayStr();S.eodTab='bills';go('skEod');setTimeout(()=>{const x=document.querySelector('[data-act="eodBillsTab"]');if(x)x.scrollIntoView({block:'center',behavior:'smooth'})},250)},true);
+(function(){const s=document.createElement('style');s.textContent='.ep-short{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid #1f7a4a;background:#f1faf4;color:inherit;border-radius:14px;padding:12px 14px;cursor:pointer}.ep-short>svg{width:22px;height:22px;color:#1f7a4a;flex:none}.ep-short span{display:grid;flex:1}.ep-short b{font-size:15px;color:#1f5e38}.ep-short small{font-size:12px;opacity:.75}.ep-short .chev{width:18px;height:18px}';document.head.appendChild(s)})();
+
+/* ===== v1.59 · Owner: select many items → edit them in a table (name, barcode, D.no, code, category, brand, cost, MRP, selling price, stock) ===== */
+const BG_COLS=[['n','Item name','text',170],['co','Purchase ₹','num',85],['m','MRP ₹','num',80],['sp','Sale price ₹','num',90],['q','Stock pcs','num',75],
+  ['cd','Code (party-brand-rate)','text',150],['c','Category','text',110],['br','Brand','text',100],['bc','Barcode','text',130],['dn','D.no','text',70]];
+function bgVal(it,k){return k==='q'?skQty(it):(it[k]==null?'':it[k])}
+function bgRows(){const b=B();return Object.keys(S.bg&&S.bg.keys||{}).map(k=>[k,skItems(b.id)[k]]).filter(x=>x[1]&&!x[1].del)}
+screens.bkGrid=function(){const b=B();const head=`${topbar('Edit items · table','stock')}<div class="pad bg-pad">`;if(!isAdmin())return head+'<div class="empty">Owner only.</div></div>';
+  const rows=bgRows();if(!rows.length)return head+`<div class="empty">No items selected. Go to Stock → Select items.</div><button class="secondary" data-go="stock">Back to stock</button></div>`;
+  const ed=S.bg.ed;const cats=[...new Set(Object.values(skItems(b.id)).map(i=>i.c).filter(Boolean))].sort();const nCh=Object.keys(ed).length;
+  return `${head}<p class="hint" style="margin:0">${rows.length} items · change any box · <b>Fill all</b> copies a value to every row · changed boxes turn yellow · nothing is saved until you tap <b>Save changes</b>.</p>
+    <div class="bg-wrap"><table class="bg-t"><thead><tr><th class="bg-i">#</th>${BG_COLS.map(([k,l,,w])=>`<th style="min-width:${w}px">${l}</th>`).join('')}</tr>
+      <tr class="bg-fill"><td class="bg-i">Fill all</td>${BG_COLS.map(([k,,t])=>(k==='n'||k==='bc'||k==='dn')?'<td></td>':`<td><div class="bg-f"><input data-bgfill="${k}" ${t==='num'?'inputmode="decimal"':''} ${k==='c'?'list="bgCats"':''} placeholder="${k==='q'?'pcs':'all'}"><button type="button" data-act="bgFill" data-v="${k}" title="Copy to every row">↓</button></div></td>`).join('')}</tr></thead>
+      <tbody>${rows.map(([key,it],i)=>`<tr><td class="bg-i">${i+1}</td>${BG_COLS.map(([k,,t])=>{const e=ed[key]&&ed[key][k]!==undefined;const v=e?ed[key][k]:bgVal(it,k);
+        return `<td><input class="${e?'ch':''}" data-bg="${esc(key)}" data-k="${k}" value="${esc(String(v))}" ${t==='num'?'inputmode="decimal"':''} ${k==='c'?'list="bgCats"':''} ${k==='bc'||k==='cd'||k==='br'?'autocapitalize="characters"':''}></td>`}).join('')}</tr>`).join('')}</tbody></table></div>
+    <datalist id="bgCats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
+    <div id="bgWarn">${bgWarn()}</div>
+    <div class="bg-act"><button class="secondary" data-act="bgCancel">Cancel</button><button class="primary" data-act="bgSave" id="bgSaveBtn" ${nCh?'':'disabled'}>Save changes${nCh?` · ${nCh} item${nCh===1?'':'s'}`:''}</button></div>
+    <p class="hint">Code PARTY-BRAND-RATE also sets party and brand, and cost = rate × 25 when Purchase ₹ is not changed. Changing Stock pcs is saved as a stock in / out with reason "Table edit".</p></div>`};
+NAV_OF.bkGrid='more';
+function bgWarn(){const b=B();const ed=S.bg?S.bg.ed:{};const all=skItems(b.id);const out=[];
+  ['bc','dn'].forEach(k=>{const seen={};Object.entries(all).forEach(([key,it])=>{if(it.del)return;const v=String((ed[key]&&ed[key][k]!==undefined)?ed[key][k]:(it[k]||'')).trim().toUpperCase();if(!v)return;(seen[v]=seen[v]||[]).push(it.n)});
+    Object.entries(seen).forEach(([v,l])=>{if(l.length>1&&Object.keys(ed).some(key=>ed[key][k]!==undefined&&String(ed[key][k]).trim().toUpperCase()===v))out.push(`${k==='bc'?'Barcode':'D.no'} ${esc(v)} is on ${l.length} items: ${l.slice(0,3).map(esc).join(', ')}`)})});
+  Object.entries(ed).forEach(([key,e])=>{const it=all[key];if(!it)return;const m=e.m!==undefined?+e.m:+it.m,sp=e.sp!==undefined?+e.sp:+it.sp;if(sp>m&&m>0)out.push(`${esc(it.n)}: sale price ${inr(sp)} is more than MRP ${inr(m)}`);if(e.n!==undefined&&!String(e.n).trim())out.push(`Row with barcode ${esc(it.bc||'')}: name is empty`)});
+  return out.length?`<ul class="bg-w">${out.map(t=>`<li>${t}</li>`).join('')}</ul>`:''}
+function bgSet(key,k,v){const b=B();const it=skItems(b.id)[key];if(!it)return;const orig=String(bgVal(it,k));const ed=S.bg.ed;
+  if(String(v)===orig){if(ed[key]){delete ed[key][k];if(!Object.keys(ed[key]).length)delete ed[key]}}else{(ed[key]=ed[key]||{})[k]=v}}
+function bgRefresh(){const n=Object.keys(S.bg.ed).length;const btn=$('bgSaveBtn');if(btn){btn.disabled=!n;btn.textContent='Save changes'+(n?` · ${n} item${n===1?'':'s'}`:'')}const w=$('bgWarn');if(w)w.innerHTML=bgWarn()}
+document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.bg===undefined)return;bgSet(t.dataset.bg,t.dataset.k,t.value);const ch=!!(S.bg.ed[t.dataset.bg]&&S.bg.ed[t.dataset.bg][t.dataset.k]!==undefined);t.classList.toggle('ch',ch);bgRefresh()});
+function bgSave(){const b=B();const ed=S.bg.ed;const keys=Object.keys(ed);if(!keys.length)return;const bad=keys.find(k=>ed[k].n!==undefined&&!String(ed[k].n).trim());if(bad){toast('An item name is empty');return}
+  const patch={},d={},recs=[];
+  keys.forEach(key=>{const it=skItems(b.id)[key];if(!it)return;const e=ed[key];const p={};const num=v=>Math.max(0,Math.round((+String(v).replace(/[^0-9.]/g,'')||0)*100)/100);
+    if(e.n!==undefined)p.n=String(e.n).trim().toUpperCase();if(e.bc!==undefined)p.bc=String(e.bc).trim();if(e.dn!==undefined)p.dn=String(e.dn).trim();
+    if(e.c!==undefined)p.c=String(e.c).trim()||'Other';if(e.br!==undefined)p.br=String(e.br).trim().toUpperCase();
+    if(e.cd!==undefined){const cd=String(e.cd).trim().toUpperCase();p.cd=cd;const pc=skParseCode(cd);if(pc.party)p.pt=pc.party;if(pc.brand&&e.br===undefined)p.br=pc.brand;if(pc.rate&&e.co===undefined)p.co=Math.round(pc.rate*25*100)/100}
+    if(e.co!==undefined)p.co=num(e.co);if(e.m!==undefined)p.m=num(e.m);if(e.sp!==undefined)p.sp=num(e.sp);else if(e.m!==undefined&&(+it.sp===+it.m||!it.sp))p.sp=num(e.m);
+    if(Object.keys(p).length){p.at=Date.now();patch[key]=p;Object.assign(it,p)}
+    if(e.q!==undefined){const now=skQty(it);const nq=Math.max(0,Math.round(+String(e.q).replace(/[^0-9]/g,'')||0));if(nq!==now){d[key]=nq-now;recs.push(mvRec(b,nq>now?'in':'out',key,it,Math.abs(nq-now),{reason:'Table edit',note:'set to '+nq}))}}});
+  if(Object.keys(patch).length)skWrite(b.id,patch);if(Object.keys(d).length){skMove(b.id,d,'table edit');skMvSave(recs)}
+  DB.A.set('stocklog','sl_'+uid(),{biz:b.id,at:Date.now(),date:todayStr(),by:'Owner',why:'table edit',n:keys.length},false);skReindex(b.id);
+  S.bg=null;SK.sel=null;go('stock');toast(`${keys.length} item${keys.length===1?'':'s'} updated${Object.keys(d).length?` · stock changed on ${Object.keys(d).length}`:''}`)}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="bg"]');if(!a)return;const k=a.dataset.act;if(!['bgOpen','bgFill','bgSave','bgCancel'].includes(k))return;e.preventDefault();e.stopImmediatePropagation();
+  if(k==='bgOpen'){const keys=Object.keys(SK.sel||{});if(!keys.length){toast('Select items first');return}S.bg={keys:Object.fromEntries(keys.map(x=>[x,1])),ed:{}};S.overlay=null;go('bkGrid');return}
+  if(k==='bgCancel'){if(S.bg&&Object.keys(S.bg.ed).length&&!S.bgSure){S.bgSure=true;toast('Changes not saved · tap Cancel again to throw them away');setTimeout(()=>S.bgSure=false,3000);return}S.bg=null;S.bgSure=false;go('stock');return}
+  if(k==='bgSave'){bgSave();return}
+  if(k==='bgFill'){const col=a.dataset.v;const inp=document.querySelector(`[data-bgfill="${col}"]`);const v=inp?inp.value.trim():'';if(v===''){toast('Type the value to fill first');return}
+    bgRows().forEach(([key])=>bgSet(key,col,v));render();toast(`Filled ${col==='co'?'purchase price':col==='sp'?'sale price':col==='m'?'MRP':col==='q'?'stock':col==='c'?'category':col==='br'?'brand':'code'} on every row`)}},true);
+/* entry point: the select bar on Stock gets "Edit as table" */
+const _bgStock=screens.stock;screens.stock=function(){const h=_bgStock();if(!isAdmin()||!SK.sel)return h;const n=Object.keys(SK.sel).length;
+  return h.replace(/(<div class="two"><button class="primary" data-act="bkEdit")/,`<button class="primary bg-open" data-act="bgOpen" ${n?'':'disabled'}>${ic('grid')} Edit as table · name, code, prices${n?' · '+n:''}</button>$1`)};
+(function(){const s=document.createElement('style');s.textContent=`.bg-pad{gap:10px}.bg-wrap{overflow:auto;max-height:calc(100vh - 260px);border:1px solid var(--line,#e5e0d8);border-radius:12px;background:var(--surface,#fff)}
+.bg-t{border-collapse:separate;border-spacing:0;font-size:13px;min-width:100%}.bg-t th{position:sticky;top:0;background:var(--surface-2,#f6f1ec);z-index:2;text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.02em;padding:8px 6px;border-bottom:1px solid var(--line,#e5e0d8);white-space:nowrap}
+.bg-t tr.bg-fill td{position:sticky;top:33px;background:#fff8e6;z-index:2;border-bottom:2px solid #e8c766}.bg-t td{padding:3px 4px;border-bottom:1px solid #f0ebe5}.bg-t .bg-i{position:sticky;left:0;background:inherit;z-index:1;font-size:11px;color:#888;text-align:center;min-width:34px}.bg-t thead .bg-i{z-index:3}
+.bg-t input{width:100%;box-sizing:border-box;border:1px solid transparent;border-radius:8px;padding:7px 6px;font:inherit;background:transparent;min-width:60px}.bg-t input:focus{border-color:var(--accent,#a3325c);background:#fff;outline:none}.bg-t input.ch{background:#fff3c4;border-color:#e8c766}
+.bg-f{display:flex;gap:2px}.bg-f input{border:1px solid #e8c766!important;background:#fff!important}.bg-f button{border:0;border-radius:8px;background:#e8c766;font-weight:900;padding:0 8px;cursor:pointer}
+.bg-act{display:grid;grid-template-columns:1fr 2fr;gap:10px}.bg-w{margin:0;padding:8px 12px 8px 26px;background:#fdecec;border-radius:10px;color:#9b1c1c;font-size:13px}.bg-open{margin-bottom:8px}`;document.head.appendChild(s)})();
 
 </script>
 </body>
