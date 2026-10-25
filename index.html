@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.73.0';
+const APP_VERSION='1.74.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -6055,6 +6055,33 @@ function bpPdfAdd(root){(root||document).querySelectorAll('[data-act="printBill"
 new MutationObserver(()=>bpPdfAdd()).observe(document.documentElement,{childList:true,subtree:true});
 (function(){const s=document.createElement('style');s.textContent=`.bp-btn svg{width:16px;height:16px}.bp-f{display:grid;gap:10px}.bp-f h3{display:flex;gap:8px;align-items:center;margin:0}.bp-f h3 svg{width:20px;height:20px}.bp-wait{margin:0;padding:14px;border-radius:12px;background:var(--surface2,#f7f3f4);text-align:center;font-weight:700}
 .bp-ok{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:#eef9f1;border:1px solid #bfe3c8}.bp-ok b{word-break:break-all}.bp-ok span{font-size:13px}`;document.head.appendChild(s)})();
+
+/* ===== v1.74 · Send on WhatsApp: on a computer, choose WhatsApp Web or the WhatsApp desktop app (phones open the app as before) ===== */
+const WA_KEY='rr.waMode';
+function waIsPhone(){const ua=navigator.userAgent||'';return /Android|iPhone|iPod|Mobile/i.test(ua)||(/iPad|Macintosh/.test(ua)&&navigator.maxTouchPoints>1)}
+function waGetMode(){try{return localStorage.getItem(WA_KEY)||''}catch(e){return ''}}
+function waSetMode(m){try{localStorage.setItem(WA_KEY,m)}catch(e){}}
+function waUrls(mobile,text){const m=digits(mobile);const ph=m.length===10?'91'+m:(m.length>10?m:'');const t=encodeURIComponent(text||'');
+  return {web:`https://web.whatsapp.com/send?${ph?'phone='+ph+'&':''}text=${t}`,app:`whatsapp://send?${ph?'phone='+ph+'&':''}text=${t}`,me:`https://wa.me/${ph}?text=${t}`}}
+function waGo(mode,u){waSetMode(mode);waClose();
+  if(mode==='web'){const w=window.open(u.web,'rrWhatsAppWeb');if(w)try{w.focus()}catch(e){}if(!w)location.href=u.web;return}
+  if(mode==='app'){const a=document.createElement('a');a.href=u.app;a.rel='noopener';document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),500);toast('Opening WhatsApp app… if nothing opens, choose WhatsApp Web');return}
+  window.open(u.me,'_blank')}
+function waClose(){const b=document.getElementById('waBox');if(b)b.remove();document.removeEventListener('keydown',waKey,true)}
+function waKey(e){if(e.key==='Escape'){e.preventDefault();waClose()}}
+function waChooser(u,mobile){waClose();const last=waGetMode();const m=digits(mobile);const el=document.createElement('div');el.id='waBox';
+  const opt=(k,t,s)=>`<button class="wa-o${k===last?' on':''}" data-wa="${k}"><b>${t}</b><small>${s}</small>${k===last?'<em>last used</em>':''}</button>`;
+  const opts={web:opt('web','WhatsApp Web','Opens in Chrome · one tab is reused for every bill'),app:opt('app','WhatsApp desktop app','The installed WhatsApp app on this computer')};
+  el.innerHTML=`<div class="wa-bg"></div><div class="wa-card" role="dialog" aria-label="Send on WhatsApp"><b class="wa-h">Send on WhatsApp${m.length>=10?' · '+esc(m.slice(-10)):''}</b>
+    ${last==='app'?opts.app+opts.web:opts.web+opts.app}<button class="wa-x" data-wa="x">Cancel</button></div>`;
+  document.documentElement.appendChild(el);document.addEventListener('keydown',waKey,true);
+  el.addEventListener('click',e=>{const b=e.target.closest('[data-wa]');if(e.target.classList.contains('wa-bg')||(b&&b.dataset.wa==='x')){waClose();return}if(b)waGo(b.dataset.wa,u)});
+  setTimeout(()=>{const f=el.querySelector('.wa-o');if(f)f.focus()},30)}
+const _waOpen=openWA;openWA=function(mobile,text){if(waIsPhone())return _waOpen.apply(this,arguments);waChooser(waUrls(mobile,text),mobile)};
+(function(){const s=document.createElement('style');s.textContent=`#waBox{position:fixed;inset:0;z-index:10001;display:grid;place-items:center;font-family:Manrope,system-ui,sans-serif;color:var(--ink,#222)}#waBox button{font-family:inherit}.wa-bg{position:absolute;inset:0;background:rgba(20,10,15,.5)}
+.wa-card{position:relative;width:min(92vw,400px);background:var(--surface,#fff);border-radius:18px;padding:16px;display:grid;gap:10px;box-shadow:0 10px 40px rgba(0,0,0,.3)}.wa-h{font-size:17px}
+.wa-o{display:grid;gap:2px;text-align:left;border:2px solid #d6e9dc;background:#fff;border-radius:14px;padding:12px 14px;cursor:pointer;position:relative;color:inherit}.wa-o b{font-size:15.5px;color:#1f7a4a}.wa-o small{font-size:12.5px;opacity:.75}.wa-o.on{border-color:#1f7a4a;background:#f1faf4}.wa-o em{position:absolute;right:12px;top:12px;font-style:normal;font-size:11px;font-weight:800;color:#fff;background:#1f7a4a;border-radius:6px;padding:1px 6px}.wa-o:focus-visible{outline:3px solid #9fd3b2}
+.wa-x{border:0;background:none;padding:8px;font-weight:700;cursor:pointer;color:inherit;opacity:.75}`;document.head.appendChild(s)})();
 
 </script>
 </body>
