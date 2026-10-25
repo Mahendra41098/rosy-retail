@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.71.0';
+const APP_VERSION='1.73.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5996,6 +5996,65 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act="rdAsk
 .rd-f{display:grid;gap:10px}.rd-f h3{display:flex;gap:8px;align-items:center;margin:0}.rd-f h3 svg{width:20px;height:20px;color:#b3261e}.rd-box{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface2,#f7f3f4);border:1px solid var(--line,#e5d8dc)}.rd-box span{font-size:13px}.rd-box small{font-size:12px;opacity:.75}
 .rd-dup{margin:0;padding:8px 12px;border-radius:10px;background:#fff4e0;border:1px solid #f0c98a;color:#8a5200;font-weight:700;font-size:13px}.rd-warn{margin:0;padding:8px 12px;border-radius:10px;background:#fdecec;border:1px solid #f2c9c4;color:#8c1d18;font-size:13px}
 .rd-what{margin:0;padding-left:18px;font-size:13px;display:grid;gap:3px}.rd-ck{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;align-items:center;font-size:13.5px;font-weight:600}.rd-ck small{grid-column:2;font-weight:400;font-size:12px;opacity:.75}`;document.head.appendChild(s)})();
+
+/* ===== v1.72 · Staff on New sale: type a new price (MRP) on a line · only higher than the MRP is allowed; lower goes back to the old MRP ===== */
+function muOn(l){return !!l&&!isAdmin()&&!S.priceOk&&!l.ns&&(!!l.sk||l.mode==='mrp')}
+const _muPanel=billPanel;billPanel=function(){let h=_muPanel();if(isAdmin()||S.priceOk)return h;
+  S.cart.forEach((l,i)=>{if(!muOn(l))return;const mk=`<button class="x" data-act="rm" data-i="${i}"`;const k=h.indexOf(mk);if(k<0)return;
+    if(l.mrp0==null)l.mrp0=+(l.mrp||l.price)||0;
+    h=h.slice(0,k)+`<input class="lp-in mu-in${+l.price>+l.mrp0?' up':''}" data-mui="${i}" inputmode="numeric" value="${l.price}" aria-label="MRP of ${esc(l.name)}" title="Type a higher MRP · lower is not allowed">`+h.slice(k)});
+  return h};
+function muSet(inp){const i=+inp.dataset.mui;const l=S.cart[i];if(!l)return;const base=+(l.mrp0!=null?l.mrp0:(l.mrp||l.price))||0;const p=Math.round(+String(inp.value).replace(/[^0-9.]/g,'')||0);
+  if(!(p>0)||p<base){l.price=base;l.mrp=base;render();toast(p>0?`Can't be less than MRP · ${inr(base)} kept`:`MRP ${inr(base)} kept`);return}
+  if(p===+l.price)return;
+  if(p!==base)(S.priceChanges=S.priceChanges||[]).push({name:l.name,from:+l.price,to:p,at:Date.now(),mrpUp:true});
+  l.price=p;l.mrp=p;render();toast(p>base?`New MRP ${inr(p)} on this bill · was ${inr(base)}`:`MRP ${inr(p)}`)}
+document.addEventListener('change',e=>{const t=e.target;if(t&&t.dataset&&t.dataset.mui!==undefined){e.stopImmediatePropagation();muSet(t)}},true);
+document.addEventListener('keydown',e=>{const t=e.target;if(t&&t.dataset&&t.dataset.mui!==undefined&&e.key==='Enter'){e.preventDefault();t.blur()}},true);
+(function(){const s=document.createElement('style');s.textContent='.mu-in.up{border-color:#1f7a4a!important;background:#eef9f1!important;color:#1f5e38}';document.head.appendChild(s)})();
+/* the bill remembers which MRPs staff raised (owner sees it in bill details) */
+const _muSB=DB.saveBill;DB.saveBill=function(b,prev){if(b&&!isAdmin()){const up=S.cart.filter(l=>l.mrp0!=null&&+l.mrp>+l.mrp0).map(l=>({name:l.name,from:+l.mrp0,to:+l.mrp}));if(up.length)b.mrpUp=(prev&&prev.mrpUp||[]).filter(x=>!up.some(y=>y.name===x.name)).concat(up)}return _muSB.apply(this,arguments)};
+const _muBD=billDetail;billDetail=function(x,c){const h=_muBD(x,c);if(!x||!(x.mrpUp||[]).length)return h;
+  return h+`<div class="mu-box"><b>MRP raised at the counter</b>${x.mrpUp.map(u=>`<span>${esc(u.name)} · ${inr(u.from)} → <b>${inr(u.to)}</b></span>`).join('')}</div>`};
+(function(){const s=document.createElement('style');s.textContent='.mu-box{display:grid;gap:3px;margin-top:10px;padding:10px 12px;border-radius:12px;background:#eef9f1;border:1px solid #bfe3c8;font-size:13px}.mu-box>b{color:#1f5e38}';document.head.appendChild(s)})();
+
+/* ===== v1.73 · One bill as a PDF: make it, then share (WhatsApp etc.) or download ===== */
+let BPF={busy:false,file:null,name:'',bill:null,msg:''};
+function bpFileName(x){return `${String(x.no||'Bill').replace(/[^A-Za-z0-9-]+/g,'-').replace(/^-|-$/g,'')}.pdf`}
+async function bpPdfMake(id){if(BPF.busy)return;BPF.busy=true;BPF.file=null;BPF.msg='Making PDF…';S.overlay='billPdf';render();let st=null;
+  try{const x=await getBill(id);if(!x)throw new Error('no bill');BPF.bill=x;BPF.name=bpFileName(x);const bz=ST.biz.find(y=>y.id===x.biz)||B();
+    await epLibs();const a5=(bz.paper==='a5')&&typeof a5HTML==='function';if(a5)await a5Load();
+    st=document.createElement('div');st.id='bpStage';st.style.cssText=`position:fixed;left:-5000px;top:0;background:#fff;z-index:-1;${a5?'width:148mm':'width:80mm'}`;
+    st.innerHTML=a5?a5HTML(x,bz):receiptHTML(x,bz,bz.paper==='58'?'58':'80');document.body.appendChild(st);if(a5&&typeof a5Fill==='function')a5Fill(st);
+    try{if(window.JsBarcode)st.querySelectorAll('svg[data-bc],canvas[data-bc],img[data-bc]').forEach(el=>{try{JsBarcode(el,el.dataset.bc,{format:'CODE128',displayValue:false,height:30,margin:0})}catch(e){}})}catch(e){}
+    try{if(document.fonts&&document.fonts.ready)await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))])}catch(e){}await new Promise(r=>setTimeout(r,250));
+    const el=st.querySelector('.a5')||st.querySelector('.receipt')||st.firstElementChild||st;
+    const c=await html2canvas(el,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});const {jsPDF}=window.jspdf;
+    let pdf;if(a5){pdf=new jsPDF({unit:'mm',format:'a5',orientation:'portrait'});pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',0,0,148,Math.min(210,c.height*148/c.width))}
+    else{const w=bz.paper==='58'?58:80;const h=Math.max(60,c.height*w/c.width);pdf=new jsPDF({unit:'mm',format:[w,h],orientation:'portrait'});pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',0,0,w,h)}
+    const blob=pdf.output('blob');BPF.pdf=pdf;BPF.file=new File([blob],BPF.name,{type:'application/pdf'});BPF.msg=''}
+  catch(e){console.warn(e);BPF.msg='Could not make the PDF. Check the internet and try again.'}finally{BPF.busy=false;if(st)st.remove();if(S.overlay==='billPdf')render()}}
+function bpPdfCanShare(){try{return !!(BPF.file&&navigator.canShare&&navigator.canShare({files:[BPF.file]}))}catch(e){return false}}
+function bpPdfSheet(){const x=BPF.bill;const cu=(x&&x.customer)||{};const share=bpPdfCanShare();
+  return `<button class="overlay-bg" data-act="closeSheet" aria-label="Close"></button><div class="sheet" role="dialog" aria-label="Bill PDF"><div class="grab"></div><div class="sh-body bp-f">
+    <h3>${ic('download')} Bill PDF</h3>
+    ${BPF.busy||!BPF.file?`<p class="bp-wait">${esc(BPF.msg||'Making PDF…')}</p>`:`<div class="bp-ok"><b>${esc(BPF.name)}</b><span>${esc(x.no)} · ${inr(billTot(x).final)}${cu.name||cu.mobile?' · '+esc([cu.name,cu.mobile].filter(Boolean).join(' · ')):''}</span></div>
+      ${share?`<button class="primary" data-act="bpShare">${ic('share')} Send PDF · WhatsApp / other apps</button>`:''}
+      <button class="${share?'secondary':'primary'}" data-act="bpSave">${ic('download')} Download PDF</button>
+      ${share?'<p class="hint" style="margin:0">Send: pick WhatsApp, then the customer\'s chat.</p>':'<p class="hint" style="margin:0">After download, attach the PDF in WhatsApp (Document) to send it to the customer.</p>'}`}
+    <button class="secondary" data-act="closeSheet">Close</button></div></div>`}
+window.EXTRA_OV.billPdf=bpPdfSheet;
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="billPdf"],[data-act="bpShare"],[data-act="bpSave"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const k=a.dataset.act;
+  if(k==='billPdf'){bpPdfMake(a.dataset.v);return}
+  if(k==='bpSave'){if(BPF.pdf){BPF.pdf.save(BPF.name);toast('PDF downloaded · '+BPF.name)}return}
+  if(k==='bpShare'){if(!BPF.file)return;const x=BPF.bill||{};const bz=ST.biz.find(y=>y.id===x.biz)||B();
+    navigator.share({files:[BPF.file],title:BPF.name,text:`${bz.name||''} · Bill ${x.no||''}`}).catch(err=>{if(err&&err.name!=='AbortError'){BPF.pdf&&BPF.pdf.save(BPF.name);toast('Sharing not allowed here · PDF downloaded')}})}},true);
+/* a "PDF" button next to every Print button of a bill */
+function bpPdfAdd(root){(root||document).querySelectorAll('[data-act="printBill"]').forEach(p=>{const n=p.nextElementSibling;if(n&&n.dataset&&n.dataset.act==='billPdf')return;
+  const b=document.createElement('button');b.type='button';b.className=(p.className||'secondary')+' bp-btn';b.dataset.act='billPdf';b.dataset.v=p.dataset.v;b.innerHTML=`${ic('download')} PDF`;p.insertAdjacentElement('afterend',b)})}
+new MutationObserver(()=>bpPdfAdd()).observe(document.documentElement,{childList:true,subtree:true});
+(function(){const s=document.createElement('style');s.textContent=`.bp-btn svg{width:16px;height:16px}.bp-f{display:grid;gap:10px}.bp-f h3{display:flex;gap:8px;align-items:center;margin:0}.bp-f h3 svg{width:20px;height:20px}.bp-wait{margin:0;padding:14px;border-radius:12px;background:var(--surface2,#f7f3f4);text-align:center;font-weight:700}
+.bp-ok{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:#eef9f1;border:1px solid #bfe3c8}.bp-ok b{word-break:break-all}.bp-ok span{font-size:13px}`;document.head.appendChild(s)})();
 
 </script>
 </body>
