@@ -1043,7 +1043,7 @@ window.FIREBASE_CONFIG = {
    Rosy Retail Sales Tracker — core: utilities, data layer
    ============================================================ */
 'use strict';
-const APP_VERSION='1.59.0';
+const APP_VERSION='1.65.0';
 
 /* ---------- icons ---------- */
 const IC={
@@ -5508,7 +5508,7 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-act="eodPd
 /* v1.58 · Rosy counter login: one tap to today's bills (print · PDF) from Home and Bills */
 function epShortcut(){const b=B();if(!b||!(typeof skHas==='function'&&skHas(b.id)))return '';
   return `<button class="ep-short" data-act="epToday">${ic('print')}<span><b>Today's bills · print / PDF</b><small>All bills with barcodes · A5 bills · download PDF</small></span>${ic('chev','chev')}</button>`}
-const _epHome=counterHome;counterHome=function(){const h=_epHome.apply(this,arguments);const s=epShortcut();if(!s)return h;const m=h.match(/<button class="primary big-sale"[^>]*>[\s\S]*?<\/button>/);if(m)return h.replace(m[0],m[0]+s);const i=h.indexOf('<div class="pad"');if(i<0)return h+s;const j=h.indexOf('>',i)+1;return h.slice(0,j)+s+h.slice(j)};
+const _epHome=counterHome;counterHome=function(){const h=_epHome.apply(this,arguments);const s=epShortcut();if(!s)return h;const lo='<button class="list-btn" data-act="counterLogout">';if(h.includes(lo))return h.replace(lo,s+lo);const m=h.match(/<button class="primary big-sale"[^>]*>[\s\S]*?<\/button>/);if(m)return h.replace(m[0],m[0]+s);const i=h.indexOf('<div class="pad"');if(i<0)return h+s;const j=h.indexOf('>',i)+1;return h.slice(0,j)+s+h.slice(j)};
 const _epSales=screens.sales;screens.sales=function(){const h=_epSales();if(isAdmin())return h;const s=epShortcut();if(!s)return h;const i=h.indexOf('<div class="pad"');if(i<0)return h;const j=h.indexOf('>',i)+1;return h.slice(0,j)+s+h.slice(j)};
 document.addEventListener('click',e=>{const a=e.target.closest('[data-act="epToday"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();S.eodDate=todayStr();S.eodTab='bills';go('skEod');setTimeout(()=>{const x=document.querySelector('[data-act="eodBillsTab"]');if(x)x.scrollIntoView({block:'center',behavior:'smooth'})},250)},true);
 (function(){const s=document.createElement('style');s.textContent='.ep-short{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid #1f7a4a;background:#f1faf4;color:inherit;border-radius:14px;padding:12px 14px;cursor:pointer}.ep-short>svg{width:22px;height:22px;color:#1f7a4a;flex:none}.ep-short span{display:grid;flex:1}.ep-short b{font-size:15px;color:#1f5e38}.ep-short small{font-size:12px;opacity:.75}.ep-short .chev{width:18px;height:18px}';document.head.appendChild(s)})();
@@ -5567,6 +5567,280 @@ const _bgStock=screens.stock;screens.stock=function(){const h=_bgStock();if(!isA
 .bg-t input{width:100%;box-sizing:border-box;border:1px solid transparent;border-radius:8px;padding:7px 6px;font:inherit;background:transparent;min-width:60px}.bg-t input:focus{border-color:var(--accent,#a3325c);background:#fff;outline:none}.bg-t input.ch{background:#fff3c4;border-color:#e8c766}
 .bg-f{display:flex;gap:2px}.bg-f input{border:1px solid #e8c766!important;background:#fff!important}.bg-f button{border:0;border-radius:8px;background:#e8c766;font-weight:900;padding:0 8px;cursor:pointer}
 .bg-act{display:grid;grid-template-columns:1fr 2fr;gap:10px}.bg-w{margin:0;padding:8px 12px 8px 26px;background:#fdecec;border-radius:10px;color:#9b1c1c;font-size:13px}.bg-open{margin-bottom:8px}`;document.head.appendChild(s)})();
+
+/* ===== v1.60 · Staff + owner: "Credit notes & dues" — see every credit note, use one on a new bill, see who owes money ===== */
+screens.cnDue=function(){const b=B();const tab=S.cdTab||'cn';const head=`${topbar('Credit notes & dues','home',bizPill())}<div class="pad" style="padding-top:4px;gap:12px">`;
+  const tabs=`<div class="cmode cd-tabs"><button class="${tab==='cn'?'on':''}" data-act="cdTab" data-v="cn">Credit notes</button><button class="${tab==='due'?'on':''}" data-act="cdTab" data-v="due">Amount due</button></div>`;
+  if(tab==='due'){const list=need('dues',()=>DB.A.query('customers',[['due','>=',1]]));if(!list)return head+tabs+loading()+'</div>';const tot=list.reduce((a,c)=>a+(+c.due||0),0);const q=(S.cdQ||'').trim().toLowerCase();
+    const l=list.filter(c=>!q||String(c.name||'').toLowerCase().includes(q)||String(c.mobile).includes(q)).sort((a,c)=>c.due-a.due);
+    return `${head}${tabs}<div class="cd-sum"><span>${list.length} customer${list.length===1?' owes':'s owe'}</span><b>${inr(tot)}</b></div>
+      <div class="search"><div class="inp">${ic('search')}<input id="cdQ" placeholder="Name or mobile" value="${esc(S.cdQ||'')}" autocomplete="off"></div></div>
+      ${l.map(c=>`<div class="staff-card"><div class="top"><div class="avatar">${esc((c.name||'?')[0])}</div><div class="grow"><b>${esc(c.name||'Customer')}</b><span>${esc(c.mobile)}${c.last?' · last '+dayLabel(ymd(new Date(c.last))):''}</span></div><b class="out">${inr(c.due)}</b></div>
+        <div class="btn-row"><button class="secondary" data-act="m_remind" data-v="${esc(c.mobile)}">${ic('share')} Remind</button><button class="primary" data-act="m_recvDue" data-v="${esc(c.mobile)}">Received</button></div></div>`).join('')||'<div class="empty">No customer owes anything. 🎉</div>'}
+      <button class="linkbtn" data-act="cdReDue">Refresh</button><p class="hint">A due received here goes into today's cash book of ${esc(b.name)}.</p></div>`}
+  const all=cnLoad();if(!all)return head+tabs+loading()+'</div>';const f=S.cdF||'open';const q=(S.cdQ||'').trim().toUpperCase();
+  const open=all.filter(c=>c.status==='open'&&c.amount>0);const list=(f==='open'?open:f==='used'?all.filter(c=>!(c.status==='open'&&c.amount>0)):all)
+    .filter(c=>{const cu=c.customer||{};return !q||String(c.no).includes(q)||String(cu.mobile||'').includes(q.replace(/\D/g,'')||'~')||String(cu.name||'').toUpperCase().includes(q)||String(c.bill||'').toUpperCase().includes(q)}).sort((p,r)=>r.at-p.at);
+  return `${head}${tabs}<div class="cd-sum"><span>${open.length} open credit note${open.length===1?'':'s'}</span><b>${inr(open.reduce((a,c)=>a+c.amount,0))}</b></div>
+    <div class="chips">${[['open','Open'],['used','Used'],['all','All']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-act="cdF" data-v="${k}">${l}</button>`).join('')}</div>
+    <div class="search"><div class="inp">${ic('search')}<input id="cdQ" placeholder="Credit note no. · mobile · name · bill" value="${esc(S.cdQ||'')}" autocomplete="off"></div></div>
+    ${list.map(c=>{const cu=c.customer||{};const op=c.status==='open'&&c.amount>0;const uses=(c.uses||[]);
+      return `<div class="cd-card ${op?'':'used'}"><button class="cd-main" data-act="cnView" data-v="${c.id}"><div class="grow"><b class="mono">${esc(c.no)}${c.manual?' <i class="cd-m">manual</i>':''}</b>
+        <span>${esc(cu.name||'')} ${esc(cu.mobile||'')}</span><small>${dayLabel(c.date)} · from ${esc(c.bill||'')}${c.items&&c.items.length?' · '+esc(c.items.slice(0,2).join(', ')):''}${c.note?' · '+esc(c.note):''}</small>
+        ${uses.length?`<small class="cd-u">Used: ${uses.map(u=>`${inr(u.amount)} on ${esc(u.bill)}`).join(' · ')}</small>`:''}</div>
+        <div class="end"><b>${inr(c.amount)}</b>${c.amount<c.orig?`<span>of ${inr(c.orig)}</span>`:''}<em class="${op?'ok':''}">${op?'OPEN':'USED'}</em></div></button>
+        ${op?`<button class="primary cd-use" data-act="cdUse" data-v="${c.id}">Use on a new bill</button>`:''}</div>`}).join('')||'<div class="empty">No credit note matches.</div>'}
+    ${isAdmin()?`<button class="secondary" data-act="mcnNew">${ic('plus')} Manual credit note (old bill)</button>`:''}</div>`};
+NAV_OF.cnDue='home';
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="cd"]');if(!a)return;const k=a.dataset.act;if(!['cdTab','cdF','cdUse','cdReDue','cdOpen'].includes(k))return;e.preventDefault();e.stopImmediatePropagation();
+  if(k==='cdOpen'){S.cdTab=a.dataset.v||'cn';S.cdQ='';CNS=null;go('cnDue');return}
+  if(k==='cdTab'){S.cdTab=a.dataset.v;S.cdQ='';render();return}
+  if(k==='cdF'){S.cdF=a.dataset.v;render();return}
+  if(k==='cdReDue'){delete CACHE.dues;render();return}
+  if(k==='cdUse'){if(S.editing){toast('Finish the bill edit first');return}const c=(CNS||[]).find(x=>x.id===a.dataset.v);if(!c)return;
+    const t=document.createElement('button');t.dataset.act='cnApply';t.dataset.v=c.id;t.hidden=true;document.body.appendChild(t);t.click();t.remove();S.screen='sale';S.overlay=null;render();toast(`Credit note ${c.no} · ${inr(c.amount)} added · now add the items`)}},true);
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='cdQ'){S.cdQ=e.target.value;const pos=e.target.selectionStart;render();const n=$('cdQ');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(x){}}}});
+/* how to get there: Home (staff and owner) */
+function cdHomeBtn(){const l=cnOpen();const n=l?l.length:0;const due=((CACHE.dues||{}).data||[]);const dt=due.reduce((a,c)=>a+(+c.due||0),0);
+  return `<button class="cd-home" data-act="cdOpen" data-v="cn">${ic('note')}<span><b>Credit notes & dues</b><small>${l?`${n} open credit note${n===1?'':'s'}`:'Credit notes'}${dt?` · ${inr(dt)} due from ${due.length} customer${due.length===1?'':'s'}`:''} · view · use on a bill</small></span>${ic('chev','chev')}</button>`}
+const _cdHome=counterHome;counterHome=function(){const h=_cdHome.apply(this,arguments);cnLoad();need('dues',()=>DB.A.query('customers',[['due','>=',1]]));const s=cdHomeBtn();
+  const m=h.match(/<button class="primary big-sale"[^>]*>[\s\S]*?<\/button>/);return m?h.replace(m[0],m[0]+s):h+s};
+const _cdAdmin=adminHome;adminHome=function(){const h=_cdAdmin.apply(this,arguments);const k='<h3 class="sec">Quick actions</h3>';return h.includes(k)?h.replace(k,cdHomeBtn()+k):h};
+(function(){const s=document.createElement('style');s.textContent=`.cd-home{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid #6a3fa0;background:#f6f1fb;color:inherit;border-radius:14px;padding:12px 14px;cursor:pointer}.cd-home>svg{width:22px;height:22px;color:#6a3fa0;flex:none}.cd-home span{display:grid;flex:1}.cd-home b{font-size:15px;color:#4b2a74}.cd-home small{font-size:12px;opacity:.75}.cd-home .chev{width:18px;height:18px}
+.cd-tabs{width:100%}.cd-sum{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px;border-radius:12px;background:var(--surface,#fff);border:1px solid var(--line,#e5e0d8)}.cd-sum b{font-size:20px}
+.cd-card{border:1px solid var(--line,#e5e0d8);border-radius:14px;background:var(--surface,#fff);overflow:hidden}.cd-card.used{opacity:.7}.cd-main{display:flex;gap:10px;width:100%;text-align:left;border:0;background:none;padding:10px 12px;color:inherit;cursor:pointer}.cd-main .grow{display:grid;gap:2px;flex:1;min-width:0}
+.cd-main span{font-size:13px}.cd-main small{font-size:12px;opacity:.7}.cd-u{color:#6a3fa0;opacity:1!important}.cd-main .end{display:grid;justify-items:end;align-content:start;gap:2px}.cd-main .end b{font-size:17px}.cd-main .end span{font-size:11.5px;opacity:.7}
+.cd-main em{font-style:normal;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;background:#eee;color:#777}.cd-main em.ok{background:#e3f4e6;color:#1f6b35}.cd-m{font-style:normal;font-size:10px;font-weight:800;background:#f4e6f7;color:#6a3fa0;padding:1px 6px;border-radius:99px;margin-left:4px}
+.cd-use{margin:0 12px 12px;width:calc(100% - 24px)}`;document.head.appendChild(s)})();
+
+/* ===== v1.61 · Find a bill (staff + owner): item code / barcode, customer mobile or name, bill no. → open · edit ===== */
+const _fbCan=canEdit;canEdit=function(x){if(_fbCan(x))return true;return !!(x&&!x.deleted&&cfg().staffEdit&&cfg().staffEditPast!==false&&S.login&&(x.biz===S.login))};
+function fbBillHTML(x,hit){const cu=x.customer||{};const t=billTot(x);const recv=duRecv(x);const due=+x.due||0;
+  return `<div class="fb-bill"><button class="fb-main" data-act="viewBill" data-v="${x.id}"><div class="fb-top"><b class="mono">${esc(x.no)}</b><em>${dayLabel(x.date)} · ${timeLabel(x.at)}</em></div>
+    <span>${esc(x.staff||'')}${cu.name||cu.mobile?' · '+esc(cu.name||'')+' '+esc(cu.mobile||''):''}${x.edited?' · <i class="ed-pill">EDITED</i>':''}</span>
+    <div class="fb-lines">${(x.lines||[]).map(l=>`<div class="${hit&&hit(l)?'hit':''} ${l.returned?'ret':''}"><span>${l.qty} × ${esc(l.name)}</span><b>${inr(lineAmt(l))}</b></div>`).join('')}</div>
+    <div class="fb-tot"><span>Total <b>${inr(t.final)}</b></span><span>Received <b>${inr(recv)}</b></span>${due>0?`<span class="d">Due <b>${inr(due)}</b></span>`:''}${x.payPending?'<span class="d">PAYMENT?</span>':''}</div></button>
+    <div class="btn-row"><button class="secondary" data-act="viewBill" data-v="${x.id}">${ic('note')} Open</button>${canEdit(x)?`<button class="primary" data-act="editBill" data-v="${x.id}">${ic('pen')} Edit bill</button>`:'<span class="hint" style="align-self:center">Editing is off for staff</span>'}</div></div>`}
+screens.findBill=function(){const b=B();const stock=skHas(b.id);const head=`${topbar('Find a bill','home',bizPill())}<div class="pad" style="padding-top:4px;gap:12px">`;
+  let res='';if(RX){if(RX.res===null)res=`<p class="hint">Looking for “${esc(RX.q)}”…</p>`;
+    else{const hit=RX.mode==='item'?(l=>typeof rxHit==='function'&&rxHit(l)):null;const list=RX.res.slice().sort((p,q)=>q.at-p.at);
+      res=(RX.mode==='name'&&RX.items&&RX.items.length?`<p class="rx-sub">Items matching “${esc(RX.q)}” · tap to see their bills</p><div class="rx-items">${RX.items.map(({key,it})=>`<button class="chip" data-act="rxItem" data-k="${esc(key)}">${esc(it.n)}${it.dn?` <small>D.${esc(it.dn)}</small>`:''}</button>`).join('')}</div>`:'')+
+        (list.length?`<p class="rx-h">${list.length} bill${list.length===1?'':'s'} found</p>`+list.map(x=>fbBillHTML(x,hit)).join(''):`<div class="empty">No bill found for “${esc(RX.q)}”.</div>`)+
+        (!RX.older&&(RX.mode==='item'||RX.mode==='name')?`<button class="linkbtn" data-act="rxOlder">Not here? Look in older bills (6 months)</button>`:'')}}
+  return `${head}<div class="card"><form class="search" id="rxForm"><div class="inp">${ic(stock?'scan':'search')}<input id="rxScan" placeholder="${stock?'Scan item · item code · bill no. · mobile · name':'Bill no. · customer mobile · name'}" autocomplete="off" spellcheck="false" enterkeyhint="search" value="${RX?esc(RX.q):''}" aria-label="Find bill"></div>${stock?`<button class="scan-btn" type="button" data-act="rxCam" aria-label="Scan with camera">${ic('camera')}</button>`:''}<button class="scan-btn" type="submit" aria-label="Search">${ic('search')}</button></form>
+    <p class="hint" style="margin:6px 0 0">${stock?'Scan the tag or type the barcode / D.no / item name, ':''}the bill number (just <b>12</b> works), the customer's 10-digit mobile or their name.</p></div>${res}</div>`};
+NAV_OF.findBill='home';
+function fbHomeBtn(){return `<button class="cd-home fb-home" data-act="fbOpen">${ic('search')}<span><b>Find a bill</b><small>Item code · customer mobile / name · bill no. · open or edit</small></span>${ic('chev','chev')}</button>`}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="fbOpen"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();RX=null;go('findBill');setTimeout(()=>{const i=$('rxScan');if(i)i.focus()},80)},true);
+const _fbHome=counterHome;counterHome=function(){const h=_fbHome.apply(this,arguments);const k=h.indexOf('<button class="cd-home"');if(k<0)return h+fbHomeBtn();const e=h.indexOf('</button>',k)+9;return h.slice(0,e)+fbHomeBtn()+h.slice(e)};
+const _fbAdmin=adminHome;adminHome=function(){const h=_fbAdmin.apply(this,arguments);const k=h.indexOf('<button class="cd-home"');if(k<0)return h;const e=h.indexOf('</button>',k)+9;return h.slice(0,e)+fbHomeBtn()+h.slice(e)};
+/* owner setting: staff can edit older bills too */
+const _fbSet=screens.settings;screens.settings=function(){const h=_fbSet();if(!isAdmin())return h;const C=cfg();
+  const row=`<div class="setting"><div><b>Staff can edit older bills too</b><small>Find a bill → Edit. A reason is always required; the owner sees before / after.</small></div><input type="checkbox" class="switch" data-cfg="staffEditPast" ${C.staffEditPast!==false?'checked':''} aria-label="Staff can edit older bills"></div>`;
+  return h.replace(/(<div class="setting"><div><b>Staff can edit bills \(same day\)<\/b>[\s\S]*?<\/div><\/div>)/,'$1'+row)};
+
+/* ===== Amount due → each customer's bills with the open amount ===== */
+function cdBills(m){return need('cdb_'+m,()=>DB.billsByMobile(m).then(r=>r.filter(x=>!x.deleted)))}
+const _cdScr=screens.cnDue;screens.cnDue=function(){let h=_cdScr();if((S.cdTab||'cn')!=='due')return h;const open=S.cdOpen||{};
+  return h.replace(/<div class="btn-row"><button class="secondary" data-act="m_remind" data-v="([^"]+)">/g,(m0,mob)=>{let box='';
+    if(open[mob]){const bl=cdBills(mob);if(!bl)box='<p class="hint">Loading bills…</p>';else{const od=duOpen(bl);const due=bl.filter(x=>od[x.id]>0).sort((p,q)=>q.at-p.at);const rest=bl.filter(x=>!(od[x.id]>0)).length;
+      box=due.map(x=>{const t=billTot(x);return `<button class="cd-bill" data-act="viewBill" data-v="${x.id}"><div><b class="mono">${esc(x.no)}</b><span>${dayLabel(x.date)} · ${timeLabel(x.at)}${x.staff?' · '+esc(x.staff):''}</span><small>${(x.lines||[]).filter(l=>!l.returned).map(l=>`${l.qty}×${esc(l.name)}`).join(', ')}</small></div><div class="end"><span>Bill ${inr(t.final)} · got ${inr(duRecv(x))}</span><b>${inr(od[x.id])} due</b></div></button>`}).join('')||'<p class="hint">Due is from older entries (no bill found in the app).</p>';
+      const cu=((CACHE.dues||{}).data||[]).find(c=>c.mobile===mob);const left=cu?(+cu.due||0)-due.reduce((a,x)=>a+od[x.id],0):0;if(due.length&&left>0)box+=`<p class="hint" style="margin:0">+ ${inr(left)} from older dues (before these bills / not in the app).</p>`;if(rest)box+=`<p class="hint" style="margin:0">${rest} other bill${rest===1?'':'s'} of this customer fully paid.</p>`}}
+    return `<button class="linkbtn cd-tog" data-act="cdBills" data-v="${mob}">${open[mob]?'Hide bills ▴':'See bills with due ▾'}</button>${open[mob]?`<div class="cd-bills">${box}</div>`:''}`+m0})};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="cdBills"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();S.cdOpen=S.cdOpen||{};S.cdOpen[a.dataset.v]=!S.cdOpen[a.dataset.v];render()},true);
+(function(){const s=document.createElement('style');s.textContent=`.fb-home{border-color:#2f5d7c!important;background:#eef4f8!important}.fb-home>svg{color:#2f5d7c!important}.fb-home b{color:#1d3f57!important}
+.fb-bill{border:1px solid var(--line,#e5e0d8);border-radius:14px;background:var(--surface,#fff);padding:0 0 10px;overflow:hidden}.fb-main{display:grid;gap:4px;width:100%;text-align:left;border:0;background:none;padding:10px 12px;color:inherit;cursor:pointer}
+.fb-top{display:flex;justify-content:space-between;gap:8px}.fb-top em{font-style:normal;font-size:12.5px;opacity:.7}.fb-main>span{font-size:13px;opacity:.8}.fb-lines{display:grid;gap:2px;font-size:13px;margin-top:2px}.fb-lines div{display:flex;justify-content:space-between;gap:8px;padding:2px 6px;border-radius:6px}
+.fb-lines .hit{background:#fff3c4;font-weight:700}.fb-lines .ret{text-decoration:line-through;opacity:.5}.fb-tot{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;border-top:1px dashed var(--line,#e5e0d8);padding-top:6px;margin-top:2px}.fb-tot .d{color:#b3261e;font-weight:700}
+.fb-bill .btn-row{padding:0 12px}.cd-tog{margin:0 0 6px}.cd-bills{display:grid;gap:6px;margin-bottom:8px}
+.cd-bill{display:flex;gap:10px;width:100%;text-align:left;border:1px solid #f2c9c4;background:#fff7f6;border-radius:12px;padding:8px 10px;color:inherit;cursor:pointer}.cd-bill>div:first-child{display:grid;flex:1;min-width:0}.cd-bill span{font-size:12.5px;opacity:.8}.cd-bill small{font-size:12px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd-bill .end{display:grid;justify-items:end;align-content:start}.cd-bill .end b{color:#b3261e;font-size:15px}.cd-bill .end span{font-size:11.5px}`;document.head.appendChild(s)})();
+
+/* ===== v1.63 · Owner backup: download every shop's data as one file (date + time in the name), restore / update from a backup file ===== */
+const BK_COLS=['businesses','config','bills','daily','monthly','counters','customers','returns','cash','dayclose','attendance','stock','stocklog','skret','skmv','credits','coupons','cashnotes'];
+const BK_PHOTOS=['photos','thumbs'];
+const bkStamp=t=>{const d=new Date(t);return `${ymd(d)}_${pad2(d.getHours())}-${pad2(d.getMinutes())}`};
+const bkSize=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
+let BK_BUSY=false;
+function bkSave(name,text){const blob=new Blob([text],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},4000)}
+async function bkMake(){if(BK_BUSY)return;BK_BUSY=true;const withPh=!!($('bkPh')||{}).checked;const cols=BK_COLS.concat(withPh?BK_PHOTOS:[]);const out={};const counts={};let n=0;
+  try{for(const c of cols){bkMsg(`Reading ${c}… (${n.toLocaleString('en-IN')} records so far)`);let l=[];try{l=await DB.all(c)}catch(e){l=[]}out[c]=l;counts[c]=l.length;n+=l.length}
+    const at=Date.now();const doc={app:'Rosy Retail',kind:'full backup',version:(typeof APP_VERSION!=='undefined'?APP_VERSION:''),at,date:todayStr(),by:'Owner',shops:(ST.biz||[]).map(b=>b.name),photos:withPh,counts,total:n,data:out};
+    const text=JSON.stringify(doc);const name=`RosyRetail_Backup_${bkStamp(at)}.json`;bkSave(name,text);
+    const info={at,name,total:n,size:text.length,photos:withPh};DB.saveConfig({lastBackup:info});if(ST.cfg)ST.cfg.lastBackup=info;
+    bkMsg(`Backup saved · ${name} · ${n.toLocaleString('en-IN')} records · ${bkSize(text.length)}`);toast('Backup downloaded');render()}
+  catch(e){console.warn(e);bkMsg('Backup failed. Check the internet and try again.')}finally{BK_BUSY=false}}
+function bkMsg(t){S.bkMsg=t;const m=$('bkMsgEl');if(m)m.textContent=t}
+async function bkReadFile(f){let doc=null;try{doc=JSON.parse(await f.text())}catch(e){}
+  if(!doc||doc.app!=='Rosy Retail'||!doc.data){toast('This is not a Rosy Retail backup file');return}
+  S.bkFile={name:f.name,doc};S.bkSure='';render();setTimeout(()=>{const c=$('bkRestoreCard');if(c)c.scrollIntoView({block:'center',behavior:'smooth'})},80)}
+async function bkRestore(){const f=S.bkFile;if(!f||BK_BUSY)return;if(String(($('bkType')||{}).value||'').trim().toUpperCase()!=='RESTORE'){toast('Type RESTORE to confirm');return}
+  BK_BUSY=true;const data=f.doc.data;const cols=Object.keys(data).filter(c=>BK_COLS.includes(c)||BK_PHOTOS.includes(c));let tot=0,n=0;cols.forEach(c=>tot+=(data[c]||[]).length);
+  try{for(const c of cols){for(const d of (data[c]||[])){if(!d||!d.id)continue;const id=d.id;const body={...d};if(c==='businesses'||c==='config')delete body.id;await DB.A.set(c,id,body,false);n++;if(n%50===0){bkMsg(`Restoring… ${n.toLocaleString('en-IN')} of ${tot.toLocaleString('en-IN')}`);await new Promise(r=>setTimeout(r,20))}}}
+    bkMsg(`Restored ${n.toLocaleString('en-IN')} records from ${f.name}. Reloading…`);toast('Backup restored · the app reloads now');S.bkFile=null;setTimeout(()=>location.reload(),1800)}
+  catch(e){console.warn(e);bkMsg(`Stopped after ${n} records: ${e.message||e}. Check the internet and tap Restore again.`)}finally{BK_BUSY=false}}
+function bkAgo(at){const d=Math.floor((Date.now()-at)/864e5);return d<=0?'today':d===1?'yesterday':d+' days ago'}
+function bkCard(){if(!isAdmin())return '';const lb=cfg().lastBackup;const f=S.bkFile;
+  return `<section class="card bk-card" id="bkCard"><div class="card-h"><h3>${ic('download')} Backup · all shops</h3>${lb?`<span class="hint">${bkAgo(lb.at)}</span>`:''}</div>
+    <p class="hint" style="margin:0">One file with every shop's data: bills, customers, dues, credit notes, stock, cash book, day close, staff and settings. The file name has the date and time, e.g. RosyRetail_Backup_${bkStamp(Date.now())}.json. Keep it in Google Drive or WhatsApp to yourself.</p>
+    ${lb?`<div class="bk-last"><b>Last backup</b><span>${esc(dateTimeLabel(lb.at))} · ${(+lb.total||0).toLocaleString('en-IN')} records · ${bkSize(+lb.size||0)}${lb.photos?' · with photos':''}</span><small>${esc(lb.name||'')}</small></div>`:'<div class="bk-last none"><b>No backup taken yet</b><span>Take the first one now.</span></div>'}
+    <label class="ck"><input type="checkbox" id="bkPh"> Include sold-item photos (bigger file)</label>
+    <button class="primary" data-act="bkMake">${ic('download')} ${lb?'Update backup · download new file':'Take backup now'}</button>
+    <p class="hint" id="bkMsgEl" style="margin:0">${esc(S.bkMsg||'')}</p>
+    <div class="bk-rest" id="bkRestoreCard"><b>Restore from a backup file</b><span>Use only if data is lost or you move to a new Firebase. Records in the file are written back; records not in the file are kept.</span>
+      <label class="secondary" for="bkFileIn">${ic('upload')} Choose backup file</label><input type="file" id="bkFileIn" accept=".json,application/json" class="visually-hidden">
+      ${f?`<div class="bk-file"><b>${esc(f.name)}</b><span>Taken ${esc(dateTimeLabel(f.doc.at))} · ${(+f.doc.total||0).toLocaleString('en-IN')} records · ${esc((f.doc.shops||[]).join(', '))}</span>
+        <small>${Object.entries(f.doc.counts||{}).filter(([,v])=>v).map(([k,v])=>`${k} ${v}`).join(' · ')}</small>
+        <div class="f"><label for="bkType">Type RESTORE to confirm</label><input id="bkType" autocomplete="off" autocapitalize="characters" placeholder="RESTORE"></div>
+        <div class="two"><button class="secondary" data-act="bkCancel">Cancel</button><button class="danger" data-act="bkRestore">Restore now</button></div></div>`:''}</div></section>`}
+const _bkSet=screens.settings;screens.settings=function(){const h=_bkSet();if(!isAdmin())return h;const k='<div class="card"><div class="card-h"><h3>Shop details';const i=h.indexOf(k);return i<0?h+bkCard():h.slice(0,i)+bkCard()+h.slice(i)};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="bkMake"],[data-act="bkRestore"],[data-act="bkCancel"],[data-act="bkGo"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();
+  const k=a.dataset.act;if(k==='bkMake')return bkMake();if(k==='bkRestore')return bkRestore();if(k==='bkCancel'){S.bkFile=null;render();return}
+  if(k==='bkGo'){go('settings');setTimeout(()=>{const c=$('bkCard');if(c)c.scrollIntoView({block:'start',behavior:'smooth'})},150)}},true);
+document.addEventListener('change',e=>{const t=e.target;if(t&&t.id==='bkFileIn'){const f=t.files&&t.files[0];t.value='';if(f)bkReadFile(f)}},true);
+/* owner home: reminder when the last backup is older than 7 days */
+const _bkHome=adminHome;adminHome=function(){const h=_bkHome.apply(this,arguments);const lb=cfg().lastBackup;if(lb&&Date.now()-lb.at<7*864e5)return h;
+  const line=`<button class="bk-remind" data-act="bkGo">${ic('download')}<span><b>${lb?`Last backup ${bkAgo(lb.at)}`:'No backup yet'}</b><small>Tap to download a backup of all shops</small></span>${ic('chev','chev')}</button>`;
+  const k='<h3 class="sec">Quick actions</h3>';return h.includes(k)?h.replace(k,line+k):h+line};
+(function(){const s=document.createElement('style');s.textContent=`.bk-card{display:grid;gap:10px}.bk-card .card-h svg{width:18px;height:18px}.bk-last{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:#eef7f1;border:1px solid #bfe3c8}.bk-last.none{background:#fff4e5;border-color:#f0c98a}.bk-last span{font-size:13px}.bk-last small{font-size:11.5px;opacity:.7;word-break:break-all}
+.bk-rest{display:grid;gap:8px;border-top:1px dashed var(--line,#e5e0d8);padding-top:10px}.bk-rest>span{font-size:12.5px;opacity:.75}.bk-file{display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:#fdecec;border:1px solid #f2c9c4}.bk-file span{font-size:13px}.bk-file small{font-size:11.5px;opacity:.75}
+.bk-card .ck{display:flex;gap:8px;align-items:center;font-size:13.5px}.bk-remind{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid #d98a00;background:#fff6e5;color:inherit;border-radius:14px;padding:12px 14px;cursor:pointer}.bk-remind>svg{width:22px;height:22px;color:#b36b00}.bk-remind span{display:grid;flex:1}.bk-remind b{color:#8a5200}.bk-remind small{font-size:12px;opacity:.75}.bk-remind .chev{width:18px;height:18px}`;document.head.appendChild(s)})();
+
+/* ===== v1.64 · (1) Import / add stock: same SKU name with a new MRP or purchase price → ask; same name with a new barcode → add to that item (extra barcode)
+              (2) Stock count: scan every piece in the shop → the app shows what is sold / missing, then fixes the stock ===== */
+
+/* extra barcodes on one item (bcs) are found by the scanner too */
+const _auRe=skReindex;skReindex=function(biz){const r=_auRe.apply(this,arguments);const ix=ST.skIdx[biz];if(ix)Object.entries(skItems(biz)).forEach(([k,it])=>{if(it.del)return;(it.bcs||[]).forEach(c=>{const C=String(c).toUpperCase();if(C&&!ix.bc.has(C))ix.bc.set(C,k)})});return r};
+
+/* ---------- (1a) Import: merge same-name rows and ask about price changes ---------- */
+function auDiffs(m){const b=B();const st=skItems(b.id);const out=[];Object.entries(m.items).forEach(([k,it])=>{const o=st[k];if(!o||o.del)return;
+  const dm=+it.m>0&&Math.round(+it.m)!==Math.round(+o.m||0),dc=+it.co>0&&Math.abs((+it.co||0)-(+o.co||0))>0.01;if(dm||dc)out.push({k,n:it.n,oM:+o.m||0,nM:+it.m||0,oCo:+o.co||0,nCo:+it.co||0,dm,dc})});return out}
+const _auImp=skImport;skImport=async function(f){const r=await _auImp.apply(this,arguments);const m=S.skImp;if(!m||!m.items||m.au)return r;const b=B();const st=skItems(b.id);const ix=ST.skIdx[b.id];
+  m.au={merges:[],choice:{},sep:{}};
+  Object.keys(m.items).forEach(k=>{const it=m.items[k];if(st[k])return;const ok=ix&&ix.name.get(String(it.n).toUpperCase());if(!ok||ok===k||!st[ok]||st[ok].del)return;
+    m.au.merges.push({from:k,to:ok,n:it.n,newBc:it.bc,oldBc:st[ok].bc,orig:{...it}})});
+  auApplyMerges(m);m.au.diffs=auDiffs(m);if(m.au.diffs.length&&S.overlay==='skImp')render();return r};
+function auApplyMerges(m){const b=B();const st=skItems(b.id);if(!m.au.base)m.au.base=JSON.parse(JSON.stringify(m.items));const items=JSON.parse(JSON.stringify(m.au.base));
+  m.au.merges.forEach(g=>{if(m.au.sep[g.from]||!items[g.from])return;const it=items[g.from];delete items[g.from];const o=st[g.to];const bcs=[...new Set([...(o.bcs||[]),g.newBc].filter(c=>c&&c!==o.bc))];
+    const prev=items[g.to];items[g.to]={...it,bc:o.bc,dn:o.dn||it.dn,bcs,q:(prev?+prev.q||0:0)+(+it.q||0)}});
+  m.items=items;m.n=Object.keys(items).length;m.exist=Object.keys(items).filter(k=>st[k]).length;m.pcs=Object.values(items).reduce((a,x)=>a+Math.max(0,+x.q||0),0)}
+const _auSheet=skImpSheet;skImpSheet=function(){let h=_auSheet();const m=S.skImp;if(!m||!m.au)return h;const a=m.au;let box='';
+  if(a.merges.length)box+=`<div class="au-box"><b>${a.merges.length} item${a.merges.length===1?' is':'s are'} already in stock by name, with a new barcode</b><small>Pieces are added to the item you already have. The new barcode is kept as an extra barcode, so both tags scan.</small>
+    ${a.merges.map(g=>`<div class="au-row"><span>${esc(g.n)}<i>new ${esc(g.newBc||'—')} · old ${esc(g.oldBc||'—')}</i></span><button type="button" class="chip ${a.sep[g.from]?'':'on'}" data-act="auSep" data-v="${esc(g.from)}">${a.sep[g.from]?'Keep separate':'✓ Add to existing'}</button></div>`).join('')}</div>`;
+  if(a.diffs.length){const left=a.diffs.filter(d=>!a.choice[d.k]).length;
+    box+=`<div class="au-box warn"><b>Price changed on ${a.diffs.length} item${a.diffs.length===1?'':'s'} · update the price?</b>
+      <div class="two"><button type="button" class="secondary" data-act="auAll" data-v="new">Update all to new</button><button type="button" class="secondary" data-act="auAll" data-v="old">Keep all old</button></div>
+      ${a.diffs.map(d=>{const c=a.choice[d.k];return `<div class="au-row"><span>${esc(d.n)}<i>${d.dm?`MRP ${inr(d.oM)} → <b>${inr(d.nM)}</b>`:''}${d.dm&&d.dc?' · ':''}${d.dc?`Purchase ${inr(d.oCo)} → <b>${inr(d.nCo)}</b>`:''}</i></span>
+        <div class="au-ch"><button type="button" class="chip ${c==='new'?'on':''}" data-act="auOne" data-k="${esc(d.k)}" data-v="new">New</button><button type="button" class="chip ${c==='old'?'on':''}" data-act="auOne" data-k="${esc(d.k)}" data-v="old">Old</button></div></div>`}).join('')}
+      ${left?`<p class="au-left">Choose New or Old for ${left} more item${left===1?'':'s'} before importing.</p>`:''}</div>`}
+  if(a.merges.length)h=h.replace(/<li class="bad"><b>\d+<\/b> (?:name is|names are) already in stock with a different barcode[\s\S]*?<\/li>/,'');if(!box)return h;const k=h.indexOf('<ul class="bx-warn">');return k>=0?h.slice(0,k)+box+h.slice(k):h.replace('<div class="f"><span class="lab">Quantities in the file</span>',box+'<div class="f"><span class="lab">Quantities in the file</span>')};
+window.EXTRA_OV.skImp=skImpSheet;
+const _auGo=skImpGo;skImpGo=async function(){const m=S.skImp;if(m&&m.au){const a=m.au;const left=a.diffs.filter(d=>!a.choice[d.k]);if(left.length){toast(`Choose New or Old price for ${left.length} item${left.length===1?'':'s'} first`);return}
+    a.diffs.forEach(d=>{if(a.choice[d.k]==='old'){const it=m.items[d.k];if(it){delete it.m;delete it.sp;delete it.co}}});
+    const keep=S.skImp;const st=skItems(B().id);Object.keys(keep.items).forEach(k=>{const it=keep.items[k];if(st[k]&&it.bcs===undefined&&st[k].bcs)it.bcs=st[k].bcs})}
+  return _auGo.apply(this,arguments)};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act="auSep"],[data-act="auAll"],[data-act="auOne"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const m=S.skImp;if(!m||!m.au)return;
+  if(a.dataset.act==='auSep'){const f=a.dataset.v;m.au.sep[f]=!m.au.sep[f];auApplyMerges(m);m.au.diffs=auDiffs(m)}
+  else if(a.dataset.act==='auAll')m.au.diffs.forEach(d=>m.au.choice[d.k]=a.dataset.v);else m.au.choice[a.dataset.k]=a.dataset.v;render()},true);
+
+/* ---------- (1b) Add one item by hand: same name already in stock ---------- */
+window.addEventListener('submit',e=>{if(!e.target||e.target.id!=='skNewForm')return;const b=B();const n=String(($('nfName')||{}).value||'').trim().toUpperCase();if(!n)return;
+  const k=ST.skIdx[b.id]&&ST.skIdx[b.id].name.get(n);const o=k&&skItems(b.id)[k];if(!o||o.del)return;const bc=String(($('nfBc')||{}).value||'').trim();if(bc&&ST.skIdx[b.id].bc.get(bc.toUpperCase())&&ST.skIdx[b.id].bc.get(bc.toUpperCase())!==k)return;
+  const q=Math.max(0,parseInt(($('nfQ')||{}).value)||0);if(!confirm(`${n} is already in stock (D.no ${o.dn||'—'}, ${skQty(o)} pcs).\n\nOK = add ${q} pcs to that item\nCancel = make a separate new item`))return;
+  e.preventDefault();e.stopImmediatePropagation();const m=+($('nfM')||{}).value||0;const cd=String(($('nfCd')||{}).value||'').trim().toUpperCase();const pc=skParseCode(cd);const co=+($('nfCo')||{}).value||(pc.rate?Math.round(pc.rate*25*100)/100:0);
+  const patch={};if(bc&&bc!==o.bc)patch.bcs=[...new Set([...(o.bcs||[]),bc])];
+  const dm=m>0&&Math.round(m)!==Math.round(+o.m||0),dc=co>0&&Math.abs(co-(+o.co||0))>0.01;
+  if((dm||dc)&&confirm(`Price is different:\n${dm?`MRP ${inr(+o.m||0)} → ${inr(m)}\n`:''}${dc?`Purchase ${inr(+o.co||0)} → ${inr(co)}\n`:''}\nOK = update to the new price\nCancel = keep the old price`)){if(dm){patch.m=m;if(+o.sp===+o.m||!o.sp)patch.sp=m}if(dc)patch.co=co;if(cd)patch.cd=cd}
+  if(Object.keys(patch).length){Object.assign(o,patch);skWrite(b.id,{[k]:patch})}
+  if(q>0){skMove(b.id,{[k]:q},'stock in');skMvSave([mvRec(b,'in',k,o,q,{reason:'Stock in (same item)'})])}skReindex(b.id);
+  S.skForm=null;SK.view=k;S.overlay='skItem';render();toast(`${q} pcs added to ${n}${patch.m||patch.co?' · price updated':''}`)},true);
+
+/* ---------- (2) Stock count: scan every piece, see what is sold ---------- */
+let AU=null;const auLS=biz=>'rr.audit.'+biz;
+function auLoad(){const b=B();if(AU&&AU.biz===b.id)return AU;try{AU=JSON.parse(localStorage.getItem(auLS(b.id))||'null')}catch(e){AU=null}return AU}
+function auStore(){if(!AU)return;try{localStorage.setItem(auLS(AU.biz),JSON.stringify(AU))}catch(e){}}
+function auStart(){const b=B();const id='au_'+b.id+'_'+Date.now().toString(36);AU={id,biz:b.id,at:Date.now(),date:todayStr(),counts:{},unknown:{},last:[]};auStore();
+  DB.A.set('audits',id,{biz:b.id,open:true,at:AU.at,date:AU.date,by:isAdmin()?'Owner':(DEVICE.name||'counter'),counts:{},unknown:{}},false);render();setTimeout(()=>{const i=$('auScan');if(i)i.focus()},80)}
+function auScan(code){code=String(code||'').trim();if(!code||!AU)return;const b=B();const f=skFind(b.id,code);const A=DB.A;
+  if(!f){const c=code.toUpperCase();AU.unknown[c]=(AU.unknown[c]||0)+1;A.set('audits',AU.id,{unknown:{[skKey(c)]:A.inc(1)}},true);AU.last.unshift({code:c,at:Date.now()});toast(`${c} is not in the stock list`)}
+  else{AU.counts[f.key]=(AU.counts[f.key]||0)+1;A.set('audits',AU.id,{counts:{[f.key]:A.inc(1)}},true);AU.last.unshift({k:f.key,at:Date.now()})}
+  AU.last=AU.last.slice(0,8);auStore();const box=$('auLive');if(box)box.innerHTML=auLiveHTML();else render()}
+function auRows(){const b=B();const st=skItems(b.id);const rows=[];Object.entries(st).forEach(([k,it])=>{if(it.del)return;const s=skQty(it),c=AU.counts[k]||0;if(!s&&!c)return;rows.push({k,it,s,c,d:c-s})});return rows}
+function auTotals(){const r=auRows();const t={scanned:Object.values(AU.counts).reduce((a,v)=>a+v,0),sold:0,soldV:0,soldM:0,extra:0,match:0,items:r.length,notYet:0};
+  r.forEach(x=>{if(x.d<0){t.sold+=-x.d;t.soldV+=-x.d*(+x.it.co||0);t.soldM+=-x.d*(+x.it.m||0)}else if(x.d>0)t.extra+=x.d;else t.match++;if(!x.c)t.notYet++});return t}
+function auLiveHTML(){const b=B();const st=skItems(b.id);const l=AU.last[0];let top='';
+  if(l){if(l.k){const it=st[l.k];const s=skQty(it),c=AU.counts[l.k]||0;top=`<div class="au-last ${c>s?'over':c===s?'ok':''}"><b>${esc(it.n)}</b><span>${it.dn?'D.'+esc(it.dn)+' · ':''}counted <b>${c}</b> of ${s} in stock</span></div>`}else top=`<div class="au-last bad"><b>${esc(l.code)}</b><span>not in the stock list</span></div>`}
+  const t=auTotals();return `${top}<div class="au-k"><div><span>Pieces scanned</span><b>${t.scanned}</b></div><div><span>Items matched</span><b>${t.match}</b></div><div class="r"><span>Sold / missing so far</span><b>${t.sold} pcs</b></div></div>`}
+screens.skAudit=function(){const b=B();auLoad();const head=`${topbar('Stock count','stock',bizPill())}<div class="pad" style="padding-top:4px;gap:12px">`;
+  if(!AU)return `${head}<section class="card au-intro"><h3>${ic('scan')} Find out which stock is sold</h3>
+    <p>Your stock list has quantities, but some pieces were sold before. Count the shop once:</p>
+    <ol><li><b>Start the count</b> and <b>scan every piece</b> on the racks and in the godown, one scan per piece. Several phones can scan together.</li><li>The app compares it with the stock list: <b>stock 5, counted 3 → 2 sold or missing</b>.</li><li>At the end, <b>apply</b> the count: stock becomes what you counted. Items not found at all can be set to 0 (sold).</li></ol>
+    <button class="primary" data-act="auStart">${ic('scan')} Start stock count</button>${isAdmin()?'':'<p class="hint">The owner applies the count at the end.</p>'}</section>
+    <button class="secondary" data-act="auJoin">Join a count started on another phone</button></div>`;
+  const tab=S.auTab||'scan';const t=auTotals();const rows=auRows();
+  const tabs=`<div class="cmode au-tabs">${[['scan','Scan'],['sold',`Sold / missing ${t.sold?'· '+t.sold:''}`],['extra',`Extra ${t.extra?'· '+t.extra:''}`],['all','All']].map(([k,l])=>`<button class="${tab===k?'on':''}" data-act="auTab" data-v="${k}">${l}</button>`).join('')}</div>`;
+  let body='';
+  if(tab==='scan')body=`<div class="card au-scan"><form id="auForm" class="search"><div class="inp">${ic('scan')}<input id="auScan" placeholder="Scan each piece · or type barcode / D.no" autocomplete="off" autocapitalize="characters" enterkeyhint="go"></div><button class="scan-btn" type="button" data-act="auCam" aria-label="Camera">${ic('camera')}</button></form>
+      <div id="auLive">${auLiveHTML()}</div><div class="two"><button class="secondary" data-act="auUndo" ${AU.last.length?'':'disabled'}>Undo last scan</button><button class="secondary" data-act="auSync">Refresh · all phones</button></div></div>
+      ${Object.keys(AU.unknown).length?`<details class="card au-unk"><summary>${Object.values(AU.unknown).reduce((a,v)=>a+v,0)} scans not in the stock list</summary>${Object.entries(AU.unknown).map(([c,n])=>`<div>${esc(c)} × ${n}</div>`).join('')}</details>`:''}`;
+  else{const list=rows.filter(x=>tab==='sold'?x.d<0:tab==='extra'?x.d>0:true).sort((p,q)=>tab==='sold'?(p.d-q.d):String(p.it.n).localeCompare(q.it.n));
+    body=`${tab==='sold'?`<div class="au-sum"><span>Sold / missing</span><b>${t.sold} pcs</b><small>cost ${inr(Math.round(t.soldV))} · MRP ${inr(Math.round(t.soldM))}${t.notYet?` · ${t.notYet} items not scanned at all`:''}</small></div>`:''}
+      <div class="au-list">${list.slice(0,400).map(x=>`<div class="au-it ${x.d<0?'neg':x.d>0?'pos':''}"><div class="grow"><b>${esc(x.it.n)}</b><span>${x.it.dn?'D.'+esc(x.it.dn)+' · ':''}${esc(x.it.c||'')}${isAdmin()&&+x.it.co?' · cost '+inr(x.it.co):''}</span></div>
+        <div class="au-n"><span>stock ${x.s}</span><span>counted ${x.c}</span><b>${x.d<0?x.d+' sold':x.d>0?'+'+x.d+' extra':'✓'}</b></div><div class="au-pm"><button data-act="auAdj" data-k="${esc(x.k)}" data-v="-1">−</button><button data-act="auAdj" data-k="${esc(x.k)}" data-v="1">+</button></div></div>`).join('')||'<div class="empty">Nothing here.</div>'}</div>`}
+  const fin=isAdmin()?`<section class="card au-fin"><b>Finish the count</b><label class="ck"><input type="checkbox" id="auZero" checked> Items not scanned at all → stock 0 (treated as sold)</label>
+      <div class="two"><button class="secondary" data-act="auXls">${ic('download')} Excel report</button><button class="primary" data-act="auApply">Apply count to stock</button></div>
+      <button class="linkbtn" data-act="auEnd">Throw this count away</button></section>`:`<p class="hint">Started ${esc(dateTimeLabel(AU.at))}. The owner applies the count.</p>`;
+  return `${head}${tabs}${body}${fin}</div>`};
+NAV_OF.skAudit='more';
+async function auSync(){if(!AU)return;const d=await DB.A.get('audits',AU.id).catch(()=>null);if(!d){toast('Could not read the count');return}AU.counts={...(d.counts||{})};const u={};Object.entries(d.unknown||{}).forEach(([k,v])=>u[k]=v);AU.unknown=u;auStore();render();toast('Counts from all phones loaded')}
+async function auJoin(){const b=B();const l=await DB.A.query('audits',[['biz','==',b.id],['open','==',true]]).catch(()=>[]);const x=(l||[]).sort((p,q)=>q.at-p.at)[0];if(!x){toast('No open count for this shop');return}
+  AU={id:x.id,biz:b.id,at:x.at,date:x.date,counts:{...(x.counts||{})},unknown:{...(x.unknown||{})},last:[]};auStore();render();toast('Joined the count · scan your pieces')}
+function auApply(){const b=B();if(!isAdmin()||!AU)return;const zero=!!($('auZero')||{}).checked;const d={},recs=[];
+  auRows().forEach(x=>{const target=x.c>0?x.c:(zero?0:x.s);const diff=target-x.s;if(diff){d[x.k]=diff;recs.push(mvRec(b,diff>0?'in':'out',x.k,x.it,Math.abs(diff),{reason:'Stock count',note:`counted ${x.c} · was ${x.s}`}))}});
+  if(!Object.keys(d).length){toast('Stock already matches the count');return}if(!confirm(`Change stock on ${Object.keys(d).length} items to match the count?`))return;
+  skMove(b.id,d,'stock count');skMvSave(recs);DB.A.set('audits',AU.id,{open:false,applied:Date.now(),changed:Object.keys(d).length},true);
+  DB.A.set('stocklog','sl_'+uid(),{biz:b.id,at:Date.now(),date:todayStr(),by:'Owner',why:'stock count',n:Object.keys(d).length},false);
+  try{localStorage.removeItem(auLS(b.id))}catch(e){}AU=null;go('stock');toast(`Stock count applied · ${Object.keys(d).length} items changed`)}
+async function auXls(){const b=B();try{await skLoad('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX)}catch(e){toast('Could not load Excel');return}
+  const rows=auRows().sort((p,q)=>p.d-q.d).map(x=>[x.it.n,x.it.dn||'',x.it.bc||'',x.it.c||'',x.s,x.c,x.d,x.d<0?'Sold / missing':x.d>0?'Extra':'OK',+x.it.co||0,+x.it.m||0,x.d<0?-x.d*(+x.it.co||0):0]);
+  const ws=XLSX.utils.aoa_to_sheet([['Item','D.no','Barcode','Category','Stock list','Counted','Difference','Result','Cost','MRP','Sold value at cost'],...rows]);ws['!cols']=[22,7,14,12,9,8,10,14,8,8,12].map(w=>({wch:w}));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Stock count');XLSX.writeFile(wb,`${b.prefix||b.id}_Stock_count_${todayStr()}.xlsx`)}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act^="au"]');if(!a)return;const k=a.dataset.act;if(!['auStart','auJoin','auTab','auUndo','auSync','auCam','auAdj','auApply','auEnd','auXls','auGo'].includes(k))return;e.preventDefault();e.stopImmediatePropagation();
+  if(k==='auGo'){go('skAudit');return}if(k==='auStart')return auStart();if(k==='auJoin')return auJoin();if(k==='auTab'){S.auTab=a.dataset.v;render();return}
+  if(k==='auSync')return auSync();if(k==='auApply')return auApply();if(k==='auXls')return auXls();if(k==='auCam'){skCamOpen(c=>auScan(c));return}
+  if(k==='auUndo'){const l=AU&&AU.last.shift();if(!l)return;const A=DB.A;if(l.k){AU.counts[l.k]=Math.max(0,(AU.counts[l.k]||0)-1);A.set('audits',AU.id,{counts:{[l.k]:A.inc(-1)}},true)}else{AU.unknown[l.code]=Math.max(0,(AU.unknown[l.code]||0)-1);A.set('audits',AU.id,{unknown:{[skKey(l.code)]:A.inc(-1)}},true)}auStore();render();return}
+  if(k==='auAdj'){const key=a.dataset.k,v=+a.dataset.v;AU.counts[key]=Math.max(0,(AU.counts[key]||0)+v);DB.A.set('audits',AU.id,{counts:{[key]:DB.A.inc(v)}},true);auStore();render();return}
+  if(k==='auEnd'){if(!confirm('Throw this count away? Stock is not changed.'))return;DB.A.set('audits',AU.id,{open:false,discarded:Date.now()},true);try{localStorage.removeItem(auLS(AU.biz))}catch(x){}AU=null;render()}},true);
+document.addEventListener('submit',e=>{if(!e.target||e.target.id!=='auForm')return;e.preventDefault();e.stopImmediatePropagation();const i=$('auScan');const v=i.value;i.value='';auScan(v);i.focus()},true);
+/* entry: Stock screen */
+const _auStock=screens.stock;screens.stock=function(){const h=_auStock();const b=B();if(!skHas(b.id))return h;auLoad();
+  const btn=`<button class="au-entry" data-act="auGo">${ic('scan')}<span><b>${AU?'Stock count in progress · continue':'Stock count · find what is sold'}</b><small>${AU?`${Object.values(AU.counts).reduce((a,v)=>a+v,0)} pieces scanned`:'Scan every piece in the shop · compare with the stock list'}</small></span>${ic('chev','chev')}</button>`;
+  const i=h.indexOf('<div class="pad"');if(i<0)return h;const j=h.indexOf('>',i)+1;return h.slice(0,j)+btn+h.slice(j)};
+(function(){const s=document.createElement('style');s.textContent=`.au-box{display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:#eef4f8;border:1px solid #bcd3e4;margin:6px 0}.au-box.warn{background:#fff6e5;border-color:#f0c98a}.au-box>small{font-size:12px;opacity:.8}
+.au-row{display:flex;align-items:center;gap:8px;justify-content:space-between;border-top:1px dashed rgba(0,0,0,.1);padding-top:6px}.au-row>span{display:grid;font-size:13px;font-weight:700}.au-row i{font-style:normal;font-weight:500;font-size:12px;opacity:.85}.au-ch{display:flex;gap:4px}.au-left{margin:0;color:#b3261e;font-weight:700;font-size:13px}
+.au-entry{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid #2f5d7c;background:#eef4f8;color:inherit;border-radius:14px;padding:12px 14px;cursor:pointer;margin-bottom:4px}.au-entry>svg{width:22px;height:22px;color:#2f5d7c}.au-entry span{display:grid;flex:1}.au-entry b{color:#1d3f57}.au-entry small{font-size:12px;opacity:.75}.au-entry .chev{width:18px;height:18px}
+.au-intro{display:grid;gap:8px}.au-intro h3{display:flex;gap:8px;align-items:center;margin:0}.au-intro h3 svg{width:20px;height:20px}.au-intro p,.au-intro ol{margin:0;font-size:14px}.au-intro li{margin-bottom:4px}
+.au-tabs{width:100%}.au-scan{display:grid;gap:10px}.au-scan .inp{border:2px solid var(--accent,#a3325c)!important}.au-last{padding:12px;border-radius:12px;background:#f3f3f3;display:grid;gap:2px}.au-last.ok{background:#e3f4e6}.au-last.over{background:#fff3c4}.au-last.bad{background:#fdecec}.au-last>b{font-size:17px}.au-last span{font-size:13.5px}
+.au-k{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.au-k div{display:grid;padding:8px;border-radius:10px;background:var(--surface-2,#f6f1ec)}.au-k span{font-size:11.5px;opacity:.75}.au-k b{font-size:18px}.au-k .r b{color:#b3261e}
+.au-sum{display:grid;padding:10px 12px;border-radius:12px;background:#fdecec}.au-sum b{font-size:22px;color:#b3261e}.au-sum small{font-size:12.5px}
+.au-list{display:grid;gap:6px}.au-it{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line,#e5e0d8);border-radius:12px;background:var(--surface,#fff)}.au-it.neg{border-color:#f2c9c4}.au-it.pos{border-color:#e8c766}.au-it .grow{display:grid;flex:1;min-width:0}.au-it .grow span{font-size:12px;opacity:.7}
+.au-n{display:grid;justify-items:end;font-size:11.5px}.au-it.neg .au-n b{color:#b3261e}.au-it.pos .au-n b{color:#8a5200}.au-pm{display:grid;gap:2px}.au-pm button{border:1px solid var(--line,#ddd);background:#fff;border-radius:6px;width:28px;height:22px;font-weight:800;cursor:pointer}
+.au-fin{display:grid;gap:8px}.au-fin .ck{display:flex;gap:8px;align-items:center;font-size:13.5px}.au-unk div{font-size:13px;padding:2px 0}`;document.head.appendChild(s)})();
+
+/* ===== v1.65 · Upload the same list again (+ new items): clear quantity choice and a "what happens" box ===== */
+function qhCalc(m){const b=B();const st=skItems(b.id);const r={newN:0,newP:0,exN:0,exNow:0,exFile:0};Object.entries(m.items).forEach(([k,it])=>{const o=st[k];const q=Math.max(0,+it.q||0);
+  if(o&&!o.del){r.exN++;r.exNow+=skQty(o);r.exFile+=q}else{r.newN++;r.newP+=q}});return r}
+const _qhSheet=skImpSheet;skImpSheet=function(){const m=S.skImp;if(m&&m.pb&&m.pb.dup&&!m.qhDup){m.qhDup=true;m.mode='keep'}
+  let h=_qhSheet();if(!m)return h;const r=qhCalc(m);if(!r.exN)return h;const sold=Math.max(0,r.exFile-r.exNow);
+  h=h.replace('>Set stock = file<','>Full recount · stock = file<').replace('>Add to stock (new purchase)<','>New purchase · add file qty<').replace('>Keep current stock<','>Same list again · keep stock<');
+  const eff=m.mode==='keep'?`<b>${r.exN} items already in stock keep their stock (${r.exNow} pcs now).</b> Pieces sold since last time stay sold${sold?` (the file says ${r.exFile}, the app has ${r.exNow} → ${sold} sold)`:''}. Only prices / names / codes update.`
+    :m.mode==='add'?`<b>${r.exN} items already in stock get +${r.exFile} pcs</b> (${r.exNow} → ${r.exNow+r.exFile}). Use this only if these pieces are newly bought. If this is the same list again, choose “Same list again”.`
+    :`<b>${r.exN} items already in stock are set to the file quantity</b> (${r.exNow} → ${r.exFile} pcs). Pieces sold in the app since the last upload come back. Use this only after a full count.`;
+  const box=`<div class="qh-box ${m.mode==='add'&&!m.pb?.isBill?'warn':m.mode==='set'?'warn':''}"><span class="lab">What happens to quantity</span>
+    <p>${r.newN?`<b>${r.newN} new item${r.newN===1?'':'s'} come in with ${r.newP} pcs.</b> `:''}${eff}</p>${m.pb&&m.pb.dup?'<p class="qh-dup">This bill was uploaded before, so “Same list again” is chosen.</p>':''}</div>`;
+  return h.replace(/(<p class="hint">[^<]*(?:Every item|The quantity in the file|Only names)[^<]*<\/p>)/,box)};
+window.EXTRA_OV.skImp=skImpSheet;
+(function(){const s=document.createElement('style');s.textContent='.qh-box{display:grid;gap:4px;padding:10px 12px;border-radius:12px;background:#eef7f1;border:1px solid #bfe3c8;margin:4px 0 8px}.qh-box.warn{background:#fff6e5;border-color:#f0c98a}.qh-box p{margin:0;font-size:13.5px}.qh-box .lab{font-size:12px;font-weight:800;opacity:.75;text-transform:uppercase}.qh-dup{color:#8a5200;font-weight:700}';document.head.appendChild(s)})();
 
 </script>
 </body>
